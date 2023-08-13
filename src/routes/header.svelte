@@ -1,13 +1,15 @@
 <script>
     import Git from "$lib/github.svg"
-    import Themeselect from "./themeselect.svelte";
+    import Options from "./Options.svelte";
+    import Profile from "./Profile.svelte";
 </script>
 
 
 <nav>
     <h2>Stundenplan.io</h2>
-    <Themeselect />
-    <a href="https://github.com/Benedikt-Brunner"><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;"></a>
+    <Options />
+    <a href="https://github.com/Benedikt-Brunner/Timetable"><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;"></a>
+    <Profile />
 </nav>
 
 

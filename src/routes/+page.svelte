@@ -15,7 +15,7 @@ theme.subscribe(value => {
 </script>
 
     <Header />
-
+    
 {#if t == "Light"}
     <LightT />
 {:else if t == "Night"}
@@ -26,6 +26,3 @@ theme.subscribe(value => {
 
 
 
-<style>
-
-</style>
