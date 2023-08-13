@@ -1,0 +1,31 @@
+{
+    "schedule": [
+        {
+            "Name": "",
+            "Timeslot": 123,
+            "(Bi)-Weekly": false,
+            "Room": "",
+            "Prof": ""
+        },
+        {
+            "Name": "",
+            "Timeslot": 123,
+            "(Bi)-Weekly": false,
+            "Room": "",
+            "Prof": ""
+        },
+        {
+            "Name": "",
+            "Timeslot": 123,
+            "(Bi)-Weekly": false,
+            "Room": "",
+            "Prof": ""
+        }
+    ],
+
+    "User":{
+        "id": 123,
+        "Name": "",
+        "schedule": []
+    }
+}
