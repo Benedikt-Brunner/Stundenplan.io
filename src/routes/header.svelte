@@ -23,9 +23,9 @@ nav{
     color: var(--text);
     height: 5rem;
     box-shadow: 0 0 10px 0 rgba(0,0,0,0.2);
-    position: sticky;
+    position: relative;
     top: 0;
-    z-index: 1;
+    z-index: 12;
 }
 
 nav a{

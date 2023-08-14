@@ -4,12 +4,13 @@
 	import Options from "$lib/Options.svg"
     import {rows} from "$lib/ScheduleStore.js"
     import {template as templateStore} from "$lib/ScheduleStore.js";
+    import { get } from 'svelte/store';
 
 
     let focus = false;
     let colorRGB = "";
     let color = "";
-    let dynamicRows = rows;
+    let dynamicRows = get(rows);
     let template = "University";
     let disabled = true;
     let wait = false;
@@ -46,11 +47,18 @@
         colorRGB = colormap.get(value);
     })
 
-    $:{disabled = template != "Custom"; console.log(disabled)}
+    $:{disabled = template != "Custom";}
 
     $: updateRows(dynamicRows);
 
-    $: templateStore.set(template);
+    $: updateTemplate(template);
+
+    function updateTemplate(e){
+        templateStore.set(template);
+        if(template == "Custom"){
+            updateRows(dynamicRows);
+    }
+}
 
     function updateRows(e){
         dynamicRows = dynamicRows < 1 ? 1 : dynamicRows;
@@ -93,7 +101,7 @@
         </div>
         <div class = "bottom">
             <label for="rows">Stunden:</label>
-            <input type="number" name="rows" bind:value={dynamicRows} {disabled} style="{disabled ? "cursor: not-allowed" : ""}">
+            <input type="number" name="rows"  bind:value={dynamicRows} {disabled} style="{disabled ? "cursor: not-allowed" : ""}">
         </div>
     {:else}
     <img src={Options} alt="Options">
@@ -124,6 +132,7 @@
         height: 12rem;
         background-color: rgba(151, 147, 147);
         margin-top: 7rem;
+        border-radius: 1rem;
     }
 
     .top{
