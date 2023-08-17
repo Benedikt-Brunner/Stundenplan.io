@@ -9,12 +9,12 @@ let selected = false;
 <div class = "center">
 <table>
     <tr>
-        <th>👾</th>
-        <th>Montag</th>
-        <th>Dienstag</th>
-        <th>Mittwoch</th>
-        <th>Donnerstag</th>
-        <th>Freitag</th>
+        <th contenteditable="true">👾</th>
+        <th style="background-color: #99CCFF;">Montag</th>
+        <th style="background-color: #99CC00;">Dienstag</th>
+        <th style="background-color: #FFCC00;">Mittwoch</th>
+        <th style="background-color: #FF8080;">Donnerstag</th>
+        <th style="background-color: #CC99FF;">Freitag</th>
     </tr>
     {#each $schedule as hour, i}
         <tr>
@@ -86,10 +86,19 @@ let selected = false;
         outline: none;
     }
 
+    .editor button{
+        margin: 1rem;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        border: none;
+        outline: none;
+        cursor: pointer;
+    }
+
     .center{
         display: flex;
         justify-content: center;
-        align-items: start;
+        align-items: flex-start;
         height: 100vh;
         margin-top: 5%;
         z-index: 0;
