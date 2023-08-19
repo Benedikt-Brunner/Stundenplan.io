@@ -1,15 +1,20 @@
 <script>
+// @ts-nocheck
+
     import Git from "$lib/github.svg"
     import Options from "./Options.svelte";
-    import Profile from "./Profile.svelte";
+    import Social from "./Social.svelte";
+
+    export let data;
+    export let supabase;
 </script>
 
 
 <nav>
     <h2>Stundenplan.io</h2>
     <Options />
+    <Social data = {data} supabase = {supabase}/>
     <a href="https://github.com/Benedikt-Brunner/Timetable"><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;"></a>
-    <Profile />
 </nav>
 
 

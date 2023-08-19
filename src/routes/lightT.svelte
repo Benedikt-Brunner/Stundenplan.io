@@ -1,6 +1,7 @@
 <script>
     //@ts-nocheck
-import {schedule} from "$lib/ScheduleStore.js"
+import {schedule, fullweektoogle} from "$lib/ScheduleStore.js"
+import { get } from 'svelte/store';
 
 let selectobject = {"row" : 0, "column" : 0}
 let selected = false;
@@ -13,8 +14,12 @@ let selected = false;
         <th style="background-color: #99CCFF;">Montag</th>
         <th style="background-color: #99CC00;">Dienstag</th>
         <th style="background-color: #FFCC00;">Mittwoch</th>
-        <th style="background-color: #FF8080;">Donnerstag</th>
-        <th style="background-color: #CC99FF;">Freitag</th>
+        <th style="background-color: #d4710f;">Donnerstag</th>
+        <th style="background-color: #FF8080;">Freitag</th>
+        {#if $fullweektoogle}
+            <th style="background-color: #CC99FF;">Samstag</th>
+            <th style="background-color: #db27b1;">Sonntag</th>
+        {/if}
     </tr>
     {#each $schedule as hour, i}
         <tr>
@@ -44,6 +49,18 @@ let selected = false;
                 <p>Fach: {hour.Day5.Subject}</p>
                 <p>Lehrer: {hour.Day5.Teacher}</p>
             </td>
+            {#if $fullweektoogle}
+                <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 6; selected = true}}}>
+                    <p>Raum: {hour.Day6.Room}</p>
+                    <p>Fach: {hour.Day6.Subject}</p>
+                    <p>Lehrer: {hour.Day6.Teacher}</p>
+                </td>
+                <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 7; selected = true}}}>
+                    <p>Raum: {hour.Day7.Room}</p>
+                    <p>Fach: {hour.Day7.Subject}</p>
+                    <p>Lehrer: {hour.Day7.Teacher}</p>
+                </td>
+            {/if}
         </tr>
     {/each}
 </table>

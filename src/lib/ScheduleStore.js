@@ -1,4 +1,6 @@
+// @ts-nocheck
 import { get, writable } from "svelte/store";
+export const fullweektoogle = writable(false);
 export const template = writable("University");
 export const rows = writable(7);
 export const schedule = writable(new Array(7).fill("").map(() => {return makeStdhr()}));
@@ -84,6 +86,34 @@ template.subscribe(value => {
         return;
     }
     rows.set(TempToRows.get(value));
+})
+
+function fiveToSeven(old){
+    return {...old, Day6: {
+        "Subject": "",
+        "Teacher": "",
+        "Room": ""
+    }, Day7: {
+        "Subject": "",
+        "Teacher": "",
+        "Room": ""
+    }}
+}
+
+function sevenToFive(old){
+    return {"Hours": old.Hours, "Day1": old.Day1, "Day2": old.Day2, "Day3": old.Day3, "Day4": old.Day4, "Day5": old.Day5}
+}
+
+fullweektoogle.subscribe(value => {
+    schedule.update(old => {
+        let newarr = old;
+        if(value){
+            newarr = newarr.map(fiveToSeven);
+        }else{
+            newarr = newarr.map(sevenToFive);
+        }
+        return newarr;
+    });
 })
 
 

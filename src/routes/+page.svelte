@@ -6,6 +6,11 @@ import NightT from "./nightT.svelte";
 import PinkT from "./pinkT.svelte";
 import { theme } from "$lib/ThemeStore";
 
+export let data;
+
+let { user, tableData, supabase } = data
+  $: ({ user, tableData, supabase } = data)
+
 
 let t = theme;
 
@@ -14,7 +19,7 @@ theme.subscribe(value => {
 })
 </script>
 
-    <Header />
+    <Header data = {data} supabase = {supabase}/>
     
 {#if t == "Light"}
     <LightT />

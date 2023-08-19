@@ -4,6 +4,7 @@
 	import Options from "$lib/Options.svg"
     import {rows} from "$lib/ScheduleStore.js"
     import {template as templateStore} from "$lib/ScheduleStore.js";
+    import {fullweektoogle} from "$lib/ScheduleStore.js";
     import { get } from 'svelte/store';
 
 
@@ -11,9 +12,18 @@
     let colorRGB = "";
     let color = "";
     let dynamicRows = get(rows);
+    let dynDays = get(fullweektoogle);
     let template = "University";
+    let setting = "Theme";
     let disabled = true;
     let wait = false;
+
+
+    let settings = [
+        "Theme",
+        "Template",
+        "Days"
+    ]
 
 
     let themes = [
@@ -53,6 +63,12 @@
 
     $: updateTemplate(template);
 
+    $: updateDays(dynDays);
+
+    function updateDays(e){
+        fullweektoogle.set(dynDays);
+    }
+
     function updateTemplate(e){
         templateStore.set(template);
         if(template == "Custom"){
@@ -75,10 +91,23 @@
 </script>
 
 
+
+
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class = {focus ? "options" : "optionscollapse"} on:click={() =>{if(focus == false && !wait){focus = true}}}>
     {#if focus}
+    <div class="top">
+        {#each settings as s}
+        {#if s == setting}
+        <div style="background-color: black;color: white">{s}</div>
+    {:else}
+        <button style="--color: 0,0,0; color: white" on:click={() => {setting = s}}>{s}</button>
+    {/if}
+        {/each}
+        <button on:click={() =>{waiter(); focus = false}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
+    </div>
+    {#if setting == "Theme"}
         <div class="top">
             {#each themes as t}
                 {#if t == color}
@@ -86,9 +115,9 @@
                 {:else}
                     <button style="--color: {colormap.get(t)}; color: {DarkText.includes(t) ? "black" : "white"}" on:click={() => {theme.set(t)}}>{t}</button>
                 {/if}
-            {/each}
-            <button on:click={() =>{waiter(); focus = false}} style = "--color: 0,0,0; border-radius: 50rem">❌</button>
+            {/each}   
         </div>
+    {:else if setting == "Template"}
         <div class = "middle">
 
             {#each templates as t}
@@ -103,6 +132,12 @@
             <label for="rows">Stunden:</label>
             <input type="number" name="rows"  bind:value={dynamicRows} {disabled} style="{disabled ? "cursor: not-allowed" : ""}">
         </div>
+    {:else if setting == "Days"}
+        <div class = "middle">
+            <label for="rows">7-Tage:</label>
+            <input type="checkbox" bind:checked={dynDays}>
+        </div>
+    {/if}
     {:else}
     <img src={Options} alt="Options">
     {/if}
@@ -134,6 +169,8 @@
         margin-top: 7rem;
         border-radius: 1rem;
     }
+
+
 
     .top{
         display: flex;
