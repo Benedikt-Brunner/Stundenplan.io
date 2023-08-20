@@ -2,9 +2,14 @@
     // @ts-nocheck
         import Social from "$lib/social.svg"
         import Add_Friend from "$lib/add-friend.svg"
+        import { friends } from "$lib/FriendsStore";
+        import { get } from 'svelte/store';
 
         export let data;
         export let supabase 
+
+
+
 
         let { user, tableData } = data
         $: ({ user, tableData } = data)
@@ -16,6 +21,15 @@
         let wait = false;
         let selected = false;
         let friend_name = "";
+        let friendsdyn = get(friends).friends
+        let requestdyn = get(friends).pending
+
+        friends.subscribe(value => {
+          Promise.resolve(value).then(value => {
+            friendsdyn = Array.isArray(value.friends) ? value.friends : []
+            requestdyn = Array.isArray(value.pending) ? value.pending : []
+          })
+        })
       
         const handleSignUp = async () => {
           await supabase.auth.signUp({
@@ -47,6 +61,30 @@
           selected = false;
           let res = await supabase.rpc('add_friend', {id: user.id,friend_name: friend_name})
           console.log(res)
+        }
+
+        const handleFriendRequestDeny = async (friend_name) => {
+          let res = await supabase.rpc('deny_friend_requests', {id: user.id, requester: friend_name})
+          console.log(res)
+          let newobj = {
+            friends: [],
+            pending: []
+           };
+          newobj.friends = (await supabase.rpc('get_friends', {id: user.id})).data;
+          newobj.pending = (await supabase.rpc('get_friend_requests', {id: user.id})).data;
+          friends.set(newobj);
+        }
+
+        const handleFriendRequestAccept = async (friend_name) => {
+          let res = await supabase.rpc('accept_friend_requests', {id: user.id, requester: friend_name})
+          console.log(res)
+          let newobj = {
+            friends: [],
+            pending: []
+           };
+          newobj.friends = (await supabase.rpc('get_friends', {id: user.id})).data;
+          newobj.pending = (await supabase.rpc('get_friend_requests', {id: user.id})).data;
+          friends.set(newobj);
         }
 
         function waiter(){
@@ -92,6 +130,19 @@
         </div>
 
         <div class="list">
+          {#each friendsdyn as friend}
+            <p>{friend.name}</p>
+          {/each}
+          <h4>Requests:</h4>
+          {#each requestdyn as request}
+          <div class="request">
+            <button class="accept" on:click={handleFriendRequestAccept(request)}>✔</button>
+            <button class="deny" on:click={handleFriendRequestDeny(request)}>❌</button>
+            <p>{request}</p>
+          </div>
+            
+          {/each}
+          
         </div>
         </div>
         {/if}
@@ -110,6 +161,52 @@
 
 
         <style>
+
+          .request{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+          }
+
+          .request p{
+            margin: 0;
+            margin-left: 6%;
+          }
+
+          .request button{
+            border: none;
+            border-radius: 50px;
+            padding: 0.2rem;
+            cursor: pointer;
+            transition: 0.5s;
+            margin-top: 1%;
+            aspect-ratio: 1/1;
+            width: 2rem;
+            margin-inline: 1%;
+          }
+
+          .deny{
+            border: none;
+            border-radius: 50px;
+            padding: 0.2rem;
+            cursor: pointer;
+            transition: 0.5s;
+            margin-top: 1%;
+            background-color: rgba(209, 30, 30, 0.733);
+            font-weight: bold;
+          }
+
+          .accept{
+            border: none;
+            border-radius: 50px;
+            padding: 0.2rem;
+            cursor: pointer;
+            transition: 0.5s;
+            margin-top: 1%;
+            background-color: rgba(30, 209, 30, 0.733);
+            font-weight: bold;
+          }
 
 .editor{
         position: fixed;
@@ -272,5 +369,12 @@
       height: 1.5rem;
       aspect-ratio: 1/1;
     }
+
+    h4{
+      margin: 0;
+      width: 100%;
+      text-align: center;
+    }
+    
     
     </style>
