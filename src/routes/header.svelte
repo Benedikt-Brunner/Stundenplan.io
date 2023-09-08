@@ -26,7 +26,7 @@
 nav{
     display: flex;
     justify-content: end;
-    align-items: center;
+    align-items: start;
     padding: 0 1rem;
     background-color: var(--background);
     color: var(--text);
@@ -39,6 +39,7 @@ nav{
 
 nav a{
     margin-left: 1%;
+    margin-top: 1rem;
 }
 
 nav h2{
@@ -48,6 +49,7 @@ nav h2{
 nav h3{
     margin-right: auto;
     margin-left: 1%;
+    margin-top: 1.5rem;
 }
 
 nav h3 span{

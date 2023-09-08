@@ -155,6 +155,7 @@
         background-color: rgba(151, 147, 147, 0.781);
         border-radius: 50%;
         padding: 2px;
+        margin-top: 1rem;
     }
 
     .optionscollapse img{
@@ -166,7 +167,6 @@
         width: 20rem;
         height: 12rem;
         background-color: rgba(151, 147, 147);
-        margin-top: 7rem;
         border-radius: 1rem;
     }
 

@@ -133,16 +133,16 @@
           {#each friendsdyn as friend}
             <p>{friend.name}</p>
           {/each}
+          {#if requestdyn.length != 0}
           <h4>Requests:</h4>
+          {/if}
           {#each requestdyn as request}
           <div class="request">
             <button class="accept" on:click={handleFriendRequestAccept(request)}>✔</button>
             <button class="deny" on:click={handleFriendRequestDeny(request)}>❌</button>
             <p>{request}</p>
           </div>
-            
           {/each}
-          
         </div>
         </div>
         {/if}
@@ -251,6 +251,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin-top: 1rem;
     }
 
     .socialcollapse img{
@@ -260,11 +261,14 @@
 
     .social{
         width: 15rem;
-        height: 12rem;
+        height: fit-content;
         background-color: rgb(214, 212, 212);
-        margin-top: 7rem;
         border-radius: 1rem;
         margin-left: 1%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: space-between;
     }
 
     #exit{
