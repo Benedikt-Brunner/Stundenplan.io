@@ -1,6 +1,7 @@
 // src/routes/profile/+page.ts
 //@ts-nocheck
 import { friends } from '$lib/FriendsStore.js' 
+import { schedule } from '$lib/ScheduleStore.js'
 import { get } from 'svelte/store'
 
 export const load = async ({ parent }) => {
@@ -8,8 +9,9 @@ export const load = async ({ parent }) => {
   if (!session) {
     return 
   }
-  const { data: tableData } = await supabase.from('users').select('name').eq('id', session.user.id)
-
+  const { data: tableData } = await supabase.from('users').select('name, schedule').eq('id', session.user.id)
+  schedule.set(tableData[0].schedule);
+  
   let newobj = {
     friends: [],
     pending: []

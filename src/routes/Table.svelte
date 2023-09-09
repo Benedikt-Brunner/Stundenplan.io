@@ -1,24 +1,44 @@
 <script>
     //@ts-nocheck
 import {schedule, fullweektoogle} from "$lib/ScheduleStore.js"
+import { get_friends_lessons } from "$lib/FriendsStore";
 import { get } from 'svelte/store';
+
+
+export let styles;
+export let supabase;
+export let user;
 
 let selectobject = {"row" : 0, "column" : 0}
 let selected = false;
+const five_day_ratio = 90/5;
+const seven_day_ratio = 90/7;
+let ratio = get(fullweektoogle) ? seven_day_ratio : five_day_ratio;
+
+fullweektoogle.subscribe(value => {
+    ratio = value ? seven_day_ratio : five_day_ratio;
+})
+
+async function persist(){
+    let data = get(schedule);
+    const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
+    console.log(res)
+}
+
 </script>
 
 <div class = "center">
 <table>
     <tr>
         <th contenteditable="true">👾</th>
-        <th style="background-color: #99CCFF;">Montag</th>
-        <th style="background-color: #99CC00;">Dienstag</th>
-        <th style="background-color: #FFCC00;">Mittwoch</th>
-        <th style="background-color: #d4710f;">Donnerstag</th>
-        <th style="background-color: #FF8080;">Freitag</th>
+        <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">Montag</th>
+        <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">Dienstag</th>
+        <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">Mittwoch</th>
+        <th style="background-color: {styles.header_color_thursday}; width: {ratio}%;">Donnerstag</th>
+        <th style="background-color: {styles.header_color_friday}; width: {ratio}%;">Freitag</th>
         {#if $fullweektoogle}
-            <th style="background-color: #CC99FF;">Samstag</th>
-            <th style="background-color: #db27b1;">Sonntag</th>
+            <th style="background-color: {styles.header_color_saturday}; width: {ratio}%;">Samstag</th>
+            <th style="background-color: {styles.header_color_sunday}; width: {ratio}%;">Sonntag</th>
         {/if}
     </tr>
     {#each $schedule as hour, i}
@@ -73,7 +93,7 @@ let selected = false;
         <input type="text" placeholder="Fach" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Subject}>
         <input type="text" placeholder="Lehrer" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Teacher}>
         {/if}
-        <button on:click={() => {selected = false;}}>Speichern</button>
+        <button on:click={() => {selected = false; persist();}}>Speichern</button>
     </div>
 {/if}
 </div>
