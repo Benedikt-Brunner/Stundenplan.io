@@ -2,6 +2,7 @@
     //@ts-nocheck
 import Header from "./header.svelte";
 import Table from "./Table.svelte";
+import SavedStatus from "./saved_status.svelte";
 import lightstyles from "./lightstyles";
 import { theme } from "$lib/ThemeStore";
 
@@ -17,6 +18,8 @@ let styles = lightstyles;
     <Header data = {data} supabase = {supabase}/>
 
     <Table styles = {styles} supabase = {supabase} user = {user}/>
+
+    <SavedStatus/>
     
 
 

@@ -1,6 +1,7 @@
 <script>
     //@ts-nocheck
 import {schedule, fullweektoogle} from "$lib/ScheduleStore.js"
+import { changed } from "$lib/changedStore";
 import { get_friends_lessons } from "$lib/FriendsStore";
 import { get } from 'svelte/store';
 
@@ -14,19 +15,46 @@ let selected = false;
 const five_day_ratio = 90/5;
 const seven_day_ratio = 90/7;
 let ratio = get(fullweektoogle) ? seven_day_ratio : five_day_ratio;
+let changed_loc = false;
 
 fullweektoogle.subscribe(value => {
     ratio = value ? seven_day_ratio : five_day_ratio;
 })
 
-async function persist(){
+async function persist_on_exit(){
+    if(!changed_loc) return;
+    // Cancel the event as stated by the standard.
+     event.preventDefault();
+    // Chrome requires returnValue to be set.
+    event.returnValue = '';
     let data = get(schedule);
     const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
-    console.log(res)
+    if(res){
+        changed_loc = false;
+    }
 }
 
-</script>
+async function persist(){
+    if(!changed_loc) return;
+    let data = get(schedule);
+    const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
+    if(res){
+        changed_loc = false;
+    }
+}
 
+$: setStore(changed_loc);
+
+function setStore(value){
+    changed.set(value);
+}
+
+setInterval(() => {
+    if(!changed_loc) return;
+    persist();
+}, 10000);
+</script>
+<svelte:window on:beforeunload = {persist_on_exit}/>
 <div class = "center">
 <table>
     <tr>
@@ -93,7 +121,7 @@ async function persist(){
         <input type="text" placeholder="Fach" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Subject}>
         <input type="text" placeholder="Lehrer" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Teacher}>
         {/if}
-        <button on:click={() => {selected = false; persist();}}>Speichern</button>
+        <button on:click={() => {selected = false; changed_loc = true;}}>Speichern</button>
     </div>
 {/if}
 </div>
@@ -134,8 +162,9 @@ async function persist(){
 
     .center{
         display: flex;
-        justify-content: center;
-        align-items: flex-start;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
         height: 100vh;
         margin-top: 5%;
         z-index: 0;
