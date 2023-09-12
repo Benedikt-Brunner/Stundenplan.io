@@ -8,4 +8,15 @@ export default class Lesson {
         this.day = day;
         this.friends = friends;
     }
+
+    equals(lesson) {
+        return lesson.subject === this.subject && lesson.teacher === this.teacher;
+    }
+
+    merge(lesson) {
+        this.hours.push(...lesson.hours);
+        this.day.push(...lesson.day);
+        this.friends.push(...lesson.friends);
+        this.room.push(...lesson.room);
+    }
 }

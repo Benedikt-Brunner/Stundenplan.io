@@ -19,7 +19,9 @@ let styles = lightstyles;
 
     <Table styles = {styles} supabase = {supabase} user = {user}/>
 
+    {#if tableData}
     <SavedStatus/>
+    {/if}
     
 
 

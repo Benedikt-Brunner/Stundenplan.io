@@ -2,7 +2,7 @@
     // @ts-nocheck
         import Social from "$lib/social.svg"
         import Add_Friend from "$lib/add-friend.svg"
-        import { friends } from "$lib/FriendsStore";
+        import { friends, filterList } from "$lib/FriendsStore";
         import { get } from 'svelte/store';
 
         export let data;
@@ -93,6 +93,20 @@
             wait = false;
         }, 100);
     }
+
+    function toogle_friend(friend){
+        if(get(filterList).includes(friend.name)){
+            filterList.update(value => {
+                let newvalue = value.filter(item => item != friend.name)
+                return newvalue
+            })
+        }else{
+            filterList.update(value => {
+                value.push(friend.name)
+                return value
+            })
+        }
+    }
       </script>
 
 
@@ -131,7 +145,10 @@
 
         <div class="list">
           {#each friendsdyn as friend}
-            <p>{friend.name}</p>
+            <div class = "item">
+              <p>{friend.name}</p>
+            <input type="checkbox" checked = {!get(filterList).includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
+            </div>
           {/each}
           {#if requestdyn.length != 0}
           <h4>Requests:</h4>
@@ -161,7 +178,12 @@
 
 
         <style>
-
+          .item{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+          }
           .request{
             display: flex;
             justify-content: space-between;

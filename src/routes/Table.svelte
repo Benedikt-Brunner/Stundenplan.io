@@ -1,9 +1,9 @@
 <script>
     //@ts-nocheck
-import {schedule, fullweektoogle} from "$lib/ScheduleStore.js"
+import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/ScheduleStore.js"
 import { changed } from "$lib/changedStore";
-import { get_friends_lessons } from "$lib/FriendsStore";
 import { get } from 'svelte/store';
+import SveltyPicker from 'svelty-picker';
 
 
 export let styles;
@@ -22,7 +22,7 @@ fullweektoogle.subscribe(value => {
 })
 
 async function persist_on_exit(){
-    if(!changed_loc) return;
+    if(!changed_loc || !user) return;
     // Cancel the event as stated by the standard.
      event.preventDefault();
     // Chrome requires returnValue to be set.
@@ -35,7 +35,7 @@ async function persist_on_exit(){
 }
 
 async function persist(){
-    if(!changed_loc) return;
+    if(!changed_loc || !user) return;
     let data = get(schedule);
     const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
     if(res){
@@ -53,6 +53,8 @@ setInterval(() => {
     if(!changed_loc) return;
     persist();
 }, 10000);
+
+
 </script>
 <svelte:window on:beforeunload = {persist_on_exit}/>
 <div class = "center">
@@ -114,8 +116,34 @@ setInterval(() => {
 </table>
 {#if selected}
     <div class="editor">
+        {#if get_lessons_for_insertion_point("Day"+ selectobject.column, selectobject.row).length != 0}
+        <div class="lessons">
+            {#each get_lessons_for_insertion_point("Day"+ selectobject.column, selectobject.row) as lesson}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div class="lesson tooltip" on:click={() =>{
+                if(event.ctrlKey){
+                    insert_merged_lesson(lesson);
+                    selected = false;
+                    changed_loc = true;
+                    return;
+                }
+                $schedule[selectobject.row]["Day" + (selectobject.column)].Room = lesson.room[0];
+                $schedule[selectobject.row]["Day" + (selectobject.column)].Subject = lesson.subject;
+                $schedule[selectobject.row]["Day" + (selectobject.column)].Teacher = lesson.teacher;
+                selected = false;
+                changed_loc = true;
+            }}>
+            <span class="tooltiptext">Crtl + click to import the entire course</span>
+                <h3>{lesson.friends[0]}</h3>
+                <p>{lesson.subject}</p>    
+                <p>{lesson.room}</p>
+            </div>
+            {/each}
+        </div>
+        {/if}
         {#if selectobject.column == 0}
-        <input type="text" placeholder="Stunden" bind:value={$schedule[selectobject.row].Hours}>
+        <SveltyPicker mode = {"time"} placeholder = "Zeit" bind:value = {$schedule[selectobject.row].Hours} format = {"hh:ii"} isRange = {true}/>
         {:else}
         <input type="text" placeholder="Raum" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Room}>
         <input type="text" placeholder="Fach" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Subject}>
@@ -128,6 +156,76 @@ setInterval(() => {
 
 
 <style>
+
+.tooltip {
+  position: relative;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  left: 105%;
+  top:30%;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  right: 100%; /* To the left of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+
+    .lessons{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        height: 16%;
+        background-color: rgba(180, 184, 189, 0.932);
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .lesson{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        height: 80%;
+        width: 10%;
+        margin: 1rem;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        background-color: aliceblue;
+        cursor: pointer;
+        overflow-wrap: break-word;
+    }
+
+    .lesson h3{
+        font-size: 1rem;
+        margin-block-end: 0.5em;
+    }
+    
 
     .editor{
         position: fixed;
