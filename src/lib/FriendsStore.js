@@ -56,7 +56,3 @@ function merge(arr){
     }
     return merged;
 }
-
-filterList.subscribe(value => {
-    console.log(value);
-});

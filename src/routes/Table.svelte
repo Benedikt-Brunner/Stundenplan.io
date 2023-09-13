@@ -135,7 +135,7 @@ setInterval(() => {
                 changed_loc = true;
             }}>
             <span class="tooltiptext">Crtl + click to import the entire course</span>
-                <h3>{lesson.friends[0]}</h3>
+                <h3>{lesson.friends[0].split('#')[0]}</h3>
                 <p>{lesson.subject}</p>    
                 <p>{lesson.room}</p>
             </div>

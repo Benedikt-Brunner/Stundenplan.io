@@ -2,7 +2,9 @@
     // @ts-nocheck
         import Social from "$lib/social.svg"
         import Add_Friend from "$lib/add-friend.svg"
+        import Comparison from "$lib/comparison.svg"
         import { friends, filterList } from "$lib/FriendsStore";
+        import { comparing } from "$lib/comparingStore";
         import { get } from 'svelte/store';
 
         export let data;
@@ -107,6 +109,20 @@
             })
         }
     }
+
+    function show_comparison(friend){
+      if((get(comparing).friend.name) && friend.name === get(comparing).friend.name){
+        comparing.set({
+          is_comparing: false,
+          friend: {}
+        })
+        return;
+      }
+        comparing.set({
+            is_comparing: true,
+            friend: friend
+        })
+    }
       </script>
 
 
@@ -146,6 +162,11 @@
         <div class="list">
           {#each friendsdyn as friend}
             <div class = "item">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+              <div class="comparison-box" on:click={() =>{show_comparison(friend)}}>
+                <img src= {Comparison} alt="compare the players">
+              </div>
               <p>{friend.name}</p>
             <input type="checkbox" checked = {!get(filterList).includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
             </div>
@@ -178,11 +199,29 @@
 
 
         <style>
+
+          .comparison-box{
+            width: 8%;
+            padding: 1%;
+            border-radius: 10vw;
+            background-color: bisque;
+            cursor: pointer;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .comparison-box > img{
+            width: 100%;
+            height: 100%;
+          }
           .item{
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
+            width: 90%;
+            margin-left: 5%;
           }
           .request{
             display: flex;

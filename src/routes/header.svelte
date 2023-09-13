@@ -47,8 +47,8 @@ nav h2{
 }
 
 nav h3{
-    margin-right: auto;
-    margin-left: 1%;
+    position: absolute;
+    left: 45%;
     margin-top: 1.5rem;
 }
 
