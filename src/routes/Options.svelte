@@ -141,7 +141,7 @@
     {:else}
     <img src={Options} alt="Options">
     {/if}
-</div>
+    </div>
 
 
 

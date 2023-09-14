@@ -4,6 +4,7 @@ import {schedule, fullweektoogle} from "$lib/ScheduleStore.js"
 import { get_table_pattern } from "$lib/comparingStore";
 import { comparing } from "$lib/comparingStore";
 import { get } from 'svelte/store';
+import Legend from "./Legend.svelte";
 
 export let styles;
 
@@ -23,6 +24,7 @@ comparing.subscribe(value => {
 })
 </script>
 <div class = "center">
+<Legend/>
 <table>
     <tr>
         <th contenteditable="true">👾</th>

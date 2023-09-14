@@ -213,7 +213,6 @@ export function get_lessons_for_insertion_point(day, hour){
 export function insert_merged_lesson(lesson){
     let merged_lesson = get_friends_lessons().lessons_merged.filter((element) => element.equals(lesson))[0];
     let insertion_points = get_insertion_points_for_merged_lesson(merged_lesson);
-    console.log(schedule)
     insertion_points.forEach((element, index) => {
         schedule.update(old => {
             let newarr = old;
