@@ -5,6 +5,7 @@ import Table from "./Table.svelte";
 import ComparisonTable from "./comparison_Table.svelte";
 import SavedStatus from "./saved_status.svelte";
 import lightstyles from "./lightstyles";
+import PopUp from "./PopUp.svelte";
 import { theme } from "$lib/ThemeStore";
 import { comparing } from "$lib/comparingStore";
 
@@ -18,7 +19,7 @@ let styles = lightstyles;
 </script>
 
     <Header data = {data} supabase = {supabase}/>
-
+    <PopUp/>
     {#if $comparing.is_comparing}
     <ComparisonTable styles = {styles}/>
     {:else}

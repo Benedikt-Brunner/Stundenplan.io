@@ -1,3 +1,7 @@
+<script>
+    export let styles;
+</script>
+
 <div class = "container">
     <ul>
         <li>
@@ -9,11 +13,11 @@
         </li>
 
         <li>
-            <div class = "block" id = "red"></div> Komplett blockiert           
+            <div class = "block" id = "yellow"></div> Teilweise blockiert
         </li>
 
         <li>
-            <div class = "block" id = "yellow"></div> Teilweise blockiert
+            <div class = "block" id = "red"></div> Komplett blockiert           
         </li>
     </ul>
 </div>

@@ -24,7 +24,7 @@ comparing.subscribe(value => {
 })
 </script>
 <div class = "center">
-<Legend/>
+<Legend styles = {styles}/>
 <table>
     <tr>
         <th contenteditable="true">👾</th>

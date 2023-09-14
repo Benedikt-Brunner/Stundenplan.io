@@ -5,6 +5,7 @@
         import Comparison from "$lib/comparison.svg"
         import { friends, filterList } from "$lib/FriendsStore";
         import { comparing } from "$lib/comparingStore";
+        import { show_error, show_success } from "$lib/PopUpStore";
         import { get } from 'svelte/store';
 
         export let data;
@@ -34,7 +35,7 @@
         })
       
         const handleSignUp = async () => {
-          await supabase.auth.signUp({
+          const {error} = await supabase.auth.signUp({
             email,
             password,
             options: {
@@ -42,15 +43,25 @@
               emailRedirectTo: `${location.origin}/callback`,
             },
           })
+          if(error){
+            show_error(error.message);
+          }else{
+            show_success("Erfolgreich registriert!")
+          }
         }
       
         const handleSignIn = async () => {
-          await supabase.auth.signInWithPassword({
+         const {error} = await supabase.auth.signInWithPassword({
             email,
             password,
           })
+          if(error){
+            show_error(error.message);
+          }else{
+            show_success("Erfolgreich angemeldet!")
+          }
         }
-      
+
         const handleSignOut = async () => {
           await supabase.auth.signOut()
         }
@@ -62,7 +73,15 @@
           }
           selected = false;
           let res = await supabase.rpc('add_friend', {id: user.id,friend_name: friend_name})
-          console.log(res)
+          if(res.error){
+            show_error(res.error.message);
+          }else{
+            if(res.data == false){
+              show_error(`${friend_name === "" ? "Niemand" : friend_name} existiert nicht!`);
+            }else{
+              show_success(`${friend_name} hat deine Anfrage erhalten!`);
+            }
+          }
         }
 
         const handleFriendRequestDeny = async (friend_name) => {
@@ -136,7 +155,7 @@
           {:else}
           <div></div>
           {/if}
-          <button id = "exit" on:click={() =>{waiter(); focus = false}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
+          <button id = "exit" on:click={() =>{waiter(); focus = false;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
         </div>
         <div class="center">
           {#if !user}
@@ -326,6 +345,7 @@
         background-color: rgb(214, 212, 212);
         border-radius: 1rem;
         margin-left: 1%;
+        padding-bottom: 1%;
         display: flex;
         flex-direction: column;
         justify-content: start;
