@@ -6,6 +6,7 @@ import ComparisonTable from "./comparison_Table.svelte";
 import SavedStatus from "./saved_status.svelte";
 import lightstyles from "./lightstyles";
 import PopUp from "./PopUp.svelte";
+import LanguagePicker from "./LanguagePicker.svelte";
 import { theme } from "$lib/ThemeStore";
 import { comparing } from "$lib/comparingStore";
 
@@ -29,6 +30,8 @@ let styles = lightstyles;
     {#if tableData && !$comparing.is_comparing}
     <SavedStatus/>
     {/if}
+    <LanguagePicker/>
+    
     
 
 

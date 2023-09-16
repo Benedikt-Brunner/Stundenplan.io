@@ -4,6 +4,7 @@
 	import Options from "$lib/Options.svg"
     import {rows} from "$lib/ScheduleStore.js"
     import {template as templateStore} from "$lib/ScheduleStore.js";
+    import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
     import {fullweektoogle} from "$lib/ScheduleStore.js";
     import { get } from 'svelte/store';
 
@@ -17,6 +18,26 @@
     let setting = "Theme";
     let disabled = true;
     let wait = false;
+    let theme_to_mapping = new Map();
+    theme_to_mapping.set("Light", mapping.Bright);
+    theme_to_mapping.set("Night", mapping.Dark);
+    theme_to_mapping.set("Pink", mapping.Pink);
+
+    let setting_to_mapping = new Map();
+    setting_to_mapping.set("Theme", mapping.Design);
+    setting_to_mapping.set("Template", mapping.Template);
+    setting_to_mapping.set("Days", mapping.Days);
+
+    let template_to_mapping = new Map();
+    template_to_mapping.set("University", mapping.University);
+    template_to_mapping.set("School", mapping.School);
+    template_to_mapping.set("Custom", mapping.Custom);
+
+    let language = get(Language_Store).language;
+
+    Language_Store.subscribe(value => {
+        language = value.language;
+    })
 
 
     let settings = [
@@ -100,9 +121,9 @@
     <div class="top">
         {#each settings as s}
         {#if s == setting}
-        <div style="background-color: black;color: white">{s}</div>
+        <div style="background-color: black;color: white">{dictionary.get(setting_to_mapping.get(s))[language]}</div>
     {:else}
-        <button style="--color: 0,0,0; color: white" on:click={() => {setting = s}}>{s}</button>
+        <button style="--color: 0,0,0; color: white" on:click={() => {setting = s}}>{dictionary.get(setting_to_mapping.get(s))[language]}</button>
     {/if}
         {/each}
         <button on:click={() =>{waiter(); focus = false}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
@@ -111,30 +132,29 @@
         <div class="top">
             {#each themes as t}
                 {#if t == color}
-                    <div style="background-color: rgb({colorRGB});color: {DarkText.includes(t) ? "black" : "white"}">{t}</div>
+                    <div style="background-color: rgb({colorRGB});color: {DarkText.includes(t) ? "black" : "white"}">{dictionary.get(theme_to_mapping.get(t))[language]}</div>
                 {:else}
-                    <button style="--color: {colormap.get(t)}; color: {DarkText.includes(t) ? "black" : "white"}" on:click={() => {theme.set(t)}}>{t}</button>
+                    <button style="--color: {colormap.get(t)}; color: {DarkText.includes(t) ? "black" : "white"}" on:click={() => {theme.set(t)}}>{dictionary.get(theme_to_mapping.get(t))[language]}</button>
                 {/if}
             {/each}   
         </div>
     {:else if setting == "Template"}
         <div class = "middle">
-
             {#each templates as t}
                 <label>
                     <input type="radio" bind:group={template} value={t} style="margin-right: 0.5rem">
-                    {t}
+                    {dictionary.get(template_to_mapping.get(t))[language]}
                 </label>
             {/each}
 
         </div>
         <div class = "bottom">
-            <label for="rows">Stunden:</label>
+            <label for="rows">{dictionary.get(mapping.Hours)[language]}:</label>
             <input type="number" name="rows"  bind:value={dynamicRows} {disabled} style="{disabled ? "cursor: not-allowed" : ""}">
         </div>
     {:else if setting == "Days"}
         <div class = "middle">
-            <label for="rows">7-Tage:</label>
+            <label for="rows">7-{dictionary.get(mapping.Days)[language]}:</label>
             <input type="checkbox" bind:checked={dynDays}>
         </div>
     {/if}

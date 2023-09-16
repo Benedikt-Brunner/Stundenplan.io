@@ -3,10 +3,17 @@
 import {schedule, fullweektoogle} from "$lib/ScheduleStore.js"
 import { get_table_pattern } from "$lib/comparingStore";
 import { comparing } from "$lib/comparingStore";
+import { mapping,  Language_Store, dictionary } from "$lib/LanguageStore";
 import { get } from 'svelte/store';
 import Legend from "./Legend.svelte";
 
 export let styles;
+
+let language = get(Language_Store).language;
+
+Language_Store.subscribe(value => {
+    language = value.language;
+})
 
 let coloring = get_table_pattern();
 const five_day_ratio = 90/5;
@@ -28,54 +35,54 @@ comparing.subscribe(value => {
 <table>
     <tr>
         <th contenteditable="true">👾</th>
-        <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">Montag</th>
-        <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">Dienstag</th>
-        <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">Mittwoch</th>
-        <th style="background-color: {styles.header_color_thursday}; width: {ratio}%;">Donnerstag</th>
-        <th style="background-color: {styles.header_color_friday}; width: {ratio}%;">Freitag</th>
+        <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">{dictionary.get(mapping.Day_1)[language]}</th>
+        <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">{dictionary.get(mapping.Day_2)[language]}</th>
+        <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">{dictionary.get(mapping.Day_3)[language]}</th>
+        <th style="background-color: {styles.header_color_thursday}; width: {ratio}%;">{dictionary.get(mapping.Day_4)[language]}</th>
+        <th style="background-color: {styles.header_color_friday}; width: {ratio}%;">{dictionary.get(mapping.Day_5)[language]}</th>
         {#if $fullweektoogle}
-            <th style="background-color: {styles.header_color_saturday}; width: {ratio}%;">Samstag</th>
-            <th style="background-color: {styles.header_color_sunday}; width: {ratio}%;">Sonntag</th>
+            <th style="background-color: {styles.header_color_saturday}; width: {ratio}%;">{dictionary.get(mapping.Day_6)[language]}</th>
+            <th style="background-color: {styles.header_color_sunday}; width: {ratio}%;">{dictionary.get(mapping.Day_7)[language]}</th>
         {/if}
     </tr>
     {#each $schedule as hour, i}
         <tr>
             <td style="text-align: center;">{hour.Hours}</td>
             <td style="background-color: {coloring[i][0]};">
-                <p>Raum: {hour.Day1.Room}</p>
-                <p>Fach: {hour.Day1.Subject}</p>
-                <p>Lehrer: {hour.Day1.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day1.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day1.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day1.Teacher}</p>
             </td>
             <td style="background-color: {coloring[i][1]};">
-                <p>Raum: {hour.Day2.Room}</p>
-                <p>Fach: {hour.Day2.Subject}</p>
-                <p>Lehrer: {hour.Day2.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day2.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day2.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day2.Teacher}</p>
             </td>
             <td style="background-color: {coloring[i][2]};">
-                <p>Raum: {hour.Day3.Room}</p>
-                <p>Fach: {hour.Day3.Subject}</p>
-                <p>Lehrer: {hour.Day3.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day3.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day3.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day3.Teacher}</p>
             </td>
             <td style="background-color: {coloring[i][3]};">
-                <p>Raum: {hour.Day4.Room}</p>
-                <p>Fach: {hour.Day4.Subject}</p>
-                <p>Lehrer: {hour.Day4.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day4.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day4.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day4.Teacher}</p>
             </td>
             <td style="background-color: {coloring[i][4]};"> 
-                <p>Raum: {hour.Day5.Room}</p>
-                <p>Fach: {hour.Day5.Subject}</p>
-                <p>Lehrer: {hour.Day5.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day5.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day5.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day5.Teacher}</p>
             </td>
             {#if $fullweektoogle}
                 <td style="background-color: {coloring[i][5]};">
-                    <p>Raum: {hour.Day6.Room}</p>
-                    <p>Fach: {hour.Day6.Subject}</p>
-                    <p>Lehrer: {hour.Day6.Teacher}</p>
+                    <p>{dictionary.get(mapping.Room)[language]}: {hour.Day6.Room}</p>
+                    <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day6.Subject}</p>
+                    <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day6.Teacher}</p>
                 </td>
                 <td style="background-color: {coloring[i][6]};">
-                    <p>Raum: {hour.Day7.Room}</p>
-                    <p>Fach: {hour.Day7.Subject}</p>
-                    <p>Lehrer: {hour.Day7.Teacher}</p>
+                    <p>{dictionary.get(mapping.Room)[language]}: {hour.Day7.Room}</p>
+                    <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day7.Subject}</p>
+                    <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day7.Teacher}</p>
                 </td>
             {/if}
         </tr>

@@ -2,6 +2,7 @@
     //@ts-nocheck
 import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/ScheduleStore.js"
 import { changed } from "$lib/changedStore";
+import { mapping,  Language_Store, dictionary } from "$lib/LanguageStore";
 import { get } from 'svelte/store';
 import SveltyPicker from 'svelty-picker';
 
@@ -9,6 +10,13 @@ import SveltyPicker from 'svelty-picker';
 export let styles;
 export let supabase;
 export let user;
+
+let language = get(Language_Store).language;
+
+Language_Store.subscribe(value => {
+    language = value.language;
+})
+
 
 let selectobject = {"row" : 0, "column" : 0}
 let selected = false;
@@ -61,54 +69,54 @@ setInterval(() => {
 <table>
     <tr>
         <th contenteditable="true">👾</th>
-        <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">Montag</th>
-        <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">Dienstag</th>
-        <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">Mittwoch</th>
-        <th style="background-color: {styles.header_color_thursday}; width: {ratio}%;">Donnerstag</th>
-        <th style="background-color: {styles.header_color_friday}; width: {ratio}%;">Freitag</th>
+        <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">{dictionary.get(mapping.Day_1)[language]}</th>
+        <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">{dictionary.get(mapping.Day_2)[language]}</th>
+        <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">{dictionary.get(mapping.Day_3)[language]}</th>
+        <th style="background-color: {styles.header_color_thursday}; width: {ratio}%;">{dictionary.get(mapping.Day_4)[language]}</th>
+        <th style="background-color: {styles.header_color_friday}; width: {ratio}%;">{dictionary.get(mapping.Day_5)[language]}</th>
         {#if $fullweektoogle}
-            <th style="background-color: {styles.header_color_saturday}; width: {ratio}%;">Samstag</th>
-            <th style="background-color: {styles.header_color_sunday}; width: {ratio}%;">Sonntag</th>
+            <th style="background-color: {styles.header_color_saturday}; width: {ratio}%;">{dictionary.get(mapping.Day_6)[language]}</th>
+            <th style="background-color: {styles.header_color_sunday}; width: {ratio}%;">{dictionary.get(mapping.Day_7)[language]}</th>
         {/if}
     </tr>
     {#each $schedule as hour, i}
         <tr>
             <td style="text-align: center;" on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 0; selected = true}}}>{hour.Hours}</td>
             <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 1; selected = true}}}>
-                <p>Raum: {hour.Day1.Room}</p>
-                <p>Fach: {hour.Day1.Subject}</p>
-                <p>Lehrer: {hour.Day1.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day1.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day1.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day1.Teacher}</p>
             </td>
             <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 2; selected = true}}}>
-                <p>Raum: {hour.Day2.Room}</p>
-                <p>Fach: {hour.Day2.Subject}</p>
-                <p>Lehrer: {hour.Day2.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day2.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day2.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day2.Teacher}</p>
             </td>
             <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 3; selected = true}}}>
-                <p>Raum: {hour.Day3.Room}</p>
-                <p>Fach: {hour.Day3.Subject}</p>
-                <p>Lehrer: {hour.Day3.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day3.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day3.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day3.Teacher}</p>
             </td>
             <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 4; selected = true}}}>
-                <p>Raum: {hour.Day4.Room}</p>
-                <p>Fach: {hour.Day4.Subject}</p>
-                <p>Lehrer: {hour.Day4.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day4.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day4.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day4.Teacher}</p>
             </td>
             <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 5; selected = true}}}>
-                <p>Raum: {hour.Day5.Room}</p>
-                <p>Fach: {hour.Day5.Subject}</p>
-                <p>Lehrer: {hour.Day5.Teacher}</p>
+                <p>{dictionary.get(mapping.Room)[language]}: {hour.Day5.Room}</p>
+                <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day5.Subject}</p>
+                <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day5.Teacher}</p>
             </td>
             {#if $fullweektoogle}
                 <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 6; selected = true}}}>
-                    <p>Raum: {hour.Day6.Room}</p>
-                    <p>Fach: {hour.Day6.Subject}</p>
-                    <p>Lehrer: {hour.Day6.Teacher}</p>
+                    <p>{dictionary.get(mapping.Room)[language]}: {hour.Day6.Room}</p>
+                    <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day6.Subject}</p>
+                    <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day6.Teacher}</p>
                 </td>
                 <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 7; selected = true}}}>
-                    <p>Raum: {hour.Day7.Room}</p>
-                    <p>Fach: {hour.Day7.Subject}</p>
-                    <p>Lehrer: {hour.Day7.Teacher}</p>
+                    <p>{dictionary.get(mapping.Room)[language]}: {hour.Day7.Room}</p>
+                    <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day7.Subject}</p>
+                    <p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day7.Teacher}</p>
                 </td>
             {/if}
         </tr>
@@ -145,11 +153,11 @@ setInterval(() => {
         {#if selectobject.column == 0}
         <SveltyPicker mode = {"time"} placeholder = "Zeit" bind:value = {$schedule[selectobject.row].Hours} format = {"hh:ii"} isRange = {true}/>
         {:else}
-        <input type="text" placeholder="Raum" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Room}>
-        <input type="text" placeholder="Fach" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Subject}>
-        <input type="text" placeholder="Lehrer" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Teacher}>
+        <input type="text" placeholder="{dictionary.get(mapping.Room)[language]}" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Room}>
+        <input type="text" placeholder="{dictionary.get(mapping.Subject)[language]}" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Subject}>
+        <input type="text" placeholder="{dictionary.get(mapping.Teacher)[language]}" bind:value={$schedule[selectobject.row]["Day" + (selectobject.column)].Teacher}>
         {/if}
-        <button on:click={() => {selected = false; changed_loc = true;}}>Speichern</button>
+        <button on:click={() => {selected = false; changed_loc = true;}}>{dictionary.get(mapping.Save)[language]}</button>
     </div>
 {/if}
 </div>

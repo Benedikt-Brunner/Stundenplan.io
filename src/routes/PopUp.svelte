@@ -56,6 +56,7 @@
 
 <style>
     .container {
+        height: fit-content;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -66,7 +67,9 @@
         border: black solid 1px;
         border-radius: 10px;
         background-color: rgba(187, 186, 186, 0.959);
-        width: 15%;
+        width: fit-content;
+        padding-inline: 2%;
+        min-width: 10%;
     }
 
     #success {

@@ -4,18 +4,26 @@
     import Git from "$lib/github.svg"
     import Options from "./Options.svelte";
     import Social from "./Social.svelte";
+    import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
+    import { get } from "svelte/store";
 
     export let data;
     export let supabase;
 
     let { user, tableData } = data
     $: ({ user, tableData } = data)
+
+    let language = get(Language_Store).language;
+
+    Language_Store.subscribe(value => {
+        language = value.language;
+    })
 </script>
 
 
 <nav>
     <h2>Stundenplan.io</h2>
-    <h3>Hallo, {#if tableData}{tableData[0].name.split('#')[0]} <span>#{tableData[0].name.split('#')[1]}</span>{:else} Guest {/if}</h3>
+    <h3>{dictionary.get(mapping.Greeting)[language]}, {#if tableData}{tableData[0].name.split('#')[0]} <span>#{tableData[0].name.split('#')[1]}</span>{:else} Guest {/if}</h3>
     <Options />
     <Social data = {data} supabase = {supabase}/>
     <a href="https://github.com/Benedikt-Brunner/Timetable"><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;"></a>

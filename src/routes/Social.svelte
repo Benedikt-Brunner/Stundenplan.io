@@ -6,6 +6,7 @@
         import { friends, filterList } from "$lib/FriendsStore";
         import { comparing } from "$lib/comparingStore";
         import { show_error, show_success } from "$lib/PopUpStore";
+        import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
         import { get } from 'svelte/store';
 
         export let data;
@@ -26,6 +27,11 @@
         let friend_name = "";
         let friendsdyn = get(friends).friends
         let requestdyn = get(friends).pending
+        let language = get(Language_Store).language;
+
+        Language_Store.subscribe(value => {
+            language = value.language;
+        })
 
         friends.subscribe(value => {
           Promise.resolve(value).then(value => {
@@ -46,7 +52,8 @@
           if(error){
             show_error(error.message);
           }else{
-            show_success("Erfolgreich registriert!")
+            show_success("Erfolgreich registriert, bitte E-Mail bestätigen!")
+            resetInfo();
           }
         }
       
@@ -59,16 +66,30 @@
             show_error(error.message);
           }else{
             show_success("Erfolgreich angemeldet!")
+            resetInfo();
           }
         }
 
         const handleSignOut = async () => {
-          await supabase.auth.signOut()
+          const {error} = await supabase.auth.signOut()
+
+          if(error){
+            show_error(error.message);
+          }else{
+            show_success("Erfolgreich abgemeldet!")
+          }
         }
 
         const handleAddFriend = async (friend_name) => {
           if(friend_name == tableData[0].name){
-            alert("Du kannst dich nicht selbst hinzufügen!")
+            show_error("Du kannst dich nicht selbst hinzufügen!");
+            selected = false;
+            return;
+          }
+
+          if(get(friends).friends.map((friend) => friend.name).includes(friend_name)){
+            show_error(`${friend_name} ist bereits dein Freund!`);
+            selected = false;
             return;
           }
           selected = false;
@@ -142,6 +163,12 @@
             friend: friend
         })
     }
+
+    function resetInfo(){
+      name = "";
+      email = "";
+      password = "";
+    }
       </script>
 
 
@@ -151,7 +178,7 @@
         {#if focus}
         <div class="top-row">
           {#if user}
-          <button id = "sOut" on:click="{handleSignOut}">Sign out</button>
+          <button id = "sOut" on:click="{handleSignOut}">{dictionary.get(mapping.Sign_out)[language]}</button>
           {:else}
           <div></div>
           {/if}
@@ -160,13 +187,13 @@
         <div class="center">
           {#if !user}
           <form>
-            <input name="name" bind:value="{name}" placeholder="Username"/>
-            <input name="email" bind:value="{email}" placeholder="E-Mail"/>
-            <input type="password" name="password" bind:value="{password}" placeholder="Password"/>
+            <input name="name" bind:value="{name}" placeholder="{dictionary.get(mapping.Username)[language]}"/>
+            <input name="email" bind:value="{email}" placeholder="{dictionary.get(mapping.E_Mail)[language]}"/>
+            <input type="password" name="password" bind:value="{password}" placeholder="{dictionary.get(mapping.Password)[language]}"/>
           </form>
           <div class="buttons"> 
-            <button on:click={handleSignUp}>Sign up</button>
-            <button on:click="{handleSignIn}">Sign in</button>
+            <button on:click={handleSignUp}>{dictionary.get(mapping.Sign_up)[language]}</button>
+            <button on:click="{handleSignIn}">{dictionary.get(mapping.Sign_in)[language]}</button>
           </div>
           {/if}
         </div>
@@ -174,7 +201,7 @@
         <div class="center">
           <div class="wrap">          
           <div></div>
-          <h3>Freunde</h3>
+          <h3>{dictionary.get(mapping.Friends)[language]}</h3>
           <button on:click={() =>{selected = true}}><img src={Add_Friend} alt="Add a friend"></button>
         </div>
 
@@ -186,12 +213,12 @@
               <div class="comparison-box" on:click={() =>{show_comparison(friend)}}>
                 <img src= {Comparison} alt="compare the players">
               </div>
-              <p>{friend.name}</p>
+              <p>{friend.name.split('#')[0]}<span>#{friend.name.split('#')[1]}</span></p>
             <input type="checkbox" checked = {!get(filterList).includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
             </div>
           {/each}
           {#if requestdyn.length != 0}
-          <h4>Requests:</h4>
+          <h4>{dictionary.get(mapping.Requests)[language]}:</h4>
           {/if}
           {#each requestdyn as request}
           <div class="request">
@@ -241,6 +268,10 @@
             align-items: center;
             width: 90%;
             margin-left: 5%;
+          }
+
+          .item span{
+            color: rgba(250, 236, 236, 0.61);
           }
           .request{
             display: flex;
