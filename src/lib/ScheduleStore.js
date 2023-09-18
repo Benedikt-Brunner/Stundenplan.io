@@ -180,7 +180,11 @@ function getInsertionPoints(lesson){
     let hours = getHoursasInts();
     let insertion_points = [];
     hours.forEach((element, index) => {
-        if(lesson_end >= element[0] && lesson_end <= element[1] && lesson_start <= element[0] && lesson_start <= element[1]){
+        if(
+            (element[0] <= lesson_start && lesson_start <= element[1] && element[0] <= lesson_end && element[1] <= lesson_end)||
+            (lesson_start <= element[0] && lesson_start <= element[1] && element[0] <= lesson_end && element[1] <= lesson_end)||
+            (lesson_start <= element[0] && lesson_start <= element[1] && element[0] <= lesson_end && lesson_end <= element[1])
+        ){
             insertion_points.push(index);
         }
     });
@@ -200,7 +204,6 @@ function get_insertion_points_for_merged_lesson(lesson){
     });
         return insertion_points_and_days;
 }
-
 
 export function get_lessons_for_insertion_point(day, hour){
     let res_ray = [];

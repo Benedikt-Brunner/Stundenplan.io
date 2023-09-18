@@ -11,7 +11,7 @@ export function build_dictionary(){
         new RosettaStone("Freitag", "Friday", "Viernes"),
         new RosettaStone("Samstag", "Saturday", "Sábado"),
         new RosettaStone("Sonntag", "Sunday", "Domingo"),
-        new RosettaStone("Hallo", "Hello", "Hola"),
+        new RosettaStone("Hallo", "Hello", "¡Hola"),
         new RosettaStone("Raum", "Room", "Aula"),
         new RosettaStone("Fach", "Subject", "Asignatura"),
         new RosettaStone("Lehrer", "Teacher", "Maestro"),
@@ -34,7 +34,8 @@ export function build_dictionary(){
         new RosettaStone("Freunde", "Friends", "Amigos"),
         new RosettaStone("Afragen", "Requests", "Solicitudes"),
         new RosettaStone("Hinzufügen", "Add", "Añadir"),    
-        new RosettaStone("Speichern", "Save", "Guardar")
+        new RosettaStone("Speichern", "Save", "Guardar"),
+        new RosettaStone("Name", "Name", "Nombre")
     ];
     rosetta_stones.forEach((rosetta_stone, index) => {
         dictionary.set(index, rosetta_stone)
@@ -73,6 +74,6 @@ export const mapping = {
     Friends: 27,
     Requests: 28,
     Add: 29,
-    Save: 30
+    Save: 30,
+    Name: 31
 }
-console.log(build_dictionary().get(mapping.Day_1)['de']);

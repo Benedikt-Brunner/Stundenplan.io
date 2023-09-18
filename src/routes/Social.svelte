@@ -14,7 +14,7 @@
 
 
 
-
+         //TODO: implement friend groups (still dont know in which Format)
         let { user, tableData } = data
         $: ({ user, tableData } = data)
       
@@ -238,8 +238,8 @@
 
       {#if selected}
       <div class="editor">
-          <input type="text" placeholder="Name#1234" bind:value={friend_name}>
-          <button on:click={handleAddFriend(friend_name)}>Hinzufügen</button>
+          <input type="text" placeholder="{dictionary.get(mapping.Name)[language]}#1234" bind:value={friend_name}>
+          <button on:click={handleAddFriend(friend_name)}>{dictionary.get(mapping.Add)[language]}</button>
       </div>
   {/if}
 
