@@ -52,7 +52,7 @@
           if(error){
             show_error(error.message);
           }else{
-            show_success("Erfolgreich registriert, bitte E-Mail bestätigen!")
+            show_success(dictionary.get(mapping.Successfully_registered_please_confirm_E_Mail)[language])
             resetInfo();
           }
         }
@@ -65,7 +65,7 @@
           if(error){
             show_error(error.message);
           }else{
-            show_success("Erfolgreich angemeldet!")
+            show_success(dictionary.get(mapping.Successfully_signed_in)[language])
             resetInfo();
           }
         }
@@ -76,19 +76,19 @@
           if(error){
             show_error(error.message);
           }else{
-            show_success("Erfolgreich abgemeldet!")
+            show_success(dictionary.get(mapping.Successfully_signed_out)[language])
           }
         }
 
         const handleAddFriend = async (friend_name) => {
           if(friend_name == tableData[0].name){
-            show_error("Du kannst dich nicht selbst hinzufügen!");
+            show_error(dictionary.get(mapping.You_cant_add_yourself)[language]);
             selected = false;
             return;
           }
 
           if(get(friends).friends.map((friend) => friend.name).includes(friend_name)){
-            show_error(`${friend_name} ist bereits dein Freund!`);
+            show_error(`${friend_name} ${dictionary.get(mapping.is_already_your_friend)[language]}`);
             selected = false;
             return;
           }
@@ -98,9 +98,9 @@
             show_error(res.error.message);
           }else{
             if(res.data == false){
-              show_error(`${friend_name === "" ? "Niemand" : friend_name} existiert nicht!`);
+              show_error(`${friend_name === "" ? dictionary.get(mapping.Nobody)[language] : friend_name} ${dictionary.get(mapping.doesnt_exist)[language]}`);
             }else{
-              show_success(`${friend_name} hat deine Anfrage erhalten!`);
+              show_success(`${friend_name} ${dictionary.get(mapping.was_added)[language]}`);
             }
           }
         }

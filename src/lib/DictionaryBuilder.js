@@ -35,7 +35,15 @@ export function build_dictionary(){
         new RosettaStone("Afragen", "Requests", "Solicitudes"),
         new RosettaStone("Hinzufügen", "Add", "Añadir"),    
         new RosettaStone("Speichern", "Save", "Guardar"),
-        new RosettaStone("Name", "Name", "Nombre")
+        new RosettaStone("Name", "Name", "Nombre"),
+        new RosettaStone("Erfolgreich registriert, bitte E-Mail bestätigen!", "Successfully registered, please confirm E-Mail!", "¡Registrado con éxito, confirme el correo electrónico!"),
+        new RosettaStone("Erfolgreich angemeldet!", "Successfully signed in!", "¡Registrado con éxito!"),
+        new RosettaStone("Erfolgreich abgemeldet!", "Successfully signed out!", "¡Desconectado con éxito!"),
+        new RosettaStone("Du kannst dich nicht selbst hinzufügen!", "You can't add yourself!", "¡No puedes agregarte a ti mismo!"),
+        new RosettaStone("ist bereits dein Freund!", "is already your friend!", "¡ya es tu amigo!"),
+        new RosettaStone("existiert nicht!", "doesn't exist!", "¡no existe!"),
+        new RosettaStone("hat deine Anfrage erhalten!", "has received your request!", "¡ha recibido tu solicitud!"),
+        new RosettaStone("Niemand", "Nobody", "Nadie")
     ];
     rosetta_stones.forEach((rosetta_stone, index) => {
         dictionary.set(index, rosetta_stone)
@@ -75,5 +83,13 @@ export const mapping = {
     Requests: 28,
     Add: 29,
     Save: 30,
-    Name: 31
+    Name: 31,
+    Successfully_registered_please_confirm_E_Mail: 32,
+    Successfully_signed_in: 33,
+    Successfully_signed_out: 34,
+    You_cant_add_yourself: 35,
+    is_already_your_friend: 36,
+    doesnt_exist: 37,
+    has_received_your_request: 38,
+    Nobody: 39
 }
