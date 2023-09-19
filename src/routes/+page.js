@@ -19,7 +19,6 @@ export const load = async ({ parent }) => {
   newobj.friends = (await supabase.rpc('get_friends', {id: session.user.id})).data;
   newobj.pending = (await supabase.rpc('get_friend_requests', {id: session.user.id})).data;
   friends.set(newobj);
-  
   return {
     user: session.user,
     tableData,

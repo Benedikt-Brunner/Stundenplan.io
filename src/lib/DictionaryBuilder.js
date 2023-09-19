@@ -43,7 +43,8 @@ export function build_dictionary(){
         new RosettaStone("ist bereits dein Freund!", "is already your friend!", "¡ya es tu amigo!"),
         new RosettaStone("existiert nicht!", "doesn't exist!", "¡no existe!"),
         new RosettaStone("hat deine Anfrage erhalten!", "has received your request!", "¡ha recibido tu solicitud!"),
-        new RosettaStone("Niemand", "Nobody", "Nadie")
+        new RosettaStone("Niemand", "Nobody", "Nadie"),
+        new RosettaStone("Keine Gruppe", "No group", "Sin grupo")
     ];
     rosetta_stones.forEach((rosetta_stone, index) => {
         dictionary.set(index, rosetta_stone)
@@ -91,5 +92,6 @@ export const mapping = {
     is_already_your_friend: 36,
     doesnt_exist: 37,
     has_received_your_request: 38,
-    Nobody: 39
+    Nobody: 39,
+    Friends_without_group: 40
 }

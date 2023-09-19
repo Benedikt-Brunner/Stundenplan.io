@@ -56,3 +56,45 @@ function merge(arr){
     }
     return merged;
 }
+
+
+export function get_groups(){
+    let colors = [
+        "#1446A0",
+        "#DB3069",
+        "#F5D547",
+        "#16324F",
+        "#6EEB83",
+        "#1BE7FF",
+        "#E8AA14",
+        "#BA7BA1",
+        "#B4ADEA",
+        "#621B00"
+    ]
+    let groups = [];
+    let friends_list = get(friends);
+    for (let friend of friends_list.friends) {
+        if(friend.group === null){
+            return;
+        }
+        if(!groups.includes(friend.group)){
+            groups.push(friend.group);
+        }
+    }
+    groups.sort();
+    groups = groups.length != 0 ? groups.map((group) => {
+        let friends_for_group = friends_list.friends.filter((friend) => friend.group === group);
+        return {
+            name: group,
+            friends: friends_for_group,
+            color : colors[groups.indexOf(group)%10]
+        }
+    }    
+    ) : [];
+    return groups;
+}
+
+export function get_friends_with_no_group(){
+    let friends_list = get(friends).friends.filter((friend) => friend.group === null);
+    return friends_list;
+}

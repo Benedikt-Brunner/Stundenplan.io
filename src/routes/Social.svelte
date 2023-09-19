@@ -3,7 +3,8 @@
         import Social from "$lib/social.svg"
         import Add_Friend from "$lib/add-friend.svg"
         import Comparison from "$lib/comparison.svg"
-        import { friends, filterList } from "$lib/FriendsStore";
+        import Manager from "$lib/manager.svg"
+        import { friends, filterList, get_groups, get_friends_with_no_group } from "$lib/FriendsStore";
         import { comparing } from "$lib/comparingStore";
         import { show_error, show_success } from "$lib/PopUpStore";
         import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
@@ -13,8 +14,7 @@
         export let supabase 
 
 
-
-         //TODO: implement friend groups (still dont know in which Format)
+          
         let { user, tableData } = data
         $: ({ user, tableData } = data)
       
@@ -27,6 +27,8 @@
         let friend_name = "";
         let friendsdyn = get(friends).friends
         let requestdyn = get(friends).pending
+        let groups = get_groups();
+        let friends_with_no_group = get_friends_with_no_group();
         let language = get(Language_Store).language;
 
         Language_Store.subscribe(value => {
@@ -38,6 +40,8 @@
             friendsdyn = Array.isArray(value.friends) ? value.friends : []
             requestdyn = Array.isArray(value.pending) ? value.pending : []
           })
+          groups = get_groups();
+          friends_with_no_group = get_friends_with_no_group();
         })
       
         const handleSignUp = async () => {
@@ -199,14 +203,35 @@
         </div>
         {#if user}
         <div class="center">
-          <div class="wrap">          
-          <div></div>
+          <div class="wrap">    
+            //TODO: implement managing groups, infra should be mostly there
+          <button class = "groupmanager">
+            <img src= {Manager} alt="Manage your friend groupings">
+          </button>
           <h3>{dictionary.get(mapping.Friends)[language]}</h3>
           <button on:click={() =>{selected = true}}><img src={Add_Friend} alt="Add a friend"></button>
         </div>
-
         <div class="list">
-          {#each friendsdyn as friend}
+          {#if groups}
+          {#each groups as group}
+          <h4 style="color: {group.color};">------{group.name}------</h4>
+          {#each group.friends as friend}
+          <div class = "item">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div class="comparison-box" on:click={() =>{show_comparison(friend)}}>
+              <img src= {Comparison} alt="compare the players">
+            </div>
+            <p>{friend.name.split('#')[0]}<span>#{friend.name.split('#')[1]}</span></p>
+          <input type="checkbox" checked = {!get(filterList).includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
+          </div>
+        {/each}
+          {/each}
+          {/if}
+          {#if friends_with_no_group && groups}
+          <h4>{dictionary.get(mapping.Friends_without_group)[language]}:</h4>
+          {/if}
+          {#each friends_with_no_group as friend}
             <div class = "item">
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -469,7 +494,6 @@
 
     .wrap h3{
       margin: 0;
-      margin-left: 10%;
     }
 
     .wrap button{
