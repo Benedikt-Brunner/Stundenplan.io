@@ -1,9 +1,11 @@
 <script>
     // @ts-nocheck
+        import Group from "./group.svelte";
         import Social from "$lib/social.svg"
         import Add_Friend from "$lib/add-friend.svg"
         import Comparison from "$lib/comparison.svg"
         import Manager from "$lib/manager.svg"
+        import Plus from "$lib/Plus.svg"
         import { friends, filterList, get_groups, get_friends_with_no_group } from "$lib/FriendsStore";
         import { comparing } from "$lib/comparingStore";
         import { show_error, show_success } from "$lib/PopUpStore";
@@ -17,13 +19,15 @@
           
         let { user, tableData } = data
         $: ({ user, tableData } = data)
+
       
         let email
         let password
         let name 
         let focus = false;
         let wait = false;
-        let selected = false;
+        let adder_selected = false;
+        let manager_selected = false;
         let friend_name = "";
         let friendsdyn = get(friends).friends
         let requestdyn = get(friends).pending
@@ -87,16 +91,19 @@
         const handleAddFriend = async (friend_name) => {
           if(friend_name == tableData[0].name){
             show_error(dictionary.get(mapping.You_cant_add_yourself)[language]);
-            selected = false;
+            adder_selected = false;
+            focus = true;
             return;
           }
 
           if(get(friends).friends.map((friend) => friend.name).includes(friend_name)){
             show_error(`${friend_name} ${dictionary.get(mapping.is_already_your_friend)[language]}`);
-            selected = false;
+            adder_selected = false;
+            focus = true;
             return;
           }
-          selected = false;
+          adder_selected = false;
+          focus = true;
           let res = await supabase.rpc('add_friend', {id: user.id,friend_name: friend_name})
           if(res.error){
             show_error(res.error.message);
@@ -173,6 +180,27 @@
       email = "";
       password = "";
     }
+
+    function add_group(){
+      let colors = [
+        "#1446A0",
+        "#DB3069",
+        "#F5D547",
+        "#16324F",
+        "#6EEB83",
+        "#1BE7FF",
+        "#E8AA14",
+        "#BA7BA1",
+        "#B4ADEA",
+        "#621B00"
+    ]
+      let newobj = {
+        name: "",
+        color: colors[(groups.length + 1) % colors.length],
+        friends: []
+      }
+      groups = [...groups, newobj];
+    }
       </script>
 
 
@@ -204,12 +232,11 @@
         {#if user}
         <div class="center">
           <div class="wrap">    
-            //TODO: implement managing groups, infra should be mostly there
-          <button class = "groupmanager">
+          <button on:click={() =>{if(!adder_selected){manager_selected = true; focus = false; waiter();}}}>
             <img src= {Manager} alt="Manage your friend groupings">
           </button>
           <h3>{dictionary.get(mapping.Friends)[language]}</h3>
-          <button on:click={() =>{selected = true}}><img src={Add_Friend} alt="Add a friend"></button>
+          <button on:click={() =>{if(!manager_selected){adder_selected = true, focus = false; waiter();}}}><img src={Add_Friend} alt="Add a friend"></button>
         </div>
         <div class="list">
           {#if groups}
@@ -228,7 +255,7 @@
         {/each}
           {/each}
           {/if}
-          {#if friends_with_no_group && groups}
+          {#if friends_with_no_group && groups.length != 0}
           <h4>{dictionary.get(mapping.Friends_without_group)[language]}:</h4>
           {/if}
           {#each friends_with_no_group as friend}
@@ -261,15 +288,103 @@
       </div>
 
 
-      {#if selected}
+      {#if adder_selected}
       <div class="editor">
           <input type="text" placeholder="{dictionary.get(mapping.Name)[language]}#1234" bind:value={friend_name}>
           <button on:click={handleAddFriend(friend_name)}>{dictionary.get(mapping.Add)[language]}</button>
       </div>
   {/if}
 
+  {#if manager_selected}
+      <div class="editor">
+          <div class = "manager">
+            <div class = "manager_header">
+              <div></div>
+              <h3>{dictionary.get(mapping.Groups)[language]}</h3>
+              <button on:click={() =>{manager_selected = false; focus = true;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
+            </div>
+            <div class = "group_display">
+                {#each groups as group}
+                  <Group group = {group}/>
+                {/each}
+                <button id="new_group" on:click={add_group}>
+                  <img src= {Plus} alt="Add a new group">
+                </button>
+            </div>
+            <span>{dictionary.get(mapping.Empty_groups_will_be_removed)[language]}</span>
+          </div>
+      </div>
+  {/if}
+
 
         <style>
+            #new_group{
+                width: 8%;
+                border-radius: 10vw;
+                cursor: pointer;
+                border: 1px solid black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 5%;
+                margin-left: 5%;
+            }
+
+            #new_group > img{
+                width: 100%;
+                height: 100%;
+            }
+          .group_display{
+            padding: 2%;
+            width: 80%;
+            height: 70%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            background-color: rgba(135, 138, 141);
+            border-radius: 50px;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+
+          .group_display::-webkit-scrollbar {
+            display: none;
+          }
+
+          .manager{
+            width: 60%;
+            height: 60%;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: column;
+          }
+
+          .manager span{
+            color: white;
+            margin: 0;
+            margin-top: 2%;
+          }
+
+          .manager_header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+          }
+
+          .manager_header h3{
+            margin: 0;
+            color: white;
+            margin-left: 10%;
+            text-decoration: underline;
+            font-size: 1.5rem;
+          }
 
           .comparison-box{
             width: 8%;

@@ -75,19 +75,19 @@ export function get_groups(){
     let friends_list = get(friends);
     for (let friend of friends_list.friends) {
         if(friend.group === null){
-            return;
+            continue;
         }
         if(!groups.includes(friend.group)){
             groups.push(friend.group);
         }
-    }
+    } 
     groups.sort();
     groups = groups.length != 0 ? groups.map((group) => {
         let friends_for_group = friends_list.friends.filter((friend) => friend.group === group);
         return {
             name: group,
             friends: friends_for_group,
-            color : colors[groups.indexOf(group)%10]
+            color : colors[groups.indexOf(group)%colors.length]
         }
     }    
     ) : [];
@@ -98,3 +98,5 @@ export function get_friends_with_no_group(){
     let friends_list = get(friends).friends.filter((friend) => friend.group === null);
     return friends_list;
 }
+
+get_groups();

@@ -44,7 +44,10 @@ export function build_dictionary(){
         new RosettaStone("existiert nicht!", "doesn't exist!", "¡no existe!"),
         new RosettaStone("hat deine Anfrage erhalten!", "has received your request!", "¡ha recibido tu solicitud!"),
         new RosettaStone("Niemand", "Nobody", "Nadie"),
-        new RosettaStone("Keine Gruppe", "No group", "Sin grupo")
+        new RosettaStone("Keine Gruppe", "No group", "Sin grupo"),
+        new RosettaStone("Gruppen", "Groups", "Grupos"),
+        new RosettaStone("Leere Gruppen werden entfernt!", "Empty groups will be removed!", "¡Los grupos vacíos serán eliminados!"),
+        new RosettaStone("Neue Gruppe", "New group", "Nuevo grupo")
     ];
     rosetta_stones.forEach((rosetta_stone, index) => {
         dictionary.set(index, rosetta_stone)
@@ -93,5 +96,8 @@ export const mapping = {
     doesnt_exist: 37,
     has_received_your_request: 38,
     Nobody: 39,
-    Friends_without_group: 40
+    Friends_without_group: 40,
+    Groups: 41,
+    Empty_groups_will_be_removed: 42,
+    New_group: 43
 }
