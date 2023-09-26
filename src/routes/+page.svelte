@@ -12,8 +12,8 @@ import { get } from "svelte/store";
 
 export let data;
 
-let { user, tableData, supabase } = data
-  $: ({ user, tableData, supabase } = data)
+let { user, tableData, supabase, buddy } = data
+  $: ({ user, tableData, supabase, buddy } = data)
 
 
 let styles = style_map.get(get(theme));
@@ -21,20 +21,22 @@ let styles = style_map.get(get(theme));
 theme.subscribe(value => {
     styles = style_map.get(value);
 })
+
+
 </script>
 
     <Header data = {data} supabase = {supabase}/>
     <PopUp/>
     {#if $comparing.is_comparing}
-    <ComparisonTable styles = {styles}/>
+    <ComparisonTable styles = {styles} buddy = {buddy}/>
     {:else}
-    <Table styles = {styles} supabase = {supabase} user = {user}/>
+    <Table styles = {styles} supabase = {supabase} user = {user} buddy = {buddy}/>
     {/if}
 
     {#if tableData && !$comparing.is_comparing}
     <SavedStatus/>
     {/if}
-    <LanguagePicker/>
+    <LanguagePicker supabase = {supabase} user = {user}/>
     
     
 

@@ -1,241 +1,287 @@
 <script>
-    //@ts-nocheck
-    import { theme } from "$lib/ThemeStore";
-	import Options from "$lib/Options.svg"
-    import {rows} from "$lib/ScheduleStore.js"
-    import {template as templateStore} from "$lib/ScheduleStore.js";
-    import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
-    import {fullweektoogle} from "$lib/ScheduleStore.js";
-    import { get } from 'svelte/store';
+	//@ts-nocheck
+	import { theme } from '$lib/ThemeStore';
+	import Options from '$lib/Options.svg';
+	import { rows } from '$lib/ScheduleStore.js';
+	import { template as templateStore } from '$lib/ScheduleStore.js';
+	import { Language_Store, dictionary, mapping } from '$lib/LanguageStore';
+	import { fullweektoogle } from '$lib/ScheduleStore.js';
+	import { get } from 'svelte/store';
+	import { couting_signal } from '$lib/changedStore';
 
+	export let data;
+	export let supabase;
 
-    let focus = false;
-    let colorRGB = "";
-    let color = "";
-    let dynamicRows = get(rows);
-    let dynDays = get(fullweektoogle);
-    let template = "University";
-    let setting = "Theme";
-    let disabled = true;
-    let wait = false;
-    let theme_to_mapping = new Map();
-    theme_to_mapping.set("Light", mapping.Bright);
-    theme_to_mapping.set("Night", mapping.Dark);
-    theme_to_mapping.set("Pink", mapping.Pink);
+	let { user, tableData } = data;
+	$: ({ user, tableData } = data);
 
-    let setting_to_mapping = new Map();
-    setting_to_mapping.set("Theme", mapping.Design);
-    setting_to_mapping.set("Template", mapping.Template);
-    setting_to_mapping.set("Days", mapping.Days);
+	let focus = false;
+	let colorRGB = '';
+	let color = '';
+	let dynamicRows = get(rows);
+	let dynDays = get(fullweektoogle);
+	let template = 'University';
+	let setting = 'Theme';
+	let disabled = true;
+	let wait = false;
+	let theme_to_mapping = new Map();
+	theme_to_mapping.set('Light', mapping.Bright);
+	theme_to_mapping.set('Night', mapping.Dark);
+	theme_to_mapping.set('Pink', mapping.Pink);
 
-    let template_to_mapping = new Map();
-    template_to_mapping.set("University", mapping.University);
-    template_to_mapping.set("School", mapping.School);
-    template_to_mapping.set("Custom", mapping.Custom);
+	let setting_to_mapping = new Map();
+	setting_to_mapping.set('Theme', mapping.Design);
+	setting_to_mapping.set('Template', mapping.Template);
+	setting_to_mapping.set('Days', mapping.Days);
 
-    let language = get(Language_Store).language;
+	let template_to_mapping = new Map();
+	template_to_mapping.set('University', mapping.University);
+	template_to_mapping.set('School', mapping.School);
+	template_to_mapping.set('Custom', mapping.Custom);
 
-    Language_Store.subscribe(value => {
-        language = value.language;
-    })
+	let language = get(Language_Store).language;
 
+	Language_Store.subscribe((value) => {
+		language = value.language;
+	});
 
-    let settings = [
-        "Theme",
-        "Template",
-        "Days"
-    ]
+	let settings = ['Theme', 'Template', 'Days'];
 
+	let themes = ['Light', 'Night', 'Pink'];
 
-    let themes = [
-        "Light",
-        "Night",
-        "Pink",
-    ]
+	let templates = ['University', 'School', 'Custom'];
 
-    let templates = [
-        "University",
-        "School",
-        "Custom"
-    ]
+	let DarkText = ['Light'];
 
-    let DarkText = [
-        "Light"
-    ]
+	/**
+	 * @type {Map<String, String>}
+	 */
+	let colormap = new Map();
 
-    /**
-     * @type {Map<String, String>}
-    */
-    let colormap = new Map();
+	colormap.set('Light', '255, 255, 255');
+	colormap.set('Night', '12, 16, 70');
+	colormap.set('Pink', '255, 0, 255');
 
-    colormap.set("Light", "255, 255, 255")
-    colormap.set("Night", "12, 16, 70")
-    colormap.set("Pink", "255, 0, 255")
+	theme.subscribe((value) => {
+		color = value;
+		colorRGB = colormap.get(value);
+	});
 
-   
-    theme.subscribe(value => {
-        color = value;
-        colorRGB = colormap.get(value);
-    })
+	$: {
+		disabled = template != 'Custom';
+	}
 
-    $:{disabled = template != "Custom";}
+	$: updateRows(dynamicRows);
 
-    $: updateRows(dynamicRows);
+	$: updateTemplate(template);
 
-    $: updateTemplate(template);
+	$: updateDays(dynDays);
 
-    $: updateDays(dynDays);
+	async function updateDays(e) {
+		fullweektoogle.set(dynDays);
+		if (user) {
+			const { data, error } = await supabase
+				.from('meta')
+				.update({ days: dynDays })
+				.eq( 'user_id', user.id )
+				.select();
+            couting_signal.update((old) => old + 1);
+		}
+	}
 
-    function updateDays(e){
-        fullweektoogle.set(dynDays);
-    }
+	async function updateTemplate(e) {
+		templateStore.set(template);
+		if (template == 'Custom') {
+			updateRows(dynamicRows);
+		}
+		if (user) {
+			const { data, error } = await supabase
+				.from('meta')
+				.update({ template: template })
+				.eq( 'user_id', user.id )
+				.select();
+                couting_signal.update((old) => old + 1);
+		}
+	}
 
-    function updateTemplate(e){
-        templateStore.set(template);
-        if(template == "Custom"){
-            updateRows(dynamicRows);
-    }
-}
+	async function updateRows(e) {
+		dynamicRows = dynamicRows < 1 ? 1 : dynamicRows;
+		dynamicRows = dynamicRows > 30 ? 30 : dynamicRows;
+		rows.set(dynamicRows);
+		if (user) {
+			const { data, error } = await supabase
+				.from('meta')
+				.update({ rows: dynamicRows })
+				.eq( 'user_id', user.id )
+				.select();
+		}
+	}
 
-    function updateRows(e){
-        dynamicRows = dynamicRows < 1 ? 1 : dynamicRows;
-        dynamicRows = dynamicRows > 30 ? 30 : dynamicRows;
-        rows.set(dynamicRows);
-    }
-
-    function waiter(){
-        wait = true;
-        setTimeout(() => {
-            wait = false;
-        }, 100);
-    }
+	function waiter() {
+		wait = true;
+		setTimeout(() => {
+			wait = false;
+		}, 100);
+	}
 </script>
-
-
-
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class = {focus ? "options" : "optionscollapse"} on:click={() =>{if(focus == false && !wait){focus = true}}}>
-    {#if focus}
-    <div class="top">
-        {#each settings as s}
-        {#if s == setting}
-        <div style="background-color: black;color: white">{dictionary.get(setting_to_mapping.get(s))[language]}</div>
-    {:else}
-        <button style="--color: 0,0,0; color: white" on:click={() => {setting = s}}>{dictionary.get(setting_to_mapping.get(s))[language]}</button>
-    {/if}
-        {/each}
-        <button on:click={() =>{waiter(); focus = false}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
-    </div>
-    {#if setting == "Theme"}
-        <div class="top">
-            {#each themes as t}
-                {#if t == color}
-                    <div style="background-color: rgb({colorRGB});color: {DarkText.includes(t) ? "black" : "white"}">{dictionary.get(theme_to_mapping.get(t))[language]}</div>
-                {:else}
-                    <button style="--color: {colormap.get(t)}; color: {DarkText.includes(t) ? "black" : "white"}" on:click={() => {theme.set(t)}}>{dictionary.get(theme_to_mapping.get(t))[language]}</button>
-                {/if}
-            {/each}   
-        </div>
-    {:else if setting == "Template"}
-        <div class = "middle">
-            {#each templates as t}
-                <label>
-                    <input type="radio" bind:group={template} value={t} style="margin-right: 0.5rem">
-                    {dictionary.get(template_to_mapping.get(t))[language]}
-                </label>
-            {/each}
-
-        </div>
-        <div class = "bottom">
-            <label for="rows">{dictionary.get(mapping.Hours)[language]}:</label>
-            <input type="number" name="rows"  bind:value={dynamicRows} {disabled} style="{disabled ? "cursor: not-allowed" : ""}">
-        </div>
-    {:else if setting == "Days"}
-        <div class = "middle">
-            <label for="rows">7-{dictionary.get(mapping.Days)[language]}:</label>
-            <input type="checkbox" bind:checked={dynDays}>
-        </div>
-    {/if}
-    {:else}
-    <img src={Options} alt="Options">
-    {/if}
-    </div>
-
-
-
+<div
+	class={focus ? 'options' : 'optionscollapse'}
+	on:click={() => {
+		if (focus == false && !wait) {
+			focus = true;
+		}
+	}}
+>
+	{#if focus}
+		<div class="top">
+			{#each settings as s}
+				{#if s == setting}
+					<div style="background-color: black;color: white">
+						{dictionary.get(setting_to_mapping.get(s))[language]}
+					</div>
+				{:else}
+					<button
+						style="--color: 0,0,0; color: white"
+						on:click={() => {
+							setting = s;
+						}}>{dictionary.get(setting_to_mapping.get(s))[language]}</button
+					>
+				{/if}
+			{/each}
+			<button
+				on:click={() => {
+					waiter();
+					focus = false;
+				}}
+				style="--color: 0,0,0; border-radius: 50rem;">❌</button
+			>
+		</div>
+		{#if setting == 'Theme'}
+			<div class="top">
+				{#each themes as t}
+					{#if t == color}
+						<div
+							style="background-color: rgb({colorRGB});color: {DarkText.includes(t)
+								? 'black'
+								: 'white'}"
+						>
+							{dictionary.get(theme_to_mapping.get(t))[language]}
+						</div>
+					{:else}
+						<button
+							style="--color: {colormap.get(t)}; color: {DarkText.includes(t) ? 'black' : 'white'}"
+							on:click={async () => {
+								theme.set(t);
+								if (user) {
+									const { data, error } = await supabase
+										.from('meta')
+										.update({ theme: t })
+										.eq( 'user_id', user.id )
+										.select();
+								}
+							}}>{dictionary.get(theme_to_mapping.get(t))[language]}</button
+						>
+					{/if}
+				{/each}
+			</div>
+		{:else if setting == 'Template'}
+			<div class="middle">
+				{#each templates as t}
+					<label>
+						<input type="radio" bind:group={template} value={t} style="margin-right: 0.5rem" />
+						{dictionary.get(template_to_mapping.get(t))[language]}
+					</label>
+				{/each}
+			</div>
+			<div class="bottom">
+				<label for="rows">{dictionary.get(mapping.Hours)[language]}:</label>
+				<input
+					type="number"
+					name="rows"
+					bind:value={dynamicRows}
+					{disabled}
+					style={disabled ? 'cursor: not-allowed' : ''}
+				/>
+			</div>
+		{:else if setting == 'Days'}
+			<div class="middle">
+				<label for="rows">7-{dictionary.get(mapping.Days)[language]}:</label>
+				<input type="checkbox" bind:checked={dynDays} />
+			</div>
+		{/if}
+	{:else}
+		<img src={Options} alt="Options" />
+	{/if}
+</div>
 
 <style>
-    .optionscollapse{
-        height: 2.5rem;
-        aspect-ratio: 1/1;
-        cursor: pointer;
-        border: 1px solid black;
-        background-color: rgba(151, 147, 147, 0.781);
-        border-radius: 50%;
-        padding: 2px;
-        margin-top: 1rem;
-    }
+	.optionscollapse {
+		height: 2.5rem;
+		aspect-ratio: 1/1;
+		cursor: pointer;
+		border: 1px solid black;
+		background-color: rgba(151, 147, 147, 0.781);
+		border-radius: 50%;
+		padding: 2px;
+		margin-top: 1rem;
+	}
 
-    .optionscollapse img{
-        height: 100%;
-        aspect-ratio: 1/1;
-    }
+	.optionscollapse img {
+		height: 100%;
+		aspect-ratio: 1/1;
+	}
 
-    .options{
-        width: 20rem;
-        height: 12rem;
-        background-color: rgba(151, 147, 147);
-        border-radius: 1rem;
-    }
+	.options {
+		width: 20rem;
+		height: 12rem;
+		background-color: rgba(151, 147, 147);
+		border-radius: 1rem;
+	}
 
+	.top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem;
+	}
 
+	.top button {
+		background-color: rgba(var(--color));
+		border: none;
+		border-radius: 5px;
+		padding: 0.5rem;
+		cursor: pointer;
+		transition: 0.5s;
+	}
 
-    .top{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-    }
+	.top div {
+		border-radius: 5px;
+		padding: 0.2rem;
+		border: 3px solid gold;
+	}
 
-    .top button{
-        background-color: rgba(var(--color));
-        border: none;
-        border-radius: 5px;
-        padding: 0.5rem;
-        cursor: pointer;
-        transition: 0.5s;
-    }
+	.top button:hover {
+		transform: scale(1.1);
+	}
 
-    .top div{
-        border-radius: 5px;
-        padding: 0.2rem;
-        border: 3px solid gold;
-    }
+	.middle {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 1rem;
+	}
 
-    .top button:hover{
-        transform: scale(1.1);
-    }
+	.bottom {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 1rem;
+	}
 
-    .middle{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem;
-    }
-
-    .bottom{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem;
-    }
-
-    .bottom label{
-        margin-right: 1rem;
-    }
+	.bottom label {
+		margin-right: 1rem;
+	}
 </style>
-
-
-

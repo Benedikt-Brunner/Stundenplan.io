@@ -24,7 +24,7 @@
 <nav>
     <h2>Stundenplan.io</h2>
     <h3>{dictionary.get(mapping.Greeting)[language]}, {#if tableData}{tableData[0].name.split('#')[0]} <span>#{tableData[0].name.split('#')[1]}</span>{:else} Guest {/if}</h3>
-    <Options />
+    <Options data = {data} supabase = {supabase}/>
     <Social data = {data} supabase = {supabase}/>
     <a href="https://github.com/Benedikt-Brunner/Timetable"><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;"></a>
 </nav>

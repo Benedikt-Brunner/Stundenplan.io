@@ -2,22 +2,28 @@
 //@ts-nocheck
 import { friends } from '$lib/FriendsStore.js' 
 import { schedule, rows, template, fullweektoogle } from '$lib/ScheduleStore.js'
+import { setLanguage, languages } from '$lib/LanguageStore.js'
+import { couting_signal } from '$lib/changedStore.js'
 import { theme } from '$lib/ThemeStore.js'
-import { set_metadata } from '$lib/MetadataStore.js'
-import { get } from 'svelte/store'
 
 export const load = async ({ parent }) => {
   const { supabase, session } = await parent()
   if (!session) {
-    return 
+    theme.set("Light");
+    rows.set(7);
+    template.set("University");
+    fullweektoogle.set(false);
+    setLanguage(languages.german);
+    return{buddy: "👾"};
   }
 
-  const { data: res } = await supabase.from('meta').select('buddy, rows, days, theme, template').eq('user_id', session.user.id)
-  set_metadata(res[0].buddy, res[0].rows, res[0].days, res[0].theme, res[0].template);
+  const { data: res } = await supabase.from('meta').select('buddy, rows, days, theme, template, language').eq('user_id', session.user.id)
   theme.set(res[0].theme);
   rows.set(res[0].rows);
   template.set(res[0].template);
   fullweektoogle.set(res[0].days);
+  setLanguage(res[0].language);
+  couting_signal.update(n => n + 1);
   
 
   const { data: tableData } = await supabase.from('users').select('name, schedule').eq('id', session.user.id)
@@ -33,7 +39,8 @@ export const load = async ({ parent }) => {
   return {
     user: session.user,
     tableData,
-    supabase
+    supabase,
+    buddy: res[0].buddy
   }
 }
 

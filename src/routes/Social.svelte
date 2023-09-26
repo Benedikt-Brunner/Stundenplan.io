@@ -10,6 +10,7 @@
         import { comparing } from "$lib/comparingStore";
         import { show_error, show_success } from "$lib/PopUpStore";
         import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
+        import { invalidateAll } from "$app/navigation";
         import { get } from 'svelte/store';
 
         export let data;
@@ -20,7 +21,12 @@
         let { user, tableData } = data
         $: ({ user, tableData } = data)
 
-      
+        let not_logged_in_states = {
+          not_decided: 0,
+          sign_up: 1,
+          sign_in: 2
+        }
+        let not_logged_in_state = not_logged_in_states.not_decided; 
         let email
         let password
         let name 
@@ -113,7 +119,9 @@
           if(error){
             show_error(error.message);
           }else{
+            invalidateAll();
             show_success(dictionary.get(mapping.Successfully_signed_in)[language])
+            not_logged_in_state = not_logged_in_states.not_decided;
             resetInfo();
           }
         }
@@ -124,6 +132,8 @@
           if(error){
             show_error(error.message);
           }else{
+            invalidateAll();
+            not_logged_in_state = not_logged_in_states.not_decided;
             show_success(dictionary.get(mapping.Successfully_signed_out)[language])
           }
         }
@@ -254,10 +264,16 @@
           {:else}
           <div></div>
           {/if}
-          <button id = "exit" on:click={() =>{waiter(); focus = false;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
+          <button id = "exit" on:click={() =>{waiter(); focus = false; not_logged_in_state = not_logged_in_states.not_decided;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
         </div>
         <div class="center">
           {#if !user}
+          {#if not_logged_in_state == not_logged_in_states.not_decided}
+          <div class="deciders">
+            <button on:click={() =>{not_logged_in_state = not_logged_in_states.sign_in;}}>{dictionary.get(mapping.Sign_in)[language]}</button>
+            <button on:click={() =>{not_logged_in_state = not_logged_in_states.sign_up;}}>{dictionary.get(mapping.Sign_up)[language]}</button>
+          </div>
+          {:else if not_logged_in_state == not_logged_in_states.sign_up}
           <form>
             <input name="name" bind:value="{name}" placeholder="{dictionary.get(mapping.Username)[language]}"/>
             <input name="email" bind:value="{email}" placeholder="{dictionary.get(mapping.E_Mail)[language]}"/>
@@ -265,8 +281,16 @@
           </form>
           <div class="buttons"> 
             <button on:click={handleSignUp}>{dictionary.get(mapping.Sign_up)[language]}</button>
+          </div>
+          {:else if not_logged_in_state == not_logged_in_states.sign_in}
+          <form>
+            <input name="email" bind:value="{email}" placeholder="{dictionary.get(mapping.E_Mail)[language]}"/>
+            <input type="password" name="password" bind:value="{password}" placeholder="{dictionary.get(mapping.Password)[language]}"/>
+          </form>
+          <div class="buttons"> 
             <button on:click="{handleSignIn}">{dictionary.get(mapping.Sign_in)[language]}</button>
           </div>
+          {/if}
           {/if}
         </div>
         {#if user}
@@ -358,6 +382,23 @@
 
 
         <style>
+
+          .deciders{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+          }
+
+          .deciders button{
+            border: none;
+            border-radius: 50px;
+            padding: 0.2rem;
+            cursor: pointer;
+            transition: 0.5s;
+            margin-top: 1%;
+            margin-inline: 7%;
+          }
             #new_group{
                 width: 8%;
                 border-radius: 10vw;
@@ -615,7 +656,7 @@
 
     .center .buttons{
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         width: 50%;
     }

@@ -1,9 +1,8 @@
 <script>
     //@ts-nocheck
 import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/ScheduleStore.js"
-import { changed } from "$lib/changedStore";
+import { changed, couting_signal } from "$lib/changedStore";
 import { mapping,  Language_Store, dictionary } from "$lib/LanguageStore";
-import {get_buddy, set_buddy, get_metadata, metadata, meta_has_changed} from "$lib/MetadataStore"
 import { get } from 'svelte/store';
 import SveltyPicker from 'svelty-picker';
 
@@ -11,21 +10,13 @@ import SveltyPicker from 'svelty-picker';
 export let styles;
 export let supabase;
 export let user;
+export let buddy;
 
 let language = get(Language_Store).language;
 
 Language_Store.subscribe(value => {
     language = value.language;
 })
-
-let loc_buddy = get_buddy();
-
-
-$: change_buddy(loc_buddy);
-
-function change_buddy(value){
-    set_buddy(value);
-}
 
 let selectobject = {"row" : 0, "column" : 0}
 let selected = false;
@@ -38,27 +29,17 @@ fullweektoogle.subscribe(value => {
     ratio = value ? seven_day_ratio : five_day_ratio;
 })
 
-meta_has_changed.subscribe(value => {
-    if(typeof changed_loc === 'undefined'){
-        return;
-    }
-    if(value){
-        changed_loc = true;
-    }
-})
 
-async function persist_on_exit(){
+async function persist_on_exit(e){
     if(!changed_loc || !user) return;
     // Cancel the event as stated by the standard.
-     event.preventDefault();
+     e.preventDefault();
     // Chrome requires returnValue to be set.
-    event.returnValue = '';
+    e.returnValue = '';
     let data = get(schedule);
     const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
-    const res2 = (await supabase.rpc('persist_metadata', {id: user.id, ...get_metadata()}));
-    if(res && res2){
+    if(res){
         changed_loc = false;
-        meta_has_changed.set(false);
     }
 }
 
@@ -66,8 +47,7 @@ async function persist(){
     if(!changed_loc || !user) return;
     let data = get(schedule);
     const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
-    const res2 = (await supabase.rpc('persist_metadata', {id: user.id, ...get_metadata()})).data;
-    if(res && res2){
+    if(res){
         changed_loc = false;
     }
 }
@@ -76,8 +56,13 @@ $: setStore(changed_loc);
 
 function setStore(value){
     changed.set(value);
-    meta_has_changed.set(false);
 }
+
+couting_signal.subscribe((value) =>{
+    if(value > 2){
+        changed_loc = true;
+    }
+})
 
 setInterval(() => {
     if(!changed_loc) return;
@@ -90,7 +75,7 @@ setInterval(() => {
 <div class = "center">
 <table>
     <tr>
-        <th contenteditable="true" bind:innerText={loc_buddy}></th>
+        <th contenteditable="true" bind:innerText={buddy}></th>
         <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">{dictionary.get(mapping.Day_1)[language]}</th>
         <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">{dictionary.get(mapping.Day_2)[language]}</th>
         <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">{dictionary.get(mapping.Day_3)[language]}</th>

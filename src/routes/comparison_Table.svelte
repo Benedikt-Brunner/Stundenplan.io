@@ -4,21 +4,17 @@ import {schedule, fullweektoogle} from "$lib/ScheduleStore.js"
 import { get_table_pattern } from "$lib/comparingStore";
 import { comparing } from "$lib/comparingStore";
 import { mapping,  Language_Store, dictionary } from "$lib/LanguageStore";
-import {get_buddy, metadata} from "$lib/MetadataStore"
 import { get } from 'svelte/store';
 import Legend from "./Legend.svelte";
 
 export let styles;
+export let buddy;
 
 let language = get(Language_Store).language;
-let buddy = get_buddy();
 Language_Store.subscribe(value => {
     language = value.language;
 })
 
-metadata.subscribe(value => {
-    buddy = value.buddy;
-})
 
 let coloring = get_table_pattern();
 const five_day_ratio = 90/5;

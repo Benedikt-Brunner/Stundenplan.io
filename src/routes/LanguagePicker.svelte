@@ -6,6 +6,9 @@
     import { Language_Store, setLanguage, languages } from "$lib/LanguageStore";
     import { get } from "svelte/store";
 
+    export let supabase;
+    export let user;
+
     let focus = false;
     let img_map = new Map();
 
@@ -16,13 +19,13 @@
 
 {#if focus}
 <div class="language_picker">
-    <button class="flag_wrap" on:click={() => {setLanguage(languages.german); focus = !focus;}}>
+    <button class="flag_wrap" on:click={async () => {setLanguage(languages.german); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.german }).eq( 'user_id', user.id ).select()};}}>
         <img src={Flag_de} alt="Deutsch"/>
     </button>
-    <button class="flag_wrap" on:click={() => {setLanguage(languages.english); focus = !focus;}}>
+    <button class="flag_wrap" on:click={async () => {setLanguage(languages.english); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.english }).eq( 'user_id', user.id ).select()};}}>
         <img src={Flag_en} alt="English"/>
     </button>
-    <button class="flag_wrap" on:click={() => {setLanguage(languages.spanish); focus = !focus;}}>
+    <button class="flag_wrap" on:click={async () => {setLanguage(languages.spanish); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.spanish }).eq( 'user_id', user.id ).select()};}}>
         <img src={Flag_es} alt="Español"/>
     </button>
 </div>
