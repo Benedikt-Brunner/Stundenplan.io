@@ -3,6 +3,7 @@
 import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/ScheduleStore.js"
 import { changed } from "$lib/changedStore";
 import { mapping,  Language_Store, dictionary } from "$lib/LanguageStore";
+import {get_buddy, set_buddy, get_metadata, metadata, meta_has_changed} from "$lib/MetadataStore"
 import { get } from 'svelte/store';
 import SveltyPicker from 'svelty-picker';
 
@@ -17,6 +18,14 @@ Language_Store.subscribe(value => {
     language = value.language;
 })
 
+let loc_buddy = get_buddy();
+
+
+$: change_buddy(loc_buddy);
+
+function change_buddy(value){
+    set_buddy(value);
+}
 
 let selectobject = {"row" : 0, "column" : 0}
 let selected = false;
@@ -29,6 +38,15 @@ fullweektoogle.subscribe(value => {
     ratio = value ? seven_day_ratio : five_day_ratio;
 })
 
+meta_has_changed.subscribe(value => {
+    if(typeof changed_loc === 'undefined'){
+        return;
+    }
+    if(value){
+        changed_loc = true;
+    }
+})
+
 async function persist_on_exit(){
     if(!changed_loc || !user) return;
     // Cancel the event as stated by the standard.
@@ -37,8 +55,10 @@ async function persist_on_exit(){
     event.returnValue = '';
     let data = get(schedule);
     const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
-    if(res){
+    const res2 = (await supabase.rpc('persist_metadata', {id: user.id, ...get_metadata()}));
+    if(res && res2){
         changed_loc = false;
+        meta_has_changed.set(false);
     }
 }
 
@@ -46,7 +66,8 @@ async function persist(){
     if(!changed_loc || !user) return;
     let data = get(schedule);
     const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
-    if(res){
+    const res2 = (await supabase.rpc('persist_metadata', {id: user.id, ...get_metadata()})).data;
+    if(res && res2){
         changed_loc = false;
     }
 }
@@ -55,6 +76,7 @@ $: setStore(changed_loc);
 
 function setStore(value){
     changed.set(value);
+    meta_has_changed.set(false);
 }
 
 setInterval(() => {
@@ -68,7 +90,7 @@ setInterval(() => {
 <div class = "center">
 <table>
     <tr>
-        <th contenteditable="true">👾</th>
+        <th contenteditable="true" bind:innerText={loc_buddy}></th>
         <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">{dictionary.get(mapping.Day_1)[language]}</th>
         <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">{dictionary.get(mapping.Day_2)[language]}</th>
         <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">{dictionary.get(mapping.Day_3)[language]}</th>

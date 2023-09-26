@@ -34,7 +34,7 @@
         let groups = get_groups();
         let friends_with_no_group = get_friends_with_no_group();
         let language = get(Language_Store).language;
-
+    
         Language_Store.subscribe(value => {
             language = value.language;
         })
@@ -47,6 +47,46 @@
           groups = get_groups();
           friends_with_no_group = get_friends_with_no_group();
         })
+
+        function persist(){
+          groups = groups.filter(group => group.friends.length != 0);
+          let counter = 1;
+          for(let group in groups){
+            if(group.name === ""){
+              group.name = `Group ${counter}`;
+              counter++;
+            }
+          }
+          groups.forEach((group) => {
+           persist_group(group);
+          })
+          friends_with_no_group.forEach((friend) => {
+            persist_non_group_members(friend);
+          })
+        }
+
+        function persist_group(group){
+          group.friends.forEach(async (friend) =>{
+            if(group.name !== get_from_friends(friend).group){
+              const res = await supabase.rpc('change_friend_group', {id: user.id, friend: friend.name, new_group: group.name})
+              console.log(res)
+            }
+          })
+        }
+        async function persist_non_group_members(friend){
+          if(get_from_friends(friend).group !== null){
+            let res = await supabase.rpc('null_friend_group', {id: user.id, friend: friend.name})
+            console.log(res)
+          }
+        }
+
+        function get_from_friends(friend){
+          let res = friendsdyn.filter((f) => {
+            return f.name === friend.name;
+          })
+          return res[0];
+        }
+       
       
         const handleSignUp = async () => {
           const {error} = await supabase.auth.signUp({
@@ -185,7 +225,7 @@
       let colors = [
         "#1446A0",
         "#DB3069",
-        "#F5D547",
+        "#312509",
         "#16324F",
         "#6EEB83",
         "#1BE7FF",
@@ -196,13 +236,13 @@
     ]
       let newobj = {
         name: "",
-        color: colors[(groups.length + 1) % colors.length],
+        color: colors[(groups.length) % colors.length],
         friends: []
       }
       groups = [...groups, newobj];
     }
       </script>
-
+<svelte:window on:beforeunload = {persist}/>
 
       <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -255,7 +295,7 @@
         {/each}
           {/each}
           {/if}
-          {#if friends_with_no_group && groups.length != 0}
+          {#if friends_with_no_group.length != 0 && groups.length != 0}
           <h4>{dictionary.get(mapping.Friends_without_group)[language]}:</h4>
           {/if}
           {#each friends_with_no_group as friend}
@@ -301,11 +341,11 @@
             <div class = "manager_header">
               <div></div>
               <h3>{dictionary.get(mapping.Groups)[language]}</h3>
-              <button on:click={() =>{manager_selected = false; focus = true;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
+              <button on:click={() =>{persist();manager_selected = false; focus = true;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
             </div>
             <div class = "group_display">
-                {#each groups as group}
-                  <Group group = {group}/>
+                {#each groups as group,i}
+                  <Group bind:group = {group} bind:friends_with_no_group = {friends_with_no_group}/>
                 {/each}
                 <button id="new_group" on:click={add_group}>
                   <img src= {Plus} alt="Add a new group">

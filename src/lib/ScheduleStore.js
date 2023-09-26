@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { get, writable } from "svelte/store";
 import { get_friends_lessons} from "./FriendsStore";
+import { set_days, set_rows, set_template} from "$lib/MetadataStore"
 export const fullweektoogle = writable(false);
 export const template = writable("University");
 export const rows = writable(7);
@@ -40,6 +41,7 @@ schoolMap.set(13, "16:50 - 17:35");
 schoolMap.set(14, "17:35 - 18:20");
 
 rows.subscribe(value => {
+    set_rows(value);
     schedule.update(old => {
         let newarr = new Array(value);
         let temptemplate = get(template);
@@ -72,6 +74,7 @@ TempToRows.set("School", 15);
 
 
 template.subscribe(value => {
+    set_template(value);
     if(value == "Custom"){
         return;
     }
@@ -106,6 +109,7 @@ function sevenToFive(old){
 }
 
 fullweektoogle.subscribe(value => {
+    set_days(value);
     schedule.update(old => {
         let newarr = old;
         if(value){

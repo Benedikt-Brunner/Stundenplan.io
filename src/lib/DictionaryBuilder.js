@@ -47,7 +47,9 @@ export function build_dictionary(){
         new RosettaStone("Keine Gruppe", "No group", "Sin grupo"),
         new RosettaStone("Gruppen", "Groups", "Grupos"),
         new RosettaStone("Leere Gruppen werden entfernt!", "Empty groups will be removed!", "¡Los grupos vacíos serán eliminados!"),
-        new RosettaStone("Neue Gruppe", "New group", "Nuevo grupo")
+        new RosettaStone("Neue Gruppe", "New group", "Nuevo grupo"),
+        new RosettaStone("Suche", "Search", "Buscar"),
+        new RosettaStone("Bist du sicher, dass du den Freund aus der Gruppe entfernen willst?", "Are you sure you want to remove the friend from the group?", "¿Estás seguro de que quieres eliminar al amigo del grupo?"),
     ];
     rosetta_stones.forEach((rosetta_stone, index) => {
         dictionary.set(index, rosetta_stone)
@@ -99,5 +101,7 @@ export const mapping = {
     Friends_without_group: 40,
     Groups: 41,
     Empty_groups_will_be_removed: 42,
-    New_group: 43
+    New_group: 43,
+    Search: 44,
+    Are_you_sure: 45
 }

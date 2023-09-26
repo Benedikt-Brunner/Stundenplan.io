@@ -1,19 +1,41 @@
 <script>
 	//@ts-nocheck
 	import { Language_Store, dictionary, mapping } from '$lib/LanguageStore';
-    import { get } from 'svelte/store';
+	import { get } from 'svelte/store';
 
 	let language = get(Language_Store).language;
 
 	Language_Store.subscribe((value) => {
 		language = value.language;
 	});
-
 	export let group;
-    //TODO: add a way to add / remove friends from a group, delete a group and persist changes
+    export let friends_with_no_group;
+	let search_string = '';
+
+	$: filtered_friends = friends_with_no_group.filter((friend) => {
+		return friend.name.toLowerCase().includes(search_string.toLowerCase());
+	});
+
+	function remove(friend){
+		if(confirm(dictionary.get(mapping.Are_you_sure)[language])){
+			group.friends = group.friends.filter((f) => {
+				return f.name !== friend.name;
+			});
+			friends_with_no_group = [...friends_with_no_group, friend];
+		}
+	}
+
+	function add(friend){
+		group.friends = [...group.friends, friend];
+		friends_with_no_group = friends_with_no_group.filter((f) => {
+			return f.name !== friend.name;
+		});
+	}
+
+
 </script>
 
-<table style="border: 1px dotted {group.color};">
+<table style="border: 1px solid {group.color};">
 	<tr>
 		<th>
 			<input
@@ -21,16 +43,39 @@
 				bind:value={group.name}
 				placeholder={dictionary.get(mapping.New_group)[language]}
 				style="color: {group.color};"
+				id="group_name"
 			/>
 		</th>
 	</tr>
-	{#each group.friends as user}
+	{#each group.friends as friend}
 		<tr>
 			<td>
-				<span>{user.name}</span>
+				<button on:click={remove(friend)}>
+					{friend.name}
+				</button>
 			</td>
 		</tr>
 	{/each}
+	{#if friends_with_no_group.length != 0}
+	<tr>
+		<td>
+			<input type="text"
+			id="searcher"
+			placeholder={dictionary.get(mapping.Search)[language]}
+			bind:value={search_string}
+			>
+			{#each filtered_friends as friend}
+				<div>
+					<button
+						on:click={add(friend)}
+					>
+					{friend.name}
+					</button>
+				</div>
+			{/each}
+		</td>
+	</tr>
+	{/if}
 </table>
 
 <style>
@@ -43,15 +88,12 @@
 
 	th,
 	td {
-		text-align: left;
+		text-align: center;
 		padding: 8px;
 	}
 
-	tr:nth-child(even) {
-		background-color: #f2f2f2;
-	}
 
-	input {
+	#group_name {
 		width: fit-content;
 		border: none;
 		background-color: transparent;
@@ -59,9 +101,37 @@
 		font-weight: 600;
 		width: 100%;
 		text-align: center;
+		text-decoration: underline;
 	}
 
-	input::placeholder {
+	#group_name::placeholder {
 		color: inherit;
 	}
+
+	#searcher {
+		width: 50%;
+		border: none;
+		background-color: transparent;
+		font-size: 1rem;
+		font-weight: 600;
+		text-align: center;
+	}
+
+	#searcher::placeholder {
+		color: inherit;
+	}
+
+	button {
+		background-color: transparent;
+		border: none;
+		font-size: 1rem;
+		font-weight: 400;
+		text-align: center;
+		width: 100%;
+	}
+
+	button:hover {
+		cursor: pointer;
+	}
+
 </style>
