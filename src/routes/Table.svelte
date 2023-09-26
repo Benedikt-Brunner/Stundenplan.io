@@ -75,7 +75,7 @@ setInterval(() => {
 <div class = "center">
 <table>
     <tr>
-        <th contenteditable="true" bind:innerText={buddy}></th>
+        <th><input type="text" bind:value={buddy}></th>
         <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">{dictionary.get(mapping.Day_1)[language]}</th>
         <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">{dictionary.get(mapping.Day_2)[language]}</th>
         <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">{dictionary.get(mapping.Day_3)[language]}</th>
@@ -293,6 +293,14 @@ setInterval(() => {
         border: 1px solid black;
         }
     th{
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    th input{
+        all:unset;
+        width: 100%;
+        height: 100%;
         font-size: 2rem;
         text-align: center;
     }
