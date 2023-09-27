@@ -346,17 +346,19 @@
           {#if groups}
           {#each groups as group, i}
           <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-          <button class = "deez_buttons" style="color: {group.color};" on:click={toogle_group(i)}>
+          <div class = "group_button_wrapper">
             {#if !group_collapse_arr[i]}
             <div class="comparison-box" style="background-color: {group.color};" on:click={() =>{show_group_comparison(group)}}>
               <img src= {Comparison} alt="compare the players">
             </div>
             {/if}
+          <button class = "deez_buttons" style="color: {group.color};" on:click={toogle_group(i)}>
             {group_collapse_arr[i] ? `${group.name}` : `------${group.name}------`}
-            {#if !group_collapse_arr[i]}
-            <div id = "filler"></div>
-            {/if}
           </button>
+          {#if !group_collapse_arr[i]}
+          <div id = "filler"></div>
+          {/if}
+          </div>
           {#if !group_collapse_arr[i]}
           {#each group.friends as friend}
           <div class = "item">
@@ -759,6 +761,11 @@
       aspect-ratio: 1/1;
     }
 
+
+    .group_button_wrapper{
+      display: flex;
+      justify-content: space-between;
+    }
     .deez_buttons{
       all: unset;
       margin: 0;
@@ -766,16 +773,14 @@
       text-align: center;
       font-weight: bold;
       cursor: pointer;
-      display: flex;
-      justify-content: space-between;
     }
 
     #filler{
       width: 20%;
     }
 
-    .deez_buttons .comparison-box{
-            width: 6%;
+    .group_button_wrapper .comparison-box{
+            width: 9%;
             padding: 1%;
             border-radius: 10vw;
             cursor: pointer;
