@@ -40,7 +40,10 @@
         let groups = get_groups();
         let friends_with_no_group = get_friends_with_no_group();
         let language = get(Language_Store).language;
-    
+        let group_collapse_arr = groups.map((_) => false);
+
+
+        
         Language_Store.subscribe(value => {
             language = value.language;
         })
@@ -51,6 +54,7 @@
             requestdyn = Array.isArray(value.pending) ? value.pending : []
           })
           groups = get_groups();
+          group_collapse_arr = groups.map((_, i) => i < group_collapse_arr.length ? group_collapse_arr[i] : false);
           friends_with_no_group = get_friends_with_no_group();
         })
 
@@ -211,6 +215,22 @@
         }
     }
 
+
+    /**
+     * check if list1 is a sublist of list2
+     * @param list1 potentially sublist
+     * @param list2 potentially superlist
+     */
+    function isSublist(list1, list2){
+      let res = true;
+      list1.forEach((item) => {
+        if(!list2.includes(item)){
+          res = false;
+        }
+      })
+      return res;
+    }
+
     function show_comparison(friend){
       if((get(comparing).friend.name) && friend.name === get(comparing).friend.name){
         comparing.set({
@@ -225,6 +245,20 @@
         })
     }
 
+    function show_group_comparison(group){
+      if((Array.isArray(get(comparing).friend)) && isSublist(group.friends, get(comparing).friend)){
+        comparing.set({
+          is_comparing: false,
+          friend: {}
+        })
+        return;
+      }
+        comparing.set({
+            is_comparing: true,
+            friend: group.friends
+        })
+    }
+    
     function resetInfo(){
       name = "";
       email = "";
@@ -250,6 +284,12 @@
         friends: []
       }
       groups = [...groups, newobj];
+    }
+
+    function toogle_group(i){
+      return () => {
+        group_collapse_arr[i] = !group_collapse_arr[i];
+      }
     }
       </script>
 <svelte:window on:beforeunload = {persist}/>
@@ -304,8 +344,20 @@
         </div>
         <div class="list">
           {#if groups}
-          {#each groups as group}
-          <h4 style="color: {group.color};">------{group.name}------</h4>
+          {#each groups as group, i}
+          <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+          <button class = "deez_buttons" style="color: {group.color};" on:click={toogle_group(i)}>
+            {#if !group_collapse_arr[i]}
+            <div class="comparison-box" style="background-color: {group.color};" on:click={() =>{show_group_comparison(group)}}>
+              <img src= {Comparison} alt="compare the players">
+            </div>
+            {/if}
+            {group_collapse_arr[i] ? `${group.name}` : `------${group.name}------`}
+            {#if !group_collapse_arr[i]}
+            <div id = "filler"></div>
+            {/if}
+          </button>
+          {#if !group_collapse_arr[i]}
           {#each group.friends as friend}
           <div class = "item">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -317,6 +369,7 @@
           <input type="checkbox" checked = {!get(filterList).includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
           </div>
         {/each}
+        {/if}
           {/each}
           {/if}
           {#if friends_with_no_group.length != 0 && groups.length != 0}
@@ -330,7 +383,7 @@
                 <img src= {Comparison} alt="compare the players">
               </div>
               <p>{friend.name.split('#')[0]}<span>#{friend.name.split('#')[1]}</span></p>
-            <input type="checkbox" checked = {!get(filterList).includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
+            <input type="checkbox" checked = {!$filterList.includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
             </div>
           {/each}
           {#if requestdyn.length != 0}
@@ -466,7 +519,6 @@
             text-decoration: underline;
             font-size: 1.5rem;
           }
-
           .comparison-box{
             width: 8%;
             padding: 1%;
@@ -686,6 +738,7 @@
       justify-content: space-between;
       align-items: center;
       width: 95%;
+      margin-bottom: 3%;
     }
 
     .wrap h3{
@@ -706,11 +759,30 @@
       aspect-ratio: 1/1;
     }
 
-    h4{
+    .deez_buttons{
+      all: unset;
       margin: 0;
       width: 100%;
       text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
     }
-    
-    
+
+    #filler{
+      width: 20%;
+    }
+
+    .deez_buttons .comparison-box{
+            width: 6%;
+            padding: 1%;
+            border-radius: 10vw;
+            cursor: pointer;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 12%;
+          }
     </style>
