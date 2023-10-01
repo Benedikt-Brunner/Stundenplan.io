@@ -4,6 +4,7 @@
     import Flag_en from "$lib/Flags/flag_en.svg"
     import Flag_es from "$lib/Flags/flag_es.svg"
     import { Language_Store, setLanguage, languages } from "$lib/LanguageStore";
+    import { fly } from "svelte/transition";
     import { get } from "svelte/store";
 
     export let supabase;
@@ -15,17 +16,23 @@
     img_map.set(languages.german, Flag_de);
     img_map.set(languages.english, Flag_en);
     img_map.set(languages.spanish, Flag_es);
+
+    const get_params = (mul) =>
+        ({
+            duration: 100,
+            x: `-${mul * 2}vw`,
+        });
 </script>
 
 {#if focus}
 <div class="language_picker">
-    <button class="flag_wrap" on:click={async () => {setLanguage(languages.german); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.german }).eq( 'user_id', user.id ).select()};}}>
+    <button class="flag_wrap"  on:click={async () => {setLanguage(languages.german); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.german }).eq( 'user_id', user.id ).select()};}}>
         <img src={Flag_de} alt="Deutsch"/>
     </button>
-    <button class="flag_wrap" on:click={async () => {setLanguage(languages.english); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.english }).eq( 'user_id', user.id ).select()};}}>
+    <button class="flag_wrap" in:fly = {get_params(1)} on:click={async () => {setLanguage(languages.english); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.english }).eq( 'user_id', user.id ).select()};}}>
         <img src={Flag_en} alt="English"/>
     </button>
-    <button class="flag_wrap" on:click={async () => {setLanguage(languages.spanish); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.spanish }).eq( 'user_id', user.id ).select()};}}>
+    <button class="flag_wrap" in:fly = {get_params(2)} on:click={async () => {setLanguage(languages.spanish); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.spanish }).eq( 'user_id', user.id ).select()};}}>
         <img src={Flag_es} alt="Español"/>
     </button>
 </div>

@@ -5,6 +5,7 @@
     import Options from "./Options.svelte";
     import Social from "./Social.svelte";
     import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
+    import { comparing } from "$lib/comparingStore";
     import { get } from "svelte/store";
 
     export let data;
@@ -24,7 +25,9 @@
 <nav>
     <h2>Stundenplan.io</h2>
     <h3>{dictionary.get(mapping.Greeting)[language]}, {#if tableData}{tableData[0].name.split('#')[0]} <span>#{tableData[0].name.split('#')[1]}</span>{:else} Guest {/if}</h3>
+    {#if !$comparing.is_comparing}
     <Options data = {data} supabase = {supabase}/>
+    {/if}
     <Social data = {data} supabase = {supabase}/>
     <a href="https://github.com/Benedikt-Brunner/Timetable"><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;"></a>
 </nav>

@@ -15,7 +15,7 @@ export let data;
 let { user, tableData, supabase, buddy } = data
   $: ({ user, tableData, supabase } = data)
 
-
+//TODO: implements themes in the rest of the app
 let styles = style_map.get(get(theme));
 
 theme.subscribe(value => {

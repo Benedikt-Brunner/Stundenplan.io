@@ -136,8 +136,8 @@ setInterval(() => {
             {#each get_lessons_for_insertion_point("Day"+ selectobject.column, selectobject.row) as lesson}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <div class="lesson tooltip" on:click={() =>{
-                if(event.ctrlKey){
+            <div class="lesson tooltip" on:click={(e) =>{
+                if(e.ctrlKey){
                     insert_merged_lesson(lesson);
                     selected = false;
                     changed_loc = true;
@@ -149,10 +149,10 @@ setInterval(() => {
                 selected = false;
                 changed_loc = true;
             }}>
-            <span class="tooltiptext">Crtl + click to import the entire course</span>
-                <h3>{lesson.friends[0].split('#')[0]}</h3>
-                <p>{lesson.subject}</p>    
-                <p>{lesson.room}</p>
+            <span class="tooltiptext">{dictionary.get(mapping.tooltip)[language]}</span>
+                <h3>{dictionary.get(mapping.Course_of)[language] + lesson.friends[0].split('#')[0]}</h3>
+                <p>{dictionary.get(mapping.Subject)[language] + ": " + lesson.subject}</p>    
+                <p>{dictionary.get(mapping.Room)[language] + ": " + lesson.room}</p>
             </div>
             {/each}
         </div>
@@ -176,7 +176,6 @@ setInterval(() => {
   position: relative;
 }
 
-/* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
@@ -187,12 +186,10 @@ setInterval(() => {
   border-radius: 6px;
   left: 105%;
   top:30%;
-  /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
 }
 
-/* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
@@ -201,7 +198,7 @@ setInterval(() => {
   content: " ";
   position: absolute;
   top: 50%;
-  right: 100%; /* To the left of the tooltip */
+  right: 100%; 
   margin-top: -5px;
   border-width: 5px;
   border-style: solid;

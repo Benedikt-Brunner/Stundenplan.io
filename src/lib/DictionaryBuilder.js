@@ -50,6 +50,8 @@ export function build_dictionary(){
         new RosettaStone("Neue Gruppe", "New group", "Nuevo grupo"),
         new RosettaStone("Suche", "Search", "Buscar"),
         new RosettaStone("Bist du sicher, dass du den Freund aus der Gruppe entfernen willst?", "Are you sure you want to remove the friend from the group?", "¿Estás seguro de que quieres eliminar al amigo del grupo?"),
+        new RosettaStone("Kurs von ", "Course of ", "Curso de "),
+        new RosettaStone("Strg + klicken um den ganzen Kurs zu importieren", "Crtl + click to import the entire course", "Crtl + clic para importar todo el curso")
     ];
     rosetta_stones.forEach((rosetta_stone, index) => {
         dictionary.set(index, rosetta_stone)
@@ -103,5 +105,7 @@ export const mapping = {
     Empty_groups_will_be_removed: 42,
     New_group: 43,
     Search: 44,
-    Are_you_sure: 45
+    Are_you_sure: 45,
+    Course_of: 46,
+    tooltip: 47
 }
