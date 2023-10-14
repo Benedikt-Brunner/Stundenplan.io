@@ -18,7 +18,10 @@ export const dictionary = build_dictionary();
 
 export function setLanguage(language){
     if(!Object.values(languages).includes(language)){
-        throw new Error("Language not supported");
+        Language_Store.update(store => {
+            store.language = languages.german;
+            return store;
+        });
     }
     Language_Store.update(store => {
         store.language = language;

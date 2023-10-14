@@ -31,7 +31,7 @@ async function set_buddy(e){
 }
 </script>
 
-    <Header data = {data} supabase = {supabase}/>
+    <Header data = {data} supabase = {supabase} styles = {styles}/>
     <PopUp/>
     {#if $comparing.is_comparing}
     <ComparisonTable styles = {styles} bind:buddy = {buddy}/>

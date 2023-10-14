@@ -32,7 +32,7 @@ export function build_dictionary(){
         new RosettaStone("E-Mail", "E-Mail", "Correo electrónico"),
         new RosettaStone("Benutzername", "Username", "Nombre de usuario"),
         new RosettaStone("Freunde", "Friends", "Amigos"),
-        new RosettaStone("Afragen", "Requests", "Solicitudes"),
+        new RosettaStone("Anfragen", "Requests", "Solicitudes"),
         new RosettaStone("Hinzufügen", "Add", "Añadir"),    
         new RosettaStone("Speichern", "Save", "Guardar"),
         new RosettaStone("Name", "Name", "Nombre"),
@@ -51,7 +51,12 @@ export function build_dictionary(){
         new RosettaStone("Suche", "Search", "Buscar"),
         new RosettaStone("Bist du sicher, dass du den Freund aus der Gruppe entfernen willst?", "Are you sure you want to remove the friend from the group?", "¿Estás seguro de que quieres eliminar al amigo del grupo?"),
         new RosettaStone("Kurs von ", "Course of ", "Curso de "),
-        new RosettaStone("Strg + klicken um den ganzen Kurs zu importieren", "Crtl + click to import the entire course", "Crtl + clic para importar todo el curso")
+        new RosettaStone("Strg + klicken um den ganzen Kurs zu importieren", "Crtl + click to import the entire course", "Crtl + clic para importar todo el curso"),
+        new RosettaStone("Du kannst dich nicht selbst entfernen!", "You can't remove yourself!", "¡No puedes eliminarte a ti mismo!"),
+        new RosettaStone("wurde gelöscht!", "has been deleted!", "¡ha sido eliminado!"),
+        new RosettaStone("Freund hinzufügen", "Add friend", "Añadir amigo"),
+        new RosettaStone("Freund entfernen", "Remove friend", "Eliminar amigo"),
+        new RosettaStone("Löschen", "Delete", "Eliminar"),
     ];
     rosetta_stones.forEach((rosetta_stone, index) => {
         dictionary.set(index, rosetta_stone)
@@ -107,5 +112,10 @@ export const mapping = {
     Search: 44,
     Are_you_sure: 45,
     Course_of: 46,
-    tooltip: 47
+    tooltip: 47,
+    You_cant_delete_yourself: 48,
+    was_deleted: 49,
+    Add_friend: 50,
+    Delete_friend: 51,
+    delete: 52,
 }

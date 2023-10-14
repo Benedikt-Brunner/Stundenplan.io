@@ -3,6 +3,8 @@
         import Group from "./group.svelte";
         import Social from "$lib/social.svg"
         import Add_Friend from "$lib/add-friend.svg"
+        import Delete_Friend from "$lib/delete-friend.svg"
+        import Manage_Friends from "$lib/friends-managment.svg"
         import Comparison from "$lib/comparison.svg"
         import Manager from "$lib/manager.svg"
         import Plus from "$lib/Plus.svg"
@@ -14,7 +16,8 @@
         import { get } from 'svelte/store';
 
         export let data;
-        export let supabase 
+        export let supabase;
+        export let styles; 
 
 
           
@@ -26,14 +29,20 @@
           sign_up: 1,
           sign_in: 2
         }
-        let not_logged_in_state = not_logged_in_states.not_decided; 
+        let not_logged_in_state = not_logged_in_states.not_decided;  
+        let friend_manager_states = {
+          not_decided: 0,
+          add_friend: 1,
+          delete_friend: 2
+        }
+        let friend_manager_state = friend_manager_states.not_decided;
         let email
         let password
         let name 
         let focus = false;
         let wait = false;
-        let adder_selected = false;
-        let manager_selected = false;
+        let friend_manager_selected = false;
+        let group_manager_selected = false;
         let friend_name = "";
         let friendsdyn = get(friends).friends
         let requestdyn = get(friends).pending
@@ -145,18 +154,21 @@
         const handleAddFriend = async (friend_name) => {
           if(friend_name == tableData[0].name){
             show_error(dictionary.get(mapping.You_cant_add_yourself)[language]);
-            adder_selected = false;
+            friend_manager_state = friend_manager_states.not_decided;
+            friend_manager_selected = false;
             focus = true;
             return;
           }
 
           if(get(friends).friends.map((friend) => friend.name).includes(friend_name)){
             show_error(`${friend_name} ${dictionary.get(mapping.is_already_your_friend)[language]}`);
-            adder_selected = false;
+            friend_manager_state = friend_manager_states.not_decided;
+            friend_manager_selected = false;
             focus = true;
             return;
           }
-          adder_selected = false;
+          friend_manager_state = friend_manager_states.not_decided;
+          friend_manager_selected = false;
           focus = true;
           let res = await supabase.rpc('add_friend', {id: user.id,friend_name: friend_name})
           if(res.error){
@@ -165,8 +177,35 @@
             if(res.data == false){
               show_error(`${friend_name === "" ? dictionary.get(mapping.Nobody)[language] : friend_name} ${dictionary.get(mapping.doesnt_exist)[language]}`);
             }else{
-              show_success(`${friend_name} ${dictionary.get(mapping.was_added)[language]}`);
+              let newobj = {
+            friends: [],
+            pending: []
+           };
+          newobj.friends = (await supabase.rpc('get_friends', {id: user.id})).data;
+          newobj.pending = (await supabase.rpc('get_friend_requests', {id: user.id})).data;
+          friends.set(newobj);
+              show_success(`${friend_name} ${dictionary.get(mapping.has_received_your_request)[language]}`);
             }
+          }
+        }
+
+        const handleRemoveFriend = async (friend_name) => {
+          if(friend_name == tableData[0].name){
+            show_error(dictionary.get(mapping.You_cant_delete_yourself)[language]);
+            return;
+          }
+          let res = await supabase.rpc('remove_friend', {id: user.id,friend_name: friend_name})
+          if(res.error){
+            show_error(res.error.message);
+          }else{
+            let newobj = {
+            friends: [],
+            pending: []
+           };
+          newobj.friends = (await supabase.rpc('get_friends', {id: user.id})).data;
+          newobj.pending = (await supabase.rpc('get_friend_requests', {id: user.id})).data;
+          friends.set(newobj);
+            show_success(`${friend_name} ${dictionary.get(mapping.was_deleted)[language]}`);
           }
         }
 
@@ -336,11 +375,11 @@
         {#if user}
         <div class="center">
           <div class="wrap">    
-          <button on:click={() =>{if(!adder_selected){manager_selected = true; focus = false; waiter();}}}>
+          <button on:click={() =>{if(!friend_manager_selected){group_manager_selected = true; focus = false; waiter();}}}>
             <img src= {Manager} alt="Manage your friend groupings">
           </button>
           <h3>{dictionary.get(mapping.Friends)[language]}</h3>
-          <button on:click={() =>{if(!manager_selected){adder_selected = true, focus = false; waiter();}}}><img src={Add_Friend} alt="Add a friend"></button>
+          <button on:click={() =>{if(!group_manager_selected){friend_manager_selected = true, focus = false; waiter();}}}><img src={Manage_Friends} alt="Add a friend"></button>
         </div>
         <div class="list">
           {#if groups}
@@ -375,7 +414,7 @@
           {/each}
           {/if}
           {#if friends_with_no_group.length != 0 && groups.length != 0}
-          <h4>{dictionary.get(mapping.Friends_without_group)[language]}:</h4>
+          <h4 id="request_title">{dictionary.get(mapping.Friends_without_group)[language]}:</h4>
           {/if}
           {#each friends_with_no_group as friend}
             <div class = "item">
@@ -389,7 +428,7 @@
             </div>
           {/each}
           {#if requestdyn.length != 0}
-          <h4>{dictionary.get(mapping.Requests)[language]}:</h4>
+          <h4 id="request_title">{dictionary.get(mapping.Requests)[language]}:</h4>
           {/if}
           {#each requestdyn as request}
           <div class="request">
@@ -407,24 +446,60 @@
       </div>
 
 
-      {#if adder_selected}
+      {#if friend_manager_selected}
+      {#if friend_manager_state == friend_manager_states.not_decided}
+      <div class="add_or_remove">
+        <button class="tooltip" on:click={() =>{friend_manager_state = friend_manager_states.add_friend;}}>
+          <img src={Add_Friend} alt="Add Friend">
+          <span class="tooltiptext">{dictionary.get(mapping.Add_friend)[language]}</span>
+        </button>
+        <button class="tooltip" on:click={() =>{friend_manager_state = friend_manager_states.delete_friend;}}>
+          <img src={Delete_Friend} alt="Delete Friend">
+          <span class="tooltiptext">{dictionary.get(mapping.Delete_friend)[language]}</span>
+        </button>
+      </div>
+      {:else if friend_manager_state == friend_manager_states.add_friend}
       <div class="editor">
           <input type="text" placeholder="{dictionary.get(mapping.Name)[language]}#1234" bind:value={friend_name}>
           <button on:click={handleAddFriend(friend_name)}>{dictionary.get(mapping.Add)[language]}</button>
       </div>
+      {:else if friend_manager_state == friend_manager_states.delete_friend}
+      <div class="editor">
+        <div class = "manager">
+          <div class = "manager_header">
+            <div></div>
+            <div></div>
+            <button 
+            on:click={() =>{friend_manager_state = friend_manager_states.not_decided;friend_manager_selected = false; focus = true;}} 
+            style = "--color: 0,0,0; border-radius: 50rem;"
+            >
+            ❌
+          </button>
+          </div>
+          <div class = "group_display">
+              {#each friendsdyn as friend}
+                <div class = "item" id = "friend_to_be_removed">
+                  <p>{friend.name.split('#')[0]}<span>#{friend.name.split('#')[1]}</span></p>
+                  <button on:click={handleRemoveFriend(friend.name)}>{dictionary.get(mapping.delete)[language]}</button>
+                </div>
+              {/each}
+          </div>
+        </div>
+      </div>
+      {/if}
   {/if}
 
-  {#if manager_selected}
+  {#if group_manager_selected}
       <div class="editor">
           <div class = "manager">
             <div class = "manager_header">
               <div></div>
               <h3>{dictionary.get(mapping.Groups)[language]}</h3>
-              <button on:click={() =>{persist();manager_selected = false; focus = true;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
+              <button on:click={() =>{persist();group_manager_selected = false; focus = true;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
             </div>
             <div class = "group_display">
                 {#each groups as group,i}
-                  <Group bind:group = {group} bind:friends_with_no_group = {friends_with_no_group}/>
+                  <Group bind:group = {group} bind:friends_with_no_group = {friends_with_no_group} styles = {styles}/>
                 {/each}
                 <button id="new_group" on:click={add_group}>
                   <img src= {Plus} alt="Add a new group">
@@ -552,12 +627,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
+            width: 90%;
+            padding-inline: 5%;
           }
 
           .request p{
             margin: 0;
-            margin-left: 6%;
+            margin-left: 4%;
           }
 
           .request button{
@@ -750,7 +826,8 @@
     .wrap button{
       border: none;
         border-radius: 50px;
-        padding: 0.2rem;
+        padding-inline: 0.3rem;
+        padding-block: 0.2rem;
         cursor: pointer;
         transition: 0.5s;
         margin-top: 1%;
@@ -790,4 +867,81 @@
             align-items: center;
             margin-left: 12%;
           }
+
+    .add_or_remove{
+      position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1;
+    }
+
+    .add_or_remove button{
+        margin: 5rem;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .add_or_remove button img{
+      height: 3rem;
+      aspect-ratio: 1/1;
+      margin: 5%;
+    }
+
+    .tooltip {
+  position: relative;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  left: 105%;
+  top:30%;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  right: 100%; 
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+
+#friend_to_be_removed{
+  justify-content: center;
+}
+
+#request_title{
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
     </style>

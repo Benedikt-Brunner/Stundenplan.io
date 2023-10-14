@@ -10,6 +10,8 @@
 	});
 	export let group;
     export let friends_with_no_group;
+	export let styles;
+	
 	let search_string = '';
 
 	$: filtered_friends = friends_with_no_group.filter((friend) => {

@@ -98,3 +98,4 @@ export function get_friends_with_no_group(){
     let friends_list = get(friends).friends.filter((friend) => friend.group === null);
     return friends_list;
 }
+

@@ -11,6 +11,7 @@
 
 	export let data;
 	export let supabase;
+	export let styles;
 
 	let { user, tableData } = data;
 	$: ({ user, tableData } = data);
