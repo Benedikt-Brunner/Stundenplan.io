@@ -17,7 +17,17 @@ export const load = async ({ parent }) => {
     return{buddy: "👾"};
   }
 
-  const { data: res } = await supabase.from('meta').select('buddy, rows, days, theme, template, language').eq('user_id', session.user.id)
+  const { data: res, error } = await supabase.from('meta').select('buddy, rows, days, theme, template, language').eq('user_id', session.user.id)
+
+  if (error || res.length == 0) {
+    theme.set("Light");
+    rows.set(7);
+    template.set("University");
+    fullweektoogle.set(false);
+    setLanguage(languages.german);
+    return{buddy: "👾"};
+  }
+
   theme.set(res[0].theme);
   rows.set(res[0].rows);
   template.set(res[0].template);
