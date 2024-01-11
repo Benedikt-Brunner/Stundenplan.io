@@ -17,6 +17,8 @@ onMount(async () => {
     const randonNum = Math.floor(Math.random() * 1000000000);
     const requestOptions = {
     method: 'POST',
+    crossDomain: true,
+    xhrFields: { withCredentials: true },
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username: `test${randonNum}`, password: 'test123' })
 };
