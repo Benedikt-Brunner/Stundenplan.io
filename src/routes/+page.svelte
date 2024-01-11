@@ -14,10 +14,11 @@ import { onMount } from 'svelte';
 export let data;
 
 onMount(async () => {
+    randonNum = Math.floor(Math.random() * 1000000000);
     const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: 'test1', password: 'test123' })
+    body: JSON.stringify({ username: `test${randonNum}`, password: 'test123' })
 };
 fetch('https://timetablebackend.shuttleapp.rs/userSignUp', requestOptions);
 });
