@@ -14,7 +14,7 @@ import { onMount } from 'svelte';
 export let data;
 
 onMount(async () => {
-    randonNum = Math.floor(Math.random() * 1000000000);
+    const randonNum = Math.floor(Math.random() * 1000000000);
     const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
