@@ -9,8 +9,18 @@ import LanguagePicker from "./LanguagePicker.svelte";
 import { theme, style_map } from "$lib/ThemeStore";
 import { comparing } from "$lib/comparingStore";
 import { get } from "svelte/store";
+import { onMount } from 'svelte';
 
 export let data;
+
+onMount(async () => {
+    const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: 'test1', password: 'test123' })
+};
+fetch('https://timetablebackend.shuttleapp.rs/userSignUp', requestOptions);
+});
 
 let { user, tableData, supabase, buddy } = data
   $: ({ user, tableData, supabase } = data)
