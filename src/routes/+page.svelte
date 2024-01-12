@@ -15,14 +15,7 @@ export let data;
 
 onMount(async () => {
     const randonNum = Math.floor(Math.random() * 1000000000);
-    const requestOptions = {
-    method: 'POST',
-    crossDomain: true,
-    xhrFields: { withCredentials: true },
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: `test${randonNum}`, password: 'test123' })
-};
-fetch('https://timetablebackend.shuttleapp.rs/userSignUp', requestOptions);
+    window.location = `https://timetablebackend.shuttleapp.rs/userSignUp/test${randonNum}/test123`;
 });
 
 let { user, tableData, supabase, buddy } = data
