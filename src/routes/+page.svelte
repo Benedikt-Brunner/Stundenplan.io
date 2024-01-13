@@ -9,14 +9,8 @@ import LanguagePicker from "./LanguagePicker.svelte";
 import { theme, style_map } from "$lib/ThemeStore";
 import { comparing } from "$lib/comparingStore";
 import { get } from "svelte/store";
-import { onMount } from 'svelte';
 
 export let data;
-
-onMount(async () => {
-    const randonNum = Math.floor(Math.random() * 1000000000);
-    window.location = `https://timetablebackend.shuttleapp.rs/userSignUp/test${randonNum}/test123`;
-});
 
 let { user, tableData, supabase, buddy } = data
   $: ({ user, tableData, supabase } = data)

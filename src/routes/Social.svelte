@@ -36,7 +36,6 @@
           delete_friend: 2
         }
         let friend_manager_state = friend_manager_states.not_decided;
-        let email
         let password
         let name 
         let focus = false;
@@ -108,15 +107,8 @@
        
       
         const handleSignUp = async () => {
-          const {error} = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              data: { name: name },
-              emailRedirectTo: `${location.origin}/callback`,
-            },
-          })
-          if(error){
+          window.location = `https://timetablebackend.shuttleapp.rs/userSignUp/${name}/${password}`;
+          if(false){
             show_error(error.message);
           }else{
             show_success(dictionary.get(mapping.Successfully_registered_please_confirm_E_Mail)[language])
@@ -125,14 +117,9 @@
         }
       
         const handleSignIn = async () => {
-         const {error} = await supabase.auth.signInWithPassword({
-            email,
-            password,
-          })
-          if(error){
+          if(false){
             show_error(error.message);
           }else{
-            invalidateAll();
             show_success(dictionary.get(mapping.Successfully_signed_in)[language])
             not_logged_in_state = not_logged_in_states.not_decided;
             resetInfo();
@@ -140,9 +127,7 @@
         }
 
         const handleSignOut = async () => {
-          const {error} = await supabase.auth.signOut()
-
-          if(error){
+          if(false){
             show_error(error.message);
           }else{
             invalidateAll();
@@ -170,19 +155,16 @@
           friend_manager_state = friend_manager_states.not_decided;
           friend_manager_selected = false;
           focus = true;
-          let res = await supabase.rpc('add_friend', {id: user.id,friend_name: friend_name})
-          if(res.error){
+          if(false){
             show_error(res.error.message);
           }else{
-            if(res.data == false){
+            if(false){
               show_error(`${friend_name === "" ? dictionary.get(mapping.Nobody)[language] : friend_name} ${dictionary.get(mapping.doesnt_exist)[language]}`);
             }else{
               let newobj = {
             friends: [],
             pending: []
            };
-          newobj.friends = (await supabase.rpc('get_friends', {id: user.id})).data;
-          newobj.pending = (await supabase.rpc('get_friend_requests', {id: user.id})).data;
           friends.set(newobj);
               show_success(`${friend_name} ${dictionary.get(mapping.has_received_your_request)[language]}`);
             }
@@ -194,42 +176,31 @@
             show_error(dictionary.get(mapping.You_cant_delete_yourself)[language]);
             return;
           }
-          let res = await supabase.rpc('remove_friend', {id: user.id,friend_name: friend_name})
-          if(res.error){
+          if(false){
             show_error(res.error.message);
           }else{
             let newobj = {
             friends: [],
             pending: []
            };
-          newobj.friends = (await supabase.rpc('get_friends', {id: user.id})).data;
-          newobj.pending = (await supabase.rpc('get_friend_requests', {id: user.id})).data;
           friends.set(newobj);
             show_success(`${friend_name} ${dictionary.get(mapping.was_deleted)[language]}`);
           }
         }
 
         const handleFriendRequestDeny = async (friend_name) => {
-          let res = await supabase.rpc('deny_friend_requests', {id: user.id, requester: friend_name})
-          console.log(res)
           let newobj = {
             friends: [],
             pending: []
            };
-          newobj.friends = (await supabase.rpc('get_friends', {id: user.id})).data;
-          newobj.pending = (await supabase.rpc('get_friend_requests', {id: user.id})).data;
           friends.set(newobj);
         }
 
         const handleFriendRequestAccept = async (friend_name) => {
-          let res = await supabase.rpc('accept_friend_requests', {id: user.id, requester: friend_name})
-          console.log(res)
           let newobj = {
             friends: [],
             pending: []
            };
-          newobj.friends = (await supabase.rpc('get_friends', {id: user.id})).data;
-          newobj.pending = (await supabase.rpc('get_friend_requests', {id: user.id})).data;
           friends.set(newobj);
         }
 
@@ -300,7 +271,6 @@
     
     function resetInfo(){
       name = "";
-      email = "";
       password = "";
     }
 
@@ -355,7 +325,6 @@
           {:else if not_logged_in_state == not_logged_in_states.sign_up}
           <form>
             <input name="name" bind:value="{name}" placeholder="{dictionary.get(mapping.Username)[language]}"/>
-            <input name="email" bind:value="{email}" placeholder="{dictionary.get(mapping.E_Mail)[language]}"/>
             <input type="password" name="password" bind:value="{password}" placeholder="{dictionary.get(mapping.Password)[language]}"/>
           </form>
           <div class="buttons"> 
@@ -363,7 +332,6 @@
           </div>
           {:else if not_logged_in_state == not_logged_in_states.sign_in}
           <form>
-            <input name="email" bind:value="{email}" placeholder="{dictionary.get(mapping.E_Mail)[language]}"/>
             <input type="password" name="password" bind:value="{password}" placeholder="{dictionary.get(mapping.Password)[language]}"/>
           </form>
           <div class="buttons"> 
