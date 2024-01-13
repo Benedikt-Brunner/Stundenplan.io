@@ -23,7 +23,7 @@ theme.subscribe(value => {
 })
 
 async function test() {
-    await fetch('https://timetablebackend.shuttleapp.rs/index').then(res => res.text).then(data => console.log(data))
+    await fetch('https://timetablebackend.shuttleapp.rs/index').then(res => res.text()).then(data => console.log(data))
 }
 
 $: set_buddy(buddy)
