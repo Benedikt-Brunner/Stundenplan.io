@@ -107,7 +107,7 @@
        
       
         const handleSignUp = async () => {
-          window.location = `https://timetablebackend.shuttleapp.rs/userSignUp/${name}/${password}`;
+          window.location = `https://timetablebackend.shuttleapp.rs/userSignUp?username=${name}&password=${password}`;
           if(false){
             show_error(error.message);
           }else{
