@@ -22,6 +22,10 @@ theme.subscribe(value => {
     styles = style_map.get(value);
 })
 
+async function test() {
+    await fetch('https://timetablebackend.shuttleapp.rs/index').then(res => res.text).then(data => console.log(data))
+}
+
 $: set_buddy(buddy)
 
 async function set_buddy(e){
@@ -30,7 +34,7 @@ async function set_buddy(e){
     }
 }
 </script>
-
+    <button on:click={test}> Test </button>
     <Header data = {data} supabase = {supabase} styles = {styles}/>
     <PopUp/>
     {#if $comparing.is_comparing}
