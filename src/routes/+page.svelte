@@ -26,7 +26,7 @@ async function test() {
     let options ={
         credentials: 'include',
     };
-    await fetch('https://timetablebackend.shuttleapp.rs/index', options).then(res => res.text()).then(data => console.log(data))
+    await fetch('https://timetablebackend.shuttleapp.rs/userInfo', options).then(res => res.text()).then(data => console.log(data))
 }
 
 $: set_buddy(buddy)
