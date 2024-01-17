@@ -40,7 +40,7 @@ async function test() {
             "language": get(Language_Store).language,
         })
     };
-    await fetch('https://timetablebackend.shuttleapp.rs/userInfo', options).then(res => console.log(res.status));
+    await fetch('https://timetablebackend.shuttleapp.rs/setUserMetaData', options).then(res => console.log(res.status));
 }
 
 $: set_buddy(buddy)
