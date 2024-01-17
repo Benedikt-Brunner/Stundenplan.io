@@ -6,6 +6,8 @@ import ComparisonTable from "./comparison_Table.svelte";
 import SavedStatus from "./saved_status.svelte";
 import PopUp from "./PopUp.svelte";
 import LanguagePicker from "./LanguagePicker.svelte";
+import { schedule, rows, template, fullweektoogle } from '$lib/ScheduleStore.js'
+import { Language_Store } from '$lib/LanguageStore.js'
 import { theme, style_map } from "$lib/ThemeStore";
 import { comparing } from "$lib/comparingStore";
 import { get } from "svelte/store";
@@ -24,9 +26,21 @@ theme.subscribe(value => {
 
 async function test() {
     let options ={
+        method: 'POST',
         credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "buddy": buddy,
+            "rows": get(rows),
+            "days": get(fullweektoogle),
+            "theme": get(theme),
+            "template": get(template),
+            "language": get(Language_Store).language,
+        })
     };
-    await fetch('https://timetablebackend.shuttleapp.rs/userInfo', options).then(res => res.text()).then(data => console.log(data))
+    await fetch('https://timetablebackend.shuttleapp.rs/userInfo', options).then(res => console.log(res.status));
 }
 
 $: set_buddy(buddy)
