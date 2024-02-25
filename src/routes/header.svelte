@@ -4,8 +4,8 @@
     import Git from "$lib/github.svg"
     import Options from "./Options.svelte";
     import Social from "./Social.svelte";
-    import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
-    import { comparing } from "$lib/comparingStore";
+    import { Language_Store, dictionary, mapping } from "$lib/Stores/LanguageStore";
+    import { comparing } from "$lib/Stores/comparingStore";
     import { get } from "svelte/store";
 
     export let data;

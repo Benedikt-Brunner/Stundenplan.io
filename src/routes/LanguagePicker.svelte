@@ -3,7 +3,7 @@
     import Flag_de from "$lib/Flags/flag_de.svg"
     import Flag_en from "$lib/Flags/flag_en.svg"
     import Flag_es from "$lib/Flags/flag_es.svg"
-    import { Language_Store, setLanguage, languages } from "$lib/LanguageStore";
+    import { Language_Store, setLanguage, languages } from "$lib/Stores/LanguageStore";
     import { fly } from "svelte/transition";
     import { get } from "svelte/store";
 

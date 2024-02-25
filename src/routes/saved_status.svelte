@@ -1,6 +1,6 @@
 <script>
 // @ts-nocheck
-import { changed } from "$lib/changedStore";
+import { changed } from "$lib/Stores/changedStore";
 import { get } from "svelte/store";
 
 let state_lib = {

@@ -1,9 +1,9 @@
 <script>
     //@ts-nocheck
-import {schedule, fullweektoogle} from "$lib/ScheduleStore.js"
-import { get_table_pattern } from "$lib/comparingStore";
-import { comparing } from "$lib/comparingStore";
-import { mapping,  Language_Store, dictionary } from "$lib/LanguageStore";
+import {schedule, fullweektoogle} from "$lib/Stores/ScheduleStore.js"
+import { get_table_pattern } from "$lib/Stores/comparingStore";
+import { comparing } from "$lib/Stores/comparingStore";
+import { mapping,  Language_Store, dictionary } from "$lib/Stores/LanguageStore";
 import { get } from 'svelte/store';
 import Legend from "./Legend.svelte";
 

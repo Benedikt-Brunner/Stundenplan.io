@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { writable } from "svelte/store";
-import { build_dictionary, mapping as mape } from "./DictionaryBuilder";
+import { build_dictionary, mapping as mape } from "../DictionaryBuilder";
 
 export const languages = {
     spanish: "es",

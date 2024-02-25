@@ -8,12 +8,13 @@
         import Comparison from "$lib/comparison.svg"
         import Manager from "$lib/manager.svg"
         import Plus from "$lib/Plus.svg"
-        import { friends, filterList, get_groups, get_friends_with_no_group } from "$lib/FriendsStore";
-        import { comparing } from "$lib/comparingStore";
-        import { show_error, show_success } from "$lib/PopUpStore";
-        import { Language_Store, dictionary, mapping } from "$lib/LanguageStore";
+        import { friends, filterList, get_groups, get_friends_with_no_group } from "$lib/Stores/FriendsStore";
+        import { comparing } from "$lib/Stores/comparingStore";
+        import { show_error, show_success } from "$lib/Stores/PopUpStore";
+        import { Language_Store, dictionary, mapping } from "$lib/Stores/LanguageStore";
         import { invalidateAll } from "$app/navigation";
         import { get } from 'svelte/store';
+	      import { Routes, TimetableBackendApiService } from "$lib/TimetableBackendApiService";
 
         export let data;
         export let supabase;
@@ -24,12 +25,6 @@
         let { user, tableData } = data
         $: ({ user, tableData } = data)
 
-        let not_logged_in_states = {
-          not_decided: 0,
-          sign_up: 1,
-          sign_in: 2
-        }
-        let not_logged_in_state = not_logged_in_states.not_decided;  
         let friend_manager_states = {
           not_decided: 0,
           add_friend: 1,
@@ -107,7 +102,7 @@
        
       
         const handleSignUp = async () => {
-          window.location = `https://timetablebackend.shuttleapp.rs/userSignUp?username=${name}&password=${password}`;
+          TimetableBackendApiService.redirect(Routes.SignUp);
           if(false){
             show_error(error.message);
           }else{
@@ -317,27 +312,10 @@
         </div>
         <div class="center">
           {#if !user}
-          {#if not_logged_in_state == not_logged_in_states.not_decided}
           <div class="deciders">
-            <button on:click={() =>{not_logged_in_state = not_logged_in_states.sign_in;}}>{dictionary.get(mapping.Sign_in)[language]}</button>
-            <button on:click={() =>{not_logged_in_state = not_logged_in_states.sign_up;}}>{dictionary.get(mapping.Sign_up)[language]}</button>
-          </div>
-          {:else if not_logged_in_state == not_logged_in_states.sign_up}
-          <form>
-            <input name="name" bind:value="{name}" placeholder="{dictionary.get(mapping.Username)[language]}"/>
-            <input type="password" name="password" bind:value="{password}" placeholder="{dictionary.get(mapping.Password)[language]}"/>
-          </form>
-          <div class="buttons"> 
+            <button on:click={handleSignIn}>{dictionary.get(mapping.Sign_in)[language]}</button>
             <button on:click={handleSignUp}>{dictionary.get(mapping.Sign_up)[language]}</button>
           </div>
-          {:else if not_logged_in_state == not_logged_in_states.sign_in}
-          <form>
-            <input type="password" name="password" bind:value="{password}" placeholder="{dictionary.get(mapping.Password)[language]}"/>
-          </form>
-          <div class="buttons"> 
-            <button on:click="{handleSignIn}">{dictionary.get(mapping.Sign_in)[language]}</button>
-          </div>
-          {/if}
           {/if}
         </div>
         {#if user}

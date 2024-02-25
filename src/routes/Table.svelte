@@ -1,11 +1,10 @@
 <script>
     //@ts-nocheck
-import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/ScheduleStore.js"
-import { changed, couting_signal } from "$lib/changedStore";
-import { mapping,  Language_Store, dictionary } from "$lib/LanguageStore";
+import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/Stores/ScheduleStore.js"
+import { changed, couting_signal } from "$lib/Stores/changedStore";
+import { mapping,  Language_Store, dictionary } from "$lib/Stores/LanguageStore";
 import { get } from 'svelte/store';
 import SveltyPicker from 'svelty-picker';
-
 
 export let styles;
 export let supabase;
@@ -205,105 +204,105 @@ setInterval(() => {
   border-color: transparent black transparent transparent;
 }
 
-    .lessons{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        width: 90%;
-        height: 16%;
-        background-color: rgba(180, 184, 189, 0.932);
-        border-radius: 0.5rem;
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
+.lessons{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 16%;
+    background-color: rgba(180, 184, 189, 0.932);
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
 
-    .lesson{
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        height: 80%;
-        width: 10%;
-        margin: 1rem;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        background-color: aliceblue;
-        cursor: pointer;
-        overflow-wrap: break-word;
-    }
+.lesson{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 80%;
+    width: 10%;
+    margin: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: aliceblue;
+    cursor: pointer;
+    overflow-wrap: break-word;
+}
 
-    .lesson h3{
-        font-size: 1rem;
-        margin-block-end: 0.5em;
-    }
-    
+.lesson h3{
+    font-size: 1rem;
+    margin-block-end: 0.5em;
+}
 
-    .editor{
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        background-color: rgba(0,0,0,0.5);
-        z-index: 1;
-    }
 
-    .editor input{
-        margin: 1rem;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        border: none;
-        outline: none;
-    }
+.editor{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1;
+}
 
-    .editor button{
-        margin: 1rem;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        border: none;
-        outline: none;
-        cursor: pointer;
-    }
+.editor input{
+    margin: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    outline: none;
+}
 
-    .center{
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        height: 100vh;
-        margin-top: 5%;
-        z-index: 0;
-    }
-            table{
-        width: 70%;
-        height: 50%;
-        border-collapse: collapse;
-        margin-bottom: 5%;
-    }
+.editor button{
+    margin: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
 
-    th,td{
-        border: 1px solid black;
-        }
-    th{
-        font-size: 2rem;
-        text-align: center;
-    }
+.center{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    margin-top: 5%;
+    z-index: 0;
+}
+        table{
+    width: 70%;
+    height: 50%;
+    border-collapse: collapse;
+    margin-bottom: 5%;
+}
 
-    th input{
-        all:unset;
-        width: 100%;
-        height: 100%;
-        font-size: 2rem;
-        text-align: center;
+th,td{
+    border: 1px solid black;
     }
-    td{
-        font-size: 0.8rem;
-        text-align: start;
-        cursor: pointer;
-    }
+th{
+    font-size: 2rem;
+    text-align: center;
+}
+
+th input{
+    all:unset;
+    width: 100%;
+    height: 100%;
+    font-size: 2rem;
+    text-align: center;
+}
+td{
+    font-size: 0.8rem;
+    text-align: start;
+    cursor: pointer;
+}
 </style>

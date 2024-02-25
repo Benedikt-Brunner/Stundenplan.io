@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import lightstyles from "./lightstyles";
+import lightstyles from "../lightstyles";
 
 export const theme = writable("Light");
 

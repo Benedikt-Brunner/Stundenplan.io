@@ -1,6 +1,6 @@
 <script>
     //@ts-nocheck
-    import { PopUpStore, states} from "$lib/PopUpStore";
+    import { PopUpStore, states} from "$lib/Stores/PopUpStore";
     import { fly } from "svelte/transition";
 
 

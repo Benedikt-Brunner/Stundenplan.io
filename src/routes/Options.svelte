@@ -1,13 +1,13 @@
 <script>
 	//@ts-nocheck
-	import { theme } from '$lib/ThemeStore';
+	import { theme } from '$lib/Stores/ThemeStore';
 	import Options from '$lib/Options.svg';
-	import { rows } from '$lib/ScheduleStore.js';
-	import { template as templateStore } from '$lib/ScheduleStore.js';
-	import { Language_Store, dictionary, mapping } from '$lib/LanguageStore';
-	import { fullweektoogle } from '$lib/ScheduleStore.js';
+	import { rows } from '$lib/Stores/ScheduleStore.js';
+	import { template as templateStore } from '$lib/Stores/ScheduleStore.js';
+	import { Language_Store, dictionary, mapping } from '$lib/Stores/LanguageStore';
+	import { fullweektoogle } from '$lib/Stores/ScheduleStore.js';
 	import { get } from 'svelte/store';
-	import { couting_signal } from '$lib/changedStore';
+	import { couting_signal } from '$lib/Stores/changedStore';
 
 	export let data;
 	export let supabase;

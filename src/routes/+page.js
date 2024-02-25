@@ -1,10 +1,10 @@
 // src/routes/profile/+page.ts
 //@ts-nocheck
-import { friends } from '$lib/FriendsStore.js' 
-import { schedule, rows, template, fullweektoogle } from '$lib/ScheduleStore.js'
-import { setLanguage, languages } from '$lib/LanguageStore.js'
-import { couting_signal } from '$lib/changedStore.js'
-import { theme } from '$lib/ThemeStore.js'
+import { friends } from '$lib/Stores/FriendsStore.js' 
+import { schedule, rows, template, fullweektoogle } from '$lib/Stores/ScheduleStore.js'
+import { setLanguage, languages } from '$lib/Stores/LanguageStore.js'
+import { couting_signal } from '$lib/Stores/changedStore.js'
+import { theme } from '$lib/Stores/ThemeStore.js'
 
 export const load = async () => {
   if (true) {

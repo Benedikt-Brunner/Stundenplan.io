@@ -1,6 +1,6 @@
 <script>
 	//@ts-nocheck
-	import { Language_Store, dictionary, mapping } from '$lib/LanguageStore';
+	import { Language_Store, dictionary, mapping } from '$lib/Stores/LanguageStore';
 	import { get } from 'svelte/store';
 
 	let language = get(Language_Store).language;

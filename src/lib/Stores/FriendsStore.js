@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { get, writable } from "svelte/store";
-import Lesson from "./Lesson.js";
+import Lesson from "../Lesson.js";
 
 export let friends = writable({
     friends: [{}],
