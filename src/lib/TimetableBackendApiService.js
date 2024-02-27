@@ -18,7 +18,7 @@ export const TimetableBackendApiService = {
             error = e;
         }
 
-        return { res: await res.json(), error };
+        return { res: res, error };
     },
 
     async post(page, data) {
@@ -36,7 +36,7 @@ export const TimetableBackendApiService = {
             error = e;
         }
 
-        return { res: await res.json(), error };
+        return { res: res, error };
     },
 
     async put(page, data) {
@@ -54,7 +54,7 @@ export const TimetableBackendApiService = {
             error = e;
         }
 
-        return { res: await res.json(), error };
+        return { res: res, error };
     },
 
     redirect(page) {   

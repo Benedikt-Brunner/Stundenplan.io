@@ -10,9 +10,7 @@ import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiServ
 export const load = async () => {
   let { res, error } = await TimetableBackendApiService.get(Routes.UserData, {});
 
-  console.log(res, error);
-
-  if (error || res.length == 0) {
+  if (error || res.status !== 200) {
     theme.set("Light");
     rows.set(7);
     template.set("University");
@@ -20,6 +18,12 @@ export const load = async () => {
     setLanguage(languages.german);
     return{buddy: "👾"};
   }
+
+  const data = await res.json();
+
+  console.log(data);
+
+  return;
 
   theme.set(res[0].theme);
   rows.set(res[0].rows);
