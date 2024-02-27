@@ -13,7 +13,10 @@ export const TimetableBackendApiService = {
         let res;
         let error;
         try {
-            res = await fetch(API_URL + page);
+            res = await fetch(API_URL + page, {
+                method: 'GET',
+                credentials: 'include',
+            });
         } catch (e) {
             error = e;
         }
@@ -27,6 +30,7 @@ export const TimetableBackendApiService = {
         try {
             res = await fetch(API_URL + page, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -45,6 +49,7 @@ export const TimetableBackendApiService = {
         try {
             res = await fetch(API_URL + page, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
