@@ -3,6 +3,7 @@ const API_URL = 'https://timetablebackend.shuttleapp.rs/';
 
 export const Routes = {
     SignUp: 'userSignUp',
+    SignIn: 'userSignIn',
 }
 
 export const TimetableBackendApiService = {

@@ -112,6 +112,7 @@
         }
       
         const handleSignIn = async () => {
+          TimetableBackendApiService.redirect(Routes.SignIn);
           if(false){
             show_error(error.message);
           }else{
