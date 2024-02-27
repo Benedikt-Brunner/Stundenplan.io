@@ -16,7 +16,7 @@ export const load = async () => {
     template.set("University");
     fullweektoogle.set(false);
     setLanguage(languages.german);
-    return{buddy: "👾"};
+    return {buddy: "👾"};
   }
 
   const data = await res.json();

@@ -12,8 +12,13 @@ import { Language_Store } from '$lib/Stores/LanguageStore.js'
 import { theme, style_map } from "$lib/Stores/ThemeStore";
 import { comparing } from "$lib/Stores/comparingStore";
 import { get } from "svelte/store";
+import { onMount } from "svelte";
 
-const data = await load();
+let data = {buddy: "👾"};
+
+onMount(async () => {
+    data = await load();
+});
 
 let { user, tableData, supabase, buddy } = data
   $: ({ user, tableData, supabase } = data)
