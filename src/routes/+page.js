@@ -8,7 +8,7 @@ import { theme } from '$lib/Stores/ThemeStore.js'
 import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService'
 
 export const load = async () => {
-  let { res, error } = await TimetableBackendApiService.get(Routes.UserData);
+  let { res, error } = await TimetableBackendApiService.get(Routes.UserData, {});
 
   console.log(res, error);
 
