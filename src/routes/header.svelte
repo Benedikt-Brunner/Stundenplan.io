@@ -8,12 +8,8 @@
     import { comparing } from "$lib/Stores/comparingStore";
     import { get } from "svelte/store";
 
-    export let data;
-    export let supabase;
     export let styles;
-
-    let { user, tableData } = data
-    $: ({ user, tableData } = data)
+    export let user;
 
     let language = get(Language_Store).language;
 
@@ -25,11 +21,11 @@
 
 <nav>
     <h2>Stundenplan.io</h2>
-    <h3>{dictionary.get(mapping.Greeting)[language]}, {#if tableData}{tableData[0].name.split('#')[0]} <span>#{tableData[0].name.split('#')[1]}</span>{:else} Guest {/if}</h3>
+    <h3>{dictionary.get(mapping.Greeting)[language]}, {#if user}{user.name}{:else} Guest {/if}</h3>
     {#if !$comparing.is_comparing}
-    <Options data = {data} supabase = {supabase} styles = {styles}/>
+    <Options user = {user} styles = {styles}/>
     {/if}
-    <Social data = {data} supabase = {supabase} styles = {styles}/>
+    <Social user = {user} styles = {styles}/>
     <a href="https://github.com/Benedikt-Brunner/Timetable"><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;"></a>
 </nav>
 

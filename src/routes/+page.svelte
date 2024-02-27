@@ -20,8 +20,8 @@ onMount(async () => {
     data = await load();
 });
 
-let { user, tableData, supabase, buddy } = data
-  $: ({ user, tableData, supabase } = data)
+let { user, buddy } = data
+  $: ({ user, buddy } = data)
 
 //TODO: implements themes in the rest of the app
 let styles = style_map.get(get(theme));
@@ -58,21 +58,16 @@ async function set_buddy(e){
 }
 </script>
     <button on:click={test}> Test </button>
-    <Header data = {data} supabase = {supabase} styles = {styles}/>
+    <Header user = {user} styles = {styles}/>
     <PopUp/>
     {#if $comparing.is_comparing}
     <ComparisonTable styles = {styles} bind:buddy = {buddy}/>
     {:else}
-    <Table styles = {styles} supabase = {supabase} user = {user} bind:buddy = {buddy}/>
+    <Table styles = {styles} user = {user} bind:buddy = {buddy}/>
     {/if}
 
-    {#if tableData && !$comparing.is_comparing}
+    {#if !$comparing.is_comparing}
     <SavedStatus/>
     {/if}
-    <LanguagePicker supabase = {supabase} user = {user}/>
+    <LanguagePicker user = {user}/>
     
-    
-
-
-
-

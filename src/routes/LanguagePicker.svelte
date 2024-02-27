@@ -7,7 +7,6 @@
     import { fly } from "svelte/transition";
     import { get } from "svelte/store";
 
-    export let supabase;
     export let user;
 
     let focus = false;
@@ -26,13 +25,19 @@
 
 {#if focus}
 <div class="language_picker">
-    <button class="flag_wrap"  on:click={async () => {setLanguage(languages.german); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.german }).eq( 'user_id', user.id ).select()};}}>
+    <button class="flag_wrap"  on:click={async () => {setLanguage(languages.german); focus = !focus; if(user){
+        //TODO: implement a function that updates the language in the database
+    }}}>
         <img src={Flag_de} alt="Deutsch"/>
     </button>
-    <button class="flag_wrap" in:fly = {get_params(1)} on:click={async () => {setLanguage(languages.english); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.english }).eq( 'user_id', user.id ).select()};}}>
+    <button class="flag_wrap" in:fly = {get_params(1)} on:click={async () => {setLanguage(languages.english); focus = !focus; if(user){
+        //TODO: implement a function that updates the language in the database
+    };}}>
         <img src={Flag_en} alt="English"/>
     </button>
-    <button class="flag_wrap" in:fly = {get_params(2)} on:click={async () => {setLanguage(languages.spanish); focus = !focus; if(user){const {_, error} = await supabase.from('meta').update({ language: languages.spanish }).eq( 'user_id', user.id ).select()};}}>
+    <button class="flag_wrap" in:fly = {get_params(2)} on:click={async () => {setLanguage(languages.spanish); focus = !focus; if(user){
+        //TODO: implement a function that updates the language in the database
+    };}}>
         <img src={Flag_es} alt="Español"/>
     </button>
 </div>

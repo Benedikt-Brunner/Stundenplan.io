@@ -7,7 +7,6 @@ import { get } from 'svelte/store';
 import SveltyPicker from 'svelty-picker';
 
 export let styles;
-export let supabase;
 export let user;
 export let buddy;
 
@@ -36,7 +35,7 @@ async function persist_on_exit(e){
     // Chrome requires returnValue to be set.
     e.returnValue = '';
     let data = get(schedule);
-    const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
+    //TODO: implement a function that updates the schedule in the database
     if(res){
         changed_loc = false;
     }
@@ -45,7 +44,7 @@ async function persist_on_exit(e){
 async function persist(){
     if(!changed_loc || !user) return;
     let data = get(schedule);
-    const res = (await supabase.rpc('persist_schedule', {id: user.id, schedule: data})).data;
+    //TODO: implement a function that updates the schedule in the database
     if(res){
         changed_loc = false;
     }

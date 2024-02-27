@@ -12,18 +12,11 @@
         import { comparing } from "$lib/Stores/comparingStore";
         import { show_error, show_success } from "$lib/Stores/PopUpStore";
         import { Language_Store, dictionary, mapping } from "$lib/Stores/LanguageStore";
-        import { invalidateAll } from "$app/navigation";
         import { get } from 'svelte/store';
 	      import { Routes, TimetableBackendApiService } from "$lib/TimetableBackendApiService";
 
-        export let data;
-        export let supabase;
+        export let user;
         export let styles; 
-
-
-          
-        let { user, tableData } = data
-        $: ({ user, tableData } = data)
 
         let friend_manager_states = {
           not_decided: 0,
@@ -31,8 +24,6 @@
           delete_friend: 2
         }
         let friend_manager_state = friend_manager_states.not_decided;
-        let password
-        let name 
         let focus = false;
         let wait = false;
         let friend_manager_selected = false;
@@ -81,15 +72,13 @@
         function persist_group(group){
           group.friends.forEach(async (friend) =>{
             if(group.name !== get_from_friends(friend).group){
-              const res = await supabase.rpc('change_friend_group', {id: user.id, friend: friend.name, new_group: group.name})
-              console.log(res)
+              //TODO: implement a function that updates the group in the database
             }
           })
         }
         async function persist_non_group_members(friend){
           if(get_from_friends(friend).group !== null){
-            let res = await supabase.rpc('null_friend_group', {id: user.id, friend: friend.name})
-            console.log(res)
+            //TODO: implement a function that removes the group in the database
           }
         }
 
@@ -132,6 +121,7 @@
           friend_manager_state = friend_manager_states.not_decided;
           friend_manager_selected = false;
           focus = true;
+          //TODO: implement a function that adds the friend request in the database
           if(false){
             show_error(res.error.message);
           }else{
@@ -153,6 +143,8 @@
             show_error(dictionary.get(mapping.You_cant_delete_yourself)[language]);
             return;
           }
+
+          //TODO: implement a function that removes the friend in the database
           if(false){
             show_error(res.error.message);
           }else{
@@ -166,6 +158,7 @@
         }
 
         const handleFriendRequestDeny = async (friend_name) => {
+          //TODO: implement a function that removes the friend request in the database
           let newobj = {
             friends: [],
             pending: []
@@ -174,6 +167,7 @@
         }
 
         const handleFriendRequestAccept = async (friend_name) => {
+          //TODO: implement a function that adds the friend in the database
           let newobj = {
             friends: [],
             pending: []
@@ -245,11 +239,6 @@
             friend: group.friends
         })
     }
-    
-    function resetInfo(){
-      name = "";
-      password = "";
-    }
 
     function add_group(){
       let colors = [
@@ -278,6 +267,7 @@
       }
     }
       </script>
+
 <svelte:window on:beforeunload = {persist}/>
 
       <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -290,7 +280,7 @@
           {:else}
           <div></div>
           {/if}
-          <button id = "exit" on:click={() =>{waiter(); focus = false; not_logged_in_state = not_logged_in_states.not_decided;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
+          <button id = "exit" on:click={() =>{waiter(); focus = false;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
         </div>
         <div class="center">
           {#if !user}
@@ -334,7 +324,7 @@
             <div class="comparison-box" on:click={() =>{show_comparison(friend)}}>
               <img src= {Comparison} alt="compare the players">
             </div>
-            <p>{friend.name.split('#')[0]}<span>#{friend.name.split('#')[1]}</span></p>
+            <p>{friend.name}</p>
           <input type="checkbox" checked = {!get(filterList).includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
           </div>
         {/each}
@@ -388,7 +378,7 @@
       </div>
       {:else if friend_manager_state == friend_manager_states.add_friend}
       <div class="editor">
-          <input type="text" placeholder="{dictionary.get(mapping.Name)[language]}#1234" bind:value={friend_name}>
+          <input type="text" placeholder="{dictionary.get(mapping.Name)[language]}" bind:value={friend_name}>
           <button on:click={handleAddFriend(friend_name)}>{dictionary.get(mapping.Add)[language]}</button>
       </div>
       {:else if friend_manager_state == friend_manager_states.delete_friend}
@@ -407,7 +397,7 @@
           <div class = "group_display">
               {#each friendsdyn as friend}
                 <div class = "item" id = "friend_to_be_removed">
-                  <p>{friend.name.split('#')[0]}<span>#{friend.name.split('#')[1]}</span></p>
+                  <p>{friend.name}</p>
                   <button on:click={handleRemoveFriend(friend.name)}>{dictionary.get(mapping.delete)[language]}</button>
                 </div>
               {/each}

@@ -3,8 +3,6 @@
     import { PopUpStore, states} from "$lib/Stores/PopUpStore";
     import { fly } from "svelte/transition";
 
-
-
     let state = states.none;
     let message = "";
     let life_time = 4000;

@@ -9,12 +9,8 @@
 	import { get } from 'svelte/store';
 	import { couting_signal } from '$lib/Stores/changedStore';
 
-	export let data;
-	export let supabase;
+	export let user;
 	export let styles;
-
-	let { user, tableData } = data;
-	$: ({ user, tableData } = data);
 
 	let focus = false;
 	let colorRGB = '';
@@ -81,11 +77,7 @@
 	async function updateDays(e) {
 		fullweektoogle.set(dynDays);
 		if (user) {
-			const { data, error } = await supabase
-				.from('meta')
-				.update({ days: dynDays })
-				.eq( 'user_id', user.id )
-				.select();
+			//TODO: implement a function that updates the days in the database
             couting_signal.update((old) => old + 1);
 		}
 	}
@@ -96,11 +88,7 @@
 			updateRows(dynamicRows);
 		}
 		if (user) {
-			const { data, error } = await supabase
-				.from('meta')
-				.update({ template: template })
-				.eq( 'user_id', user.id )
-				.select();
+				//TODO: implement a function that updates the template in the database
                 couting_signal.update((old) => old + 1);
 		}
 	}
@@ -110,11 +98,8 @@
 		dynamicRows = dynamicRows > 30 ? 30 : dynamicRows;
 		rows.set(dynamicRows);
 		if (user) {
-			const { data, error } = await supabase
-				.from('meta')
-				.update({ rows: dynamicRows })
-				.eq( 'user_id', user.id )
-				.select();
+				//TODO: implement a function that updates the rows in the database
+                couting_signal.update((old) => old + 1);
 		}
 	}
 
@@ -177,13 +162,9 @@
 							on:click={async () => {
 								theme.set(t);
 								if (user) {
-									const { data, error } = await supabase
-										.from('meta')
-										.update({ theme: t })
-										.eq( 'user_id', user.id )
-										.select();
-								}
-							}}>{dictionary.get(theme_to_mapping.get(t))[language]}</button
+								//TODO: implement a function that updates the theme in the database
+								couting_signal.update((old) => old + 1);
+							}}}>{dictionary.get(theme_to_mapping.get(t))[language]}</button
 						>
 					{/if}
 				{/each}

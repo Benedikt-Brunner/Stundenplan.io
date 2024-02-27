@@ -16,20 +16,21 @@ export const load = async () => {
     template.set("University");
     fullweektoogle.set(false);
     setLanguage(languages.german);
-    return {buddy: "👾"};
+    return {
+      user: {
+        name: "User"
+      },
+      buddy: "👾"
+    };
   }
 
   const data = await res.json();
 
-  console.log(data);
-
-  return;
-
-  theme.set(res[0].theme);
-  rows.set(res[0].rows);
-  template.set(res[0].template);
-  fullweektoogle.set(res[0].days);
-  setLanguage(res[0].language);
+  theme.set(data.meta.theme);
+  rows.set(data.meta.rows);
+  template.set(data.meta.template);
+  fullweektoogle.set(data.meta.days);
+  setLanguage(data.meta.language);
   couting_signal.update(n => n + 1);
   
 // set schedule
@@ -41,9 +42,10 @@ export const load = async () => {
   friends.set(newobj);
   
   return {
-    user: "",
-    tableData,
-    buddy: res[0].buddy
+    user: {
+      name: data.username
+    },
+    buddy: data.meta.buddy,
   }
 }
 
