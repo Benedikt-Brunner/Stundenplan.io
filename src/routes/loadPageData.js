@@ -39,10 +39,10 @@ export const load = async () => {
     pending: []
   };
   friends.set(newobj);
+  
   return {
     user: "",
     tableData,
-    supabase,
     buddy: res[0].buddy
   }
 }

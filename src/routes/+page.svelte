@@ -6,13 +6,14 @@ import ComparisonTable from "./comparison_Table.svelte";
 import SavedStatus from "./saved_status.svelte";
 import PopUp from "./PopUp.svelte";
 import LanguagePicker from "./LanguagePicker.svelte";
+import { load } from "./loadPageData";
 import { schedule, rows, template, fullweektoogle } from '$lib/Stores/ScheduleStore.js'
 import { Language_Store } from '$lib/Stores/LanguageStore.js'
 import { theme, style_map } from "$lib/Stores/ThemeStore";
 import { comparing } from "$lib/Stores/comparingStore";
 import { get } from "svelte/store";
 
-export let data;
+const data = await load();
 
 let { user, tableData, supabase, buddy } = data
   $: ({ user, tableData, supabase } = data)
