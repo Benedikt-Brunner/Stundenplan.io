@@ -5,16 +5,12 @@ import { schedule, rows, template, fullweektoogle } from '$lib/Stores/ScheduleSt
 import { setLanguage, languages } from '$lib/Stores/LanguageStore.js'
 import { couting_signal } from '$lib/Stores/changedStore.js'
 import { theme } from '$lib/Stores/ThemeStore.js'
+import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService'
 
 export const load = async () => {
-  if (true) {
-    theme.set("Light");
-    rows.set(7);
-    template.set("University");
-    fullweektoogle.set(false);
-    setLanguage(languages.german);
-    return{buddy: "👾"};
-  }
+  let { res, error } = await TimetableBackendApiService.get(Routes.UserData);
+
+  console.log(res, error);
 
   if (error || res.length == 0) {
     theme.set("Light");

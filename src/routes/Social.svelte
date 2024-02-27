@@ -103,33 +103,14 @@
       
         const handleSignUp = async () => {
           TimetableBackendApiService.redirect(Routes.SignUp);
-          if(false){
-            show_error(error.message);
-          }else{
-            show_success(dictionary.get(mapping.Successfully_registered_please_confirm_E_Mail)[language])
-            resetInfo();
-          }
         }
       
         const handleSignIn = async () => {
           TimetableBackendApiService.redirect(Routes.SignIn);
-          if(false){
-            show_error(error.message);
-          }else{
-            show_success(dictionary.get(mapping.Successfully_signed_in)[language])
-            not_logged_in_state = not_logged_in_states.not_decided;
-            resetInfo();
-          }
         }
 
         const handleSignOut = async () => {
-          if(false){
-            show_error(error.message);
-          }else{
-            invalidateAll();
-            not_logged_in_state = not_logged_in_states.not_decided;
-            show_success(dictionary.get(mapping.Successfully_signed_out)[language])
-          }
+          TimetableBackendApiService.redirect(Routes.SignOut);
         }
 
         const handleAddFriend = async (friend_name) => {
