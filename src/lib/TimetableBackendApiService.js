@@ -96,14 +96,17 @@ export const TimetableBackendApiService = {
 
 
     async retrieveFriendsData() {
-        const { friends, friendsError } = await this.get(Routes.GetFriends);
-        const { pending, pendingError } = await this.get(Routes.GetFriendRequests);
+        const { friendsResponse, friendsError } = await this.get(Routes.GetFriends);
+        const { pendingResponse, pendingError } = await this.get(Routes.GetFriendRequests);
 
-        if (friendsError || pendingError) {
+        if (friendsError || pendingError || friendsResponse.status !== 200 || pendingResponse.status !== 200) {
             show_error(`Failed to retrieve friends data. ${friendsError?.message || pendingError?.message}`);
 
             return { friends: [], pending: [] };
         }
+
+        const friends = await friendsResponse.json();
+        const pending = await pendingResponse.json();
 
         return { friends, pending };
     },
