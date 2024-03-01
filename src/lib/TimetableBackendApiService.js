@@ -96,8 +96,8 @@ export const TimetableBackendApiService = {
 
 
     async retrieveFriendsData() {
-        const { friendsResponse, friendsError } = await this.get(Routes.GetFriends);
-        const { pendingResponse, pendingError } = await this.get(Routes.GetFriendRequests);
+        const { res: friendsResponse, error: friendsError } = await this.get(Routes.GetFriends);
+        const { res: pendingResponse, error: pendingError } = await this.get(Routes.GetFriendRequests);
 
         console.log(friendsResponse, pendingResponse, friendsError, pendingError);
 
