@@ -99,8 +99,6 @@ export const TimetableBackendApiService = {
         const { res: friendsResponse, error: friendsError } = await this.get(Routes.GetFriends);
         const { res: pendingResponse, error: pendingError } = await this.get(Routes.GetFriendRequests);
 
-        console.log(friendsResponse, pendingResponse, friendsError, pendingError);
-
         if (friendsError || pendingError || friendsResponse?.status !== 200 || pendingResponse?.status !== 200) {
             show_error(`Failed to retrieve friends data. ${friendsError?.message || pendingError?.message}`);
 

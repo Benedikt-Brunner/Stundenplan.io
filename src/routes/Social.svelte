@@ -140,7 +140,7 @@
           friend_manager_selected = false;
           focus = true;
          
-          const { res, error } = await TimetableBackendApiService.post(Routes.AddFriend, {
+          const { res, error } = await TimetableBackendApiService.post(Routes.OpenFriendRequest, {
             friend_name,
           });
 
