@@ -145,7 +145,7 @@
           });
 
           if(error){
-            show_error(res.error.message);
+            show_error(error.message);
           }else{
             if(res.status !== 200){
               show_error(`${friend_name === "" ? dictionary.get(mapping.Nobody)[language] : friend_name} ${dictionary.get(mapping.doesnt_exist)[language]}`);
@@ -167,7 +167,7 @@
           });
 
           if(error){
-            show_error(res.error.message);
+            show_error(error.message);
           }else{
             friends.set(await TimetableBackendApiService.retrieveFriendsData());
             show_success(`${friend_name} ${dictionary.get(mapping.was_deleted)[language]}`);
@@ -180,7 +180,7 @@
           });
 
           if(error){
-            show_error(res.error.message);
+            show_error(error.message);
           }else{
             friends.set(await TimetableBackendApiService.retrieveFriendsData());
           }
@@ -192,7 +192,7 @@
           });
 
           if(error){
-            show_error(res.error.message);
+            show_error(error.message);
           }else{
             friends.set(await TimetableBackendApiService.retrieveFriendsData());
           }
