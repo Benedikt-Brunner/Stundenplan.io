@@ -78,7 +78,7 @@
             if(group.name !== get_from_friends(friend).group){
               const { _, error } = await TimetableBackendApiService.post(Routes.AddGroup, {
               friend,
-              group,
+              personal_grouping: group,
             })
 
             if (error) {
@@ -91,7 +91,7 @@
         async function persist_non_group_members(friend){
           if(get_from_friends(friend).group !== null){
             const { _, error } = await TimetableBackendApiService.post(Routes.RemoveGroup, {
-              friend,
+              friend_name: friend,
             })
 
             if (error) {
