@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { get, writable } from "svelte/store";
 import Lesson from "../Lesson.js";
-import { fr } from "svelty-picker/dist/i18n/index.js";
 
 export let friends = writable({
     friends: [],
