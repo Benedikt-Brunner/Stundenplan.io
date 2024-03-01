@@ -3,8 +3,8 @@ import { get, writable } from "svelte/store";
 import Lesson from "../Lesson.js";
 
 export let friends = writable({
-    friends: [{}],
-    pending: [""]
+    friends: [],
+    pending: []
 });
 
 export let filterList = writable([]);

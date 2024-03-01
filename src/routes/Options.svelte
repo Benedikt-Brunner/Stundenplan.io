@@ -8,8 +8,10 @@
 	import { fullweektoogle } from '$lib/Stores/ScheduleStore.js';
 	import { get } from 'svelte/store';
 	import { couting_signal } from '$lib/Stores/changedStore';
+	import { usernameStore } from '$lib/Stores/userStore';
+	import { TimetableBackendApiService } from '$lib/TimetableBackendApiService';
+	import { show_error } from '$lib/Stores/PopUpStore';
 
-	export let user;
 	export let styles;
 
 	let focus = false;
@@ -37,9 +39,14 @@
 	template_to_mapping.set('Custom', mapping.Custom);
 
 	let language = get(Language_Store).language;
+	let username = get(usernameStore);
 
 	Language_Store.subscribe((value) => {
 		language = value.language;
+	});
+
+	usernameStore.subscribe((value) => {
+		username = value;
 	});
 
 	let settings = ['Theme', 'Template', 'Days'];
@@ -76,9 +83,13 @@
 
 	async function updateDays(e) {
 		fullweektoogle.set(dynDays);
-		if (user) {
-			//TODO: implement a function that updates the days in the database
-            couting_signal.update((old) => old + 1);
+		if (username) {
+			const { res, error} = await TimetableBackendApiService.updateMetadata({fullweektoogle: dynDays});
+			if (res) {
+            	couting_signal.update((old) => old + 1);
+			} else {
+				show_error(error.message);
+			}
 		}
 	}
 
@@ -87,9 +98,16 @@
 		if (template == 'Custom') {
 			updateRows(dynamicRows);
 		}
-		if (user) {
-				//TODO: implement a function that updates the template in the database
-                couting_signal.update((old) => old + 1);
+
+		const updateRows = template == 'Custom' ? dynamicRows : null;
+
+		if (username) {
+			const { res, error} = await TimetableBackendApiService.updateMetadata({template, rows: updateRows});
+			if (res) {
+            	couting_signal.update((old) => old + 1);
+			} else {
+				show_error(error.message);
+			}
 		}
 	}
 
@@ -97,9 +115,13 @@
 		dynamicRows = dynamicRows < 1 ? 1 : dynamicRows;
 		dynamicRows = dynamicRows > 30 ? 30 : dynamicRows;
 		rows.set(dynamicRows);
-		if (user) {
-				//TODO: implement a function that updates the rows in the database
-                couting_signal.update((old) => old + 1);
+		if (username) {
+			const { res, error} = await TimetableBackendApiService.updateMetadata({rows: dynamicRows});
+			if (res) {
+            	couting_signal.update((old) => old + 1);
+			} else {
+				show_error(error.message);
+			}
 		}
 	}
 
@@ -161,9 +183,13 @@
 							style="--color: {colormap.get(t)}; color: {DarkText.includes(t) ? 'black' : 'white'}"
 							on:click={async () => {
 								theme.set(t);
-								if (user) {
-								//TODO: implement a function that updates the theme in the database
-								couting_signal.update((old) => old + 1);
+								if (username) {
+									const { res, error} = await TimetableBackendApiService.updateMetadata({theme: t});
+									if (res) {
+										couting_signal.update((old) => old + 1);
+									} else {
+										show_error(error.message);
+									}
 							}}}>{dictionary.get(theme_to_mapping.get(t))[language]}</button
 						>
 					{/if}

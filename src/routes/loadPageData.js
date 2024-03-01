@@ -6,9 +6,10 @@ import { setLanguage, languages } from '$lib/Stores/LanguageStore.js'
 import { couting_signal } from '$lib/Stores/changedStore.js'
 import { theme } from '$lib/Stores/ThemeStore.js'
 import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService'
+import { buddyStore, usernameStore } from '$lib/Stores/userStore'
 
 export const load = async () => {
-  let { res, error } = await TimetableBackendApiService.get(Routes.UserData);
+  const { res, error } = await TimetableBackendApiService.get(Routes.UserData);
 
   if (error || res.status !== 200) {
     theme.set("Light");
@@ -16,12 +17,9 @@ export const load = async () => {
     template.set("University");
     fullweektoogle.set(false);
     setLanguage(languages.german);
-    return {
-      user: {
-        name: "User"
-      },
-      buddy: "👾"
-    };
+    buddyStore.set('👾');	
+
+    return;
   }
 
   const data = await res.json();
@@ -32,21 +30,10 @@ export const load = async () => {
   fullweektoogle.set(data.meta.days);
   setLanguage(data.meta.language);
   couting_signal.update(n => n + 1);
-  
-// set schedule
-  
-  let newobj = {
-    friends: [],
-    pending: []
-  };
-  friends.set(newobj);
-  
-  return {
-    user: {
-      name: data.username
-    },
-    buddy: data.meta.buddy,
-  }
+
+  friends.set(await TimetableBackendApiService.retrieveFriendsData());
+  usernameStore.set(data.username);
+  buddyStore.set(data.meta.buddy);
 }
 
 

@@ -1,79 +1,103 @@
 <script>
     //@ts-nocheck
-import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/Stores/ScheduleStore.js"
-import { changed, couting_signal } from "$lib/Stores/changedStore";
-import { mapping,  Language_Store, dictionary } from "$lib/Stores/LanguageStore";
-import { get } from 'svelte/store';
-import SveltyPicker from 'svelty-picker';
+    import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/Stores/ScheduleStore.js"
+    import { changed, couting_signal } from "$lib/Stores/changedStore";
+    import { mapping,  Language_Store, dictionary } from "$lib/Stores/LanguageStore";
+    import { get } from 'svelte/store';
+    import SveltyPicker from 'svelty-picker';
+    import { usernameStore, buddyStore } from "$lib/Stores/userStore";
+    import { Routes, TimetableBackendApiService } from "$lib/TimetableBackendApiService";
+    import { show_error } from "$lib/Stores/PopUpStore";
 
-export let styles;
-export let user;
-export let buddy;
+    export let styles;
 
-let language = get(Language_Store).language;
+    let username = get(usernameStore);
+    let buddy = get(buddyStore);
+    let language = get(Language_Store).language;
 
-Language_Store.subscribe(value => {
-    language = value.language;
-})
+    Language_Store.subscribe(value => {
+        language = value.language;
+    })
 
-let selectobject = {"row" : 0, "column" : 0}
-let selected = false;
-const five_day_ratio = 90/5;
-const seven_day_ratio = 90/7;
-let ratio = get(fullweektoogle) ? seven_day_ratio : five_day_ratio;
-let changed_loc = false;
+    usernameStore.subscribe(value => {
+        username = value;
+    })
 
-fullweektoogle.subscribe(value => {
-    ratio = value ? seven_day_ratio : five_day_ratio;
-})
+    buddyStore.subscribe(value => {
+        buddy = value;
+    })
+
+    let selectobject = {"row" : 0, "column" : 0}
+    let selected = false;
+    const five_day_ratio = 90/5;
+    const seven_day_ratio = 90/7;
+    let ratio = get(fullweektoogle) ? seven_day_ratio : five_day_ratio;
+    let changed_loc = false;
+
+    fullweektoogle.subscribe(value => {
+        ratio = value ? seven_day_ratio : five_day_ratio;
+    })
 
 
-async function persist_on_exit(e){
-    if(!changed_loc || !user) return;
-    // Cancel the event as stated by the standard.
-     e.preventDefault();
-    // Chrome requires returnValue to be set.
-    e.returnValue = '';
-    let data = get(schedule);
-    //TODO: implement a function that updates the schedule in the database
-    if(res){
-        changed_loc = false;
+    async function persist_on_exit(e){
+        if(!changed_loc || !user) return;
+        // Cancel the event as stated by the standard.
+        e.preventDefault();
+        // Chrome requires returnValue to be set.
+        e.returnValue = '';
+        let data = get(schedule);
+
+        const { res, error} = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
+        if(res){
+            changed_loc = false;
+        } else {
+            show_error(error.message);
+        }
     }
-}
 
-async function persist(){
-    if(!changed_loc || !user) return;
-    let data = get(schedule);
-    //TODO: implement a function that updates the schedule in the database
-    if(res){
-        changed_loc = false;
+    async function persist(){
+        if(!changed_loc || !username) return;
+        let data = get(schedule);
+
+        const { res, error} = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
+        if(res){
+            changed_loc = false;
+        } else {
+            show_error(error.message);
+        }
     }
-}
 
-$: setStore(changed_loc);
+    $: setStore(changed_loc);
 
-function setStore(value){
-    changed.set(value);
-}
-
-couting_signal.subscribe((value) =>{
-    if(value > 2){
-        changed_loc = true;
+    function setStore(value){
+        changed.set(value);
     }
-})
 
-setInterval(() => {
-    if(!changed_loc) return;
-    persist();
-}, 10000);
+    function updateBuddy() {
+        const value = document.getElementById("buddyInput").value;
 
+        buddyStore.set(value);
+        TimetableBackendApiService.updateMetadata({buddy: value});
+    }
 
+    couting_signal.subscribe((value) =>{
+        if(value > 2){
+            changed_loc = true;
+        }
+    })
+
+    setInterval(() => {
+        if(!changed_loc) return;
+        persist();
+    }, 10000);
 </script>
+
 <svelte:window on:beforeunload = {persist_on_exit}/>
+
 <div class = "center">
 <table>
     <tr>
-        <th><input type="text" bind:value={buddy}></th>
+        <th><input id="buddyInput" type="text" value={buddy} on:input={updateBuddy}></th>
         <th style="background-color: {styles.header_color_monday}; width: {ratio}%;">{dictionary.get(mapping.Day_1)[language]}</th>
         <th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;">{dictionary.get(mapping.Day_2)[language]}</th>
         <th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;">{dictionary.get(mapping.Day_3)[language]}</th>

@@ -14,8 +14,8 @@
         import { Language_Store, dictionary, mapping } from "$lib/Stores/LanguageStore";
         import { get } from 'svelte/store';
 	      import { Routes, TimetableBackendApiService } from "$lib/TimetableBackendApiService";
+        import { usernameStore } from "$lib/Stores/userStore";
 
-        export let user;
         export let styles; 
 
         let friend_manager_states = {
@@ -31,15 +31,18 @@
         let friend_name = "";
         let friendsdyn = get(friends).friends
         let requestdyn = get(friends).pending
+        let username = get(usernameStore);
         let groups = get_groups();
         let friends_with_no_group = get_friends_with_no_group();
         let language = get(Language_Store).language;
         let group_collapse_arr = groups.map((_) => false);
-
-
         
         Language_Store.subscribe(value => {
             language = value.language;
+        })
+
+        usernameStore.subscribe(value => {
+            username = value;
         })
 
         friends.subscribe(value => {
@@ -47,6 +50,7 @@
             friendsdyn = Array.isArray(value.friends) ? value.friends : []
             requestdyn = Array.isArray(value.pending) ? value.pending : []
           })
+
           groups = get_groups();
           group_collapse_arr = groups.map((_, i) => i < group_collapse_arr.length ? group_collapse_arr[i] : false);
           friends_with_no_group = get_friends_with_no_group();
@@ -72,13 +76,27 @@
         function persist_group(group){
           group.friends.forEach(async (friend) =>{
             if(group.name !== get_from_friends(friend).group){
-              //TODO: implement a function that updates the group in the database
+              const { _, error } = await TimetableBackendApiService.post(Routes.AddGroup, {
+              friend,
+              group,
+            })
+
+            if (error) {
+            	show_error(error.message);
+            }
             }
           })
         }
+        
         async function persist_non_group_members(friend){
           if(get_from_friends(friend).group !== null){
-            //TODO: implement a function that removes the group in the database
+            const { _, error } = await TimetableBackendApiService.post(Routes.RemoveGroup, {
+              friend,
+            })
+
+            if (error) {
+            	show_error(error.message);
+            }
           }
         }
 
@@ -103,7 +121,7 @@
         }
 
         const handleAddFriend = async (friend_name) => {
-          if(friend_name == tableData[0].name){
+          if(friend_name == username){
             show_error(dictionary.get(mapping.You_cant_add_yourself)[language]);
             friend_manager_state = friend_manager_states.not_decided;
             friend_manager_selected = false;
@@ -121,58 +139,63 @@
           friend_manager_state = friend_manager_states.not_decided;
           friend_manager_selected = false;
           focus = true;
-          //TODO: implement a function that adds the friend request in the database
-          if(false){
+         
+          const { res, error } = await TimetableBackendApiService.post(Routes.AddFriend, {
+            friend_name,
+          });
+
+          if(error){
             show_error(res.error.message);
           }else{
-            if(false){
+            if(res.status !== 200){
               show_error(`${friend_name === "" ? dictionary.get(mapping.Nobody)[language] : friend_name} ${dictionary.get(mapping.doesnt_exist)[language]}`);
             }else{
-              let newobj = {
-            friends: [],
-            pending: []
-           };
-          friends.set(newobj);
+              friends.set(await TimetableBackendApiService.retrieveFriendsData());
               show_success(`${friend_name} ${dictionary.get(mapping.has_received_your_request)[language]}`);
             }
           }
         }
 
         const handleRemoveFriend = async (friend_name) => {
-          if(friend_name == tableData[0].name){
+          if(friend_name == username){
             show_error(dictionary.get(mapping.You_cant_delete_yourself)[language]);
             return;
           }
 
-          //TODO: implement a function that removes the friend in the database
-          if(false){
+          const { res, error } = await TimetableBackendApiService.post(Routes.RemoveFriend, {
+            friend_name,
+          });
+
+          if(error){
             show_error(res.error.message);
           }else{
-            let newobj = {
-            friends: [],
-            pending: []
-           };
-          friends.set(newobj);
+            friends.set(await TimetableBackendApiService.retrieveFriendsData());
             show_success(`${friend_name} ${dictionary.get(mapping.was_deleted)[language]}`);
           }
         }
 
         const handleFriendRequestDeny = async (friend_name) => {
-          //TODO: implement a function that removes the friend request in the database
-          let newobj = {
-            friends: [],
-            pending: []
-           };
-          friends.set(newobj);
+          const { res, error } = await TimetableBackendApiService.post(Routes.DenyFriendRequest, {
+            friend_name,
+          });
+
+          if(error){
+            show_error(res.error.message);
+          }else{
+            friends.set(await TimetableBackendApiService.retrieveFriendsData());
+          }
         }
 
         const handleFriendRequestAccept = async (friend_name) => {
-          //TODO: implement a function that adds the friend in the database
-          let newobj = {
-            friends: [],
-            pending: []
-           };
-          friends.set(newobj);
+          const { res, error } = await TimetableBackendApiService.post(Routes.AcceptFriendRequest, {
+            friend_name,
+          });
+
+          if(error){
+            show_error(res.error.message);
+          }else{
+            friends.set(await TimetableBackendApiService.retrieveFriendsData());
+          }
         }
 
         function waiter(){
@@ -275,7 +298,7 @@
       <div class = {focus ? "social" : "socialcollapse"} on:click={() =>{if(focus == false && !wait){focus = true}}}>
         {#if focus}
         <div class="top-row">
-          {#if user}
+          {#if username}
           <button id = "sOut" on:click="{handleSignOut}">{dictionary.get(mapping.Sign_out)[language]}</button>
           {:else}
           <div></div>
@@ -283,14 +306,14 @@
           <button id = "exit" on:click={() =>{waiter(); focus = false;}} style = "--color: 0,0,0; border-radius: 50rem;">❌</button>
         </div>
         <div class="center">
-          {#if !user}
+          {#if !username}
           <div class="deciders">
             <button on:click={handleSignIn}>{dictionary.get(mapping.Sign_in)[language]}</button>
             <button on:click={handleSignUp}>{dictionary.get(mapping.Sign_up)[language]}</button>
           </div>
           {/if}
         </div>
-        {#if user}
+        {#if username}
         <div class="center">
           <div class="wrap">    
           <button on:click={() =>{if(!friend_manager_selected){group_manager_selected = true; focus = false; waiter();}}}>
