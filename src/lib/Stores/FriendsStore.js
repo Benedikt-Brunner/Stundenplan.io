@@ -78,16 +78,16 @@ export function get_groups(){
     let groups = [];
     let friends_list = get(friends);
     for (let friend of friends_list.friends) {
-        if(friend.group === null){
+        if(friend.personal_grouping === null){
             continue;
         }
-        if(!groups.includes(friend.group)){
-            groups.push(friend.group);
+        if(!groups.includes(friend.personal_grouping)){
+            groups.push(friend.personal_grouping);
         }
     } 
     groups.sort();
     groups = groups.length != 0 ? groups.map((group) => {
-        let friends_for_group = friends_list.friends.filter((friend) => friend.group === group);
+        let friends_for_group = friends_list.friends.filter((friend) => friend.personal_grouping === group);
         return {
             name: group,
             friends: friends_for_group,
@@ -99,7 +99,7 @@ export function get_groups(){
 }
 
 export function get_friends_with_no_group(){
-    let friends_list = get(friends).friends.filter((friend) => friend.group === null);
+    let friends_list = get(friends).friends.filter((friend) => friend.personal_grouping === null);
     return friends_list;
 }
 

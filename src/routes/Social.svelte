@@ -347,8 +347,8 @@
             <div class="comparison-box" on:click={() =>{show_comparison(friend)}}>
               <img src= {Comparison} alt="compare the players">
             </div>
-            <p>{friend.name}</p>
-          <input type="checkbox" checked = {!get(filterList).includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
+            <p>{friend.username}</p>
+          <input type="checkbox" checked = {!get(filterList).includes(friend.username)} on:click={() =>{toogle_friend(friend)}}>
           </div>
         {/each}
         {/if}
@@ -364,8 +364,8 @@
               <div class="comparison-box" on:click={() =>{show_comparison(friend)}}>
                 <img src= {Comparison} alt="compare the players">
               </div>
-              <p>{friend.name.split('#')[0]}<span>#{friend.name.split('#')[1]}</span></p>
-            <input type="checkbox" checked = {!$filterList.includes(friend.name)} on:click={() =>{toogle_friend(friend)}}>
+              <p>{friend.username}</p>
+            <input type="checkbox" checked = {!$filterList.includes(friend.username)} on:click={() =>{toogle_friend(friend)}}>
             </div>
           {/each}
           {#if requestdyn.length != 0}
@@ -560,10 +560,7 @@
             width: 90%;
             margin-left: 5%;
           }
-
-          .item span{
-            color: rgba(250, 236, 236, 0.61);
-          }
+          
           .request{
             display: flex;
             justify-content: space-between;
@@ -699,46 +696,6 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-    }
-
-    .center form{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .center form input{
-        margin: 1%;
-        padding: 1%;
-        border-radius: 5px;
-        border: 1px solid black;
-        width: 80%;
-        text-align: center;
-    }
-
-    .center form input:focus{
-        outline: none;
-    }
-
-    .center form input::placeholder{
-        color: black;
-    }
-
-    .center .buttons{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 50%;
-    }
-
-    .center .buttons button{
-        border: none;
-        border-radius: 5px;
-        padding: 0.2rem;
-        cursor: pointer;
-        transition: 0.5s;
-        margin-top: 1%;
     }
     
     #sOut {
