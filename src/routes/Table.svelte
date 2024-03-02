@@ -87,7 +87,7 @@
     })
 
     setInterval(() => {
-        if(!changed_loc) return;
+        if(!(changed_loc || get(changed))) return;
         persist();
     }, 10000);
 </script>
