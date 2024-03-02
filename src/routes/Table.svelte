@@ -87,9 +87,7 @@
     })
 
     setInterval(() => {
-        console.log(get(changed));
-        console.log(!(changed_loc || get(changed)));
-        if(!(changed_loc || get(changed))) return;
+        if(!changed_loc && !get(changed)) return;
         persist();
     }, 10000);
 </script>
