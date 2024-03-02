@@ -89,6 +89,7 @@
     })
 
     setInterval(() => {
+        console.log(get(changed))
         if(!changed_loc && !get(changed)) return;
         persist();
     }, 10000);
