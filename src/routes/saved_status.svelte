@@ -17,6 +17,7 @@ usernameStore.subscribe(value => {
 })
 
 changed.subscribe(value => {
+    console.log(value);
     state = value ? state_lib.changed : state_lib.not_changed;
 })
 </script>
