@@ -162,7 +162,7 @@ schedule.subscribe(value => {
 function getHoursasInts(){
     let hours = [];
     get(schedule).forEach(element => {
-        if(element.Hours.includes('-')){
+        if(element.Hours?.includes('-')){
             let temp = element.Hours.split('-');
             temp.forEach((element) =>{element.trim()});
             hours.push(temp);
