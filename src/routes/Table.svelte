@@ -40,7 +40,7 @@
 
 
     async function persist_on_exit(e){
-        if(!changed_loc || !user) return;
+        if(!user) return;
         // Cancel the event as stated by the standard.
         e.preventDefault();
         // Chrome requires returnValue to be set.
@@ -57,7 +57,7 @@
     }
 
     async function persist(){
-        if(!changed_loc || !username) return;
+        if(!username) return;
         let data = get(schedule);
 
         const { res, error } = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
@@ -89,7 +89,6 @@
     })
 
     setInterval(() => {
-        console.log(get(changed))
         if(!changed_loc && !get(changed)) return;
         persist();
     }, 10000);
