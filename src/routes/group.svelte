@@ -21,7 +21,7 @@
 	function remove(friend){
 		if(confirm(dictionary.get(mapping.Are_you_sure)[language])){
 			group.friends = group.friends.filter((f) => {
-				return f.name !== friend.username;
+				return f.username !== friend.username;
 			});
 			friends_with_no_group = [...friends_with_no_group, friend];
 		}
@@ -30,7 +30,7 @@
 	function add(friend){
 		group.friends = [...group.friends, friend];
 		friends_with_no_group = friends_with_no_group.filter((f) => {
-			return f.name !== friend.username;
+			return f.username !== friend.username;
 		});
 	}
 

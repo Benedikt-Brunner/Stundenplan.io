@@ -102,7 +102,7 @@
 
         function get_from_friends(friend){
           let res = friendsdyn.filter((f) => {
-            return f.name === friend.username;
+            return f.username === friend.username;
           })
           return res[0];
         }

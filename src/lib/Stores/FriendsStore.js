@@ -22,14 +22,14 @@ export function get_friends_lessons() {
     let friends_lessons = [];
     let friends_list = get(friends);
     for (let friend of friends_list.friends) {
-        if (!get(filterList).includes(friend.name)) {
+        if (!get(filterList).includes(friend.username)) {
             friend.schedule.forEach(hour_block => {
                 let cur_hour = hour_block.Hours;
                 Object.values(hour_block).filter((value) => value !== cur_hour).forEach((lesson, index) => {
                     if(lesson.Room === "" && lesson.Subject === "" && lesson.Teacher === ""){
                         return;
                     }
-                friends_lessons.push(new Lesson([lesson.Room], lesson.Subject, lesson.Teacher, [cur_hour], [`Day${index+1}`], [friend.name]));
+                friends_lessons.push(new Lesson([lesson.Room], lesson.Subject, lesson.Teacher, [cur_hour], [`Day${index+1}`], [friend.username]));
                 });
             });
         }
