@@ -29,6 +29,7 @@ export const load = async () => {
   template.set(data.meta.template);
   fullweektoogle.set(data.meta.days);
   setLanguage(data.meta.language);
+  schedule.set(data.schedule);
   couting_signal.update(n => n + 1);
 
   friends.set(await TimetableBackendApiService.retrieveFriendsData());

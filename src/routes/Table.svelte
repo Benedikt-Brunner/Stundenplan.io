@@ -59,7 +59,7 @@
         if(!changed_loc || !username) return;
         let data = get(schedule);
 
-        const { res, error } = await TimetableBackendApiService.post(Routes.UpdateSchedule, JSON.parse(JSON.stringify(data)));
+        const { res, error } = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
         if(res?.status === 200){
             changed_loc = false;
         } else {
