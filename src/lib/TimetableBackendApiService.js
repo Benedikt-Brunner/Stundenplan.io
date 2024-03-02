@@ -90,7 +90,7 @@ export const TimetableBackendApiService = {
             fullweektoogle: fullweektoogle ?? getStore(fullweektoogleStore),
             theme: theme ?? getStore(themeStore),
             template: template ?? getStore(templateStore),
-            language: language ?? getStore(Language_Store),
+            language: language ?? getStore(Language_Store)?.language ?? 'de',
         });
     },
 
