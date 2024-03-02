@@ -50,6 +50,7 @@
         const { res, error } = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
         if(res?.status === 200){
             changed_loc = false;
+            changed.set(false);
         } else {
             show_error(error.message);
         }
@@ -62,6 +63,7 @@
         const { res, error } = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
         if(res?.status === 200){
             changed_loc = false;
+            changed.set(false);
         } else {
             show_error(error.message);
         }
