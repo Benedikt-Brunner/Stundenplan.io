@@ -87,7 +87,7 @@ export const TimetableBackendApiService = {
         return this.post(Routes.UpdateMetadata, {
             buddy: buddy ?? getStore(buddyStore),
             rows: rows ?? getStore(rowsStore),
-            fullweektoogle: fullweektoogle ?? getStore(fullweektoogleStore),
+            days: fullweektoogle ?? getStore(fullweektoogleStore),
             theme: theme ?? getStore(themeStore),
             template: template ?? getStore(templateStore),
             language: language ?? getStore(Language_Store)?.language ?? 'de',
