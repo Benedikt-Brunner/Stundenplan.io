@@ -15,13 +15,13 @@
 	let search_string = '';
 
 	$: filtered_friends = friends_with_no_group.filter((friend) => {
-		return friend.name.toLowerCase().includes(search_string.toLowerCase());
+		return friend.username.toLowerCase().includes(search_string.toLowerCase());
 	});
 
 	function remove(friend){
 		if(confirm(dictionary.get(mapping.Are_you_sure)[language])){
 			group.friends = group.friends.filter((f) => {
-				return f.name !== friend.name;
+				return f.name !== friend.username;
 			});
 			friends_with_no_group = [...friends_with_no_group, friend];
 		}
@@ -30,7 +30,7 @@
 	function add(friend){
 		group.friends = [...group.friends, friend];
 		friends_with_no_group = friends_with_no_group.filter((f) => {
-			return f.name !== friend.name;
+			return f.name !== friend.username;
 		});
 	}
 
@@ -53,7 +53,7 @@
 		<tr>
 			<td>
 				<button on:click={remove(friend)}>
-					{friend.name}
+					{friend.username}
 				</button>
 			</td>
 		</tr>
@@ -71,7 +71,7 @@
 					<button
 						on:click={add(friend)}
 					>
-					{friend.name}
+					{friend.username}
 					</button>
 				</div>
 			{/each}

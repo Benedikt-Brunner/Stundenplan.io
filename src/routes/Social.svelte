@@ -102,7 +102,7 @@
 
         function get_from_friends(friend){
           let res = friendsdyn.filter((f) => {
-            return f.name === friend.name;
+            return f.name === friend.username;
           })
           return res[0];
         }
@@ -129,7 +129,7 @@
             return;
           }
 
-          if(get(friends).friends.map((friend) => friend.name).includes(friend_name)){
+          if(get(friends).friends.map((friend) => friend.username).includes(friend_name)){
             show_error(`${friend_name} ${dictionary.get(mapping.is_already_your_friend)[language]}`);
             friend_manager_state = friend_manager_states.not_decided;
             friend_manager_selected = false;
@@ -206,14 +206,14 @@
     }
 
     function toogle_friend(friend){
-        if(get(filterList).includes(friend.name)){
+        if(get(filterList).includes(friend.username)){
             filterList.update(value => {
-                let newvalue = value.filter(item => item != friend.name)
+                let newvalue = value.filter(item => item != friend.username)
                 return newvalue
             })
         }else{
             filterList.update(value => {
-                value.push(friend.name)
+                value.push(friend.username)
                 return value
             })
         }
@@ -236,7 +236,7 @@
     }
 
     function show_comparison(friend){
-      if((get(comparing).friend.name) && friend.name === get(comparing).friend.name){
+      if((get(comparing).friend.username) && friend.username === get(comparing).friend.username){
         comparing.set({
           is_comparing: false,
           friend: {}
@@ -420,8 +420,8 @@
           <div class = "group_display">
               {#each friendsdyn as friend}
                 <div class = "item" id = "friend_to_be_removed">
-                  <p>{friend.name}</p>
-                  <button on:click={handleRemoveFriend(friend.name)}>{dictionary.get(mapping.delete)[language]}</button>
+                  <p>{friend.username}</p>
+                  <button on:click={handleRemoveFriend(friend.username)}>{dictionary.get(mapping.delete)[language]}</button>
                 </div>
               {/each}
           </div>
