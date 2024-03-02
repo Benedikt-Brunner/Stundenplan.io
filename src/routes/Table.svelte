@@ -47,8 +47,8 @@
         e.returnValue = '';
         let data = get(schedule);
 
-        const { res, error} = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
-        if(res){
+        const { res, error } = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
+        if(res?.status === 200){
             changed_loc = false;
         } else {
             show_error(error.message);
@@ -59,8 +59,8 @@
         if(!changed_loc || !username) return;
         let data = get(schedule);
 
-        const { res, error} = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
-        if(res){
+        const { res, error } = await TimetableBackendApiService.post(Routes.UpdateSchedule, data);
+        if(res?.status === 200){
             changed_loc = false;
         } else {
             show_error(error.message);
