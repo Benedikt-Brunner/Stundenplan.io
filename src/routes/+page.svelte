@@ -36,7 +36,7 @@
     <Header styles = {styles}/>
     <PopUp/>
     {#if $comparing.is_comparing}
-    <ComparisonTable styles = {styles}}/>
+    <ComparisonTable styles = {styles}/>
     {:else}
     <Table styles = {styles}/>
     {/if}
