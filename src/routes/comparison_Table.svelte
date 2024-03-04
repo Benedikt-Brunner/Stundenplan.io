@@ -4,7 +4,7 @@ import {schedule, fullweektoogle} from "$lib/Stores/ScheduleStore.js"
 import { get_table_pattern } from "$lib/Stores/comparingStore";
 import { comparing } from "$lib/Stores/comparingStore";
 import { mapping,  Language_Store, dictionary } from "$lib/Stores/LanguageStore";
-import { buddyStore } from "$lib/Stores/buddyStore";
+import { buddyStore } from "$lib/Stores/userStore";
 import { get } from 'svelte/store';
 import Legend from "./Legend.svelte";
 
