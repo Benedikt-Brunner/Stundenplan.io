@@ -7,10 +7,6 @@ export let friends = writable({
     pending: []
 });
 
-friends.subscribe(value => {
-    console.log(value);
-});
-
 export let filterList = writable([]);
 
 

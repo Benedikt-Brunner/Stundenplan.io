@@ -117,7 +117,7 @@
         }
 
         const handleSignOut = async () => {
-          TimetableBackendApiService.redirect(Routes.SignOut);
+          TimetableBackendApiService.post(Routes.SignOut, {});
         }
 
         const handleAddFriend = async (friend_name) => {
