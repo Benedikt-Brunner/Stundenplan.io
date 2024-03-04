@@ -14,9 +14,14 @@
     let focus = false;
     let img_map = new Map();
     let username = get(usernameStore);
+    let language = get(Language_Store).language;
 
     usernameStore.subscribe(value => {
         username = value;
+    });
+
+    Language_Store.subscribe(value => {
+        language = value.language;
     });
 
     img_map.set(languages.german, Flag_de);
@@ -65,7 +70,7 @@
 </div>
 {:else}
 <button class = "collapsed_display" on:click={() => {focus = !focus;}}>
-    <img src={img_map.get(get(Language_Store).language)} alt="Flag representing the currently selected Language">
+    <img src={img_map.get(language)} alt="Flag representing the currently selected Language">
 </button>
 {/if}
 
