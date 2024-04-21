@@ -3,7 +3,7 @@ import { get as getStore } from "svelte/store";
 import { buddyStore } from "./Stores/userStore";
 import { rows as rowsStore, fullweektoogle as fullweektoogleStore, template as templateStore } from "./Stores/ScheduleStore";
 import { theme as themeStore } from "./Stores/ThemeStore"
-import { Language_Store } from "./Stores/LanguageStore";
+import { languageStore } from "./Stores/LanguageStore";
 import { show_error } from "./Stores/PopUpStore";
 
 const API_URL = 'https://timetablebackend.shuttleapp.rs/';
@@ -90,7 +90,7 @@ export const TimetableBackendApiService = {
             days: fullweektoogle ?? getStore(fullweektoogleStore),
             theme: theme ?? getStore(themeStore),
             template: template ?? getStore(templateStore),
-            language: language ?? getStore(Language_Store)?.language ?? 'de',
+            language: language ?? getStore(languageStore)?.language ?? 'de',
         });
     },
 

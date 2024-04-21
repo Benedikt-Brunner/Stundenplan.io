@@ -1,11 +1,11 @@
 <script>
 	//@ts-nocheck
-	import { Language_Store, dictionary, mapping } from '$lib/Stores/LanguageStore';
+	import { languageStore, dictionary, mapping } from '$lib/Stores/LanguageStore';
 	import { get } from 'svelte/store';
 
-	let language = get(Language_Store).language;
+	let language = get(languageStore).language;
 
-	Language_Store.subscribe((value) => {
+	languageStore.subscribe((value) => {
 		language = value.language;
 	});
 	export let group;

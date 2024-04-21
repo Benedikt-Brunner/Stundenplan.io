@@ -3,7 +3,7 @@
 import {schedule, fullweektoogle} from "$lib/Stores/ScheduleStore.js"
 import { get_table_pattern } from "$lib/Stores/comparingStore";
 import { comparing } from "$lib/Stores/comparingStore";
-import { mapping,  Language_Store, dictionary } from "$lib/Stores/LanguageStore";
+import { mapping,  languageStore, dictionary } from "$lib/Stores/LanguageStore";
 import { buddyStore } from "$lib/Stores/userStore";
 import { get } from 'svelte/store';
 import Legend from "./Legend.svelte";
@@ -11,9 +11,9 @@ import Legend from "./Legend.svelte";
 export let styles;
 
 let buddy = get(buddyStore);
-let language = get(Language_Store).language;
+let language = get(languageStore).language;
 
-Language_Store.subscribe(value => {
+languageStore.subscribe(value => {
     language = value.language;
 })
 

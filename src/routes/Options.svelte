@@ -4,7 +4,7 @@
 	import Options from '$lib/Options.svg';
 	import { rows } from '$lib/Stores/ScheduleStore.js';
 	import { template as templateStore } from '$lib/Stores/ScheduleStore.js';
-	import { Language_Store, dictionary, mapping } from '$lib/Stores/LanguageStore';
+	import { languageStore, dictionary, mapping } from '$lib/Stores/LanguageStore';
 	import { fullweektoogle } from '$lib/Stores/ScheduleStore.js';
 	import { get } from 'svelte/store';
 	import { couting_signal } from '$lib/Stores/changedStore';
@@ -38,10 +38,10 @@
 	template_to_mapping.set('School', mapping.School);
 	template_to_mapping.set('Custom', mapping.Custom);
 
-	let language = get(Language_Store).language;
+	let language = get(languageStore).language;
 	let username = get(usernameStore);
 
-	Language_Store.subscribe((value) => {
+	languageStore.subscribe((value) => {
 		language = value.language;
 	});
 

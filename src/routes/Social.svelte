@@ -11,7 +11,7 @@
         import { friends, filterList, get_groups, get_friends_with_no_group } from "$lib/Stores/FriendsStore";
         import { comparing } from "$lib/Stores/comparingStore";
         import { show_error, show_success } from "$lib/Stores/PopUpStore";
-        import { Language_Store, dictionary, mapping } from "$lib/Stores/LanguageStore";
+        import { languageStore, dictionary, mapping } from "$lib/Stores/LanguageStore";
         import { get } from 'svelte/store';
 	      import { Routes, TimetableBackendApiService } from "$lib/TimetableBackendApiService";
         import { usernameStore } from "$lib/Stores/userStore";
@@ -34,10 +34,10 @@
         let username = get(usernameStore);
         let groups = get_groups();
         let friends_with_no_group = get_friends_with_no_group();
-        let language = get(Language_Store).language;
+        let language = get(languageStore).language;
         let group_collapse_arr = groups.map((_) => false);
         
-        Language_Store.subscribe(value => {
+        languageStore.subscribe(value => {
             language = value.language;
         })
 

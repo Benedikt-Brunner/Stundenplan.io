@@ -3,7 +3,7 @@
     import Flag_de from "$lib/Flags/flag_de.svg"
     import Flag_en from "$lib/Flags/flag_en.svg"
     import Flag_es from "$lib/Flags/flag_es.svg"
-    import { Language_Store, setLanguage, languages } from "$lib/Stores/LanguageStore";
+    import { languageStore, setLanguage, languages } from "$lib/Stores/LanguageStore";
     import { usernameStore } from "$lib/Stores/userStore";
     import { TimetableBackendApiService } from "$lib/TimetableBackendApiService";
     import { couting_signal } from '$lib/Stores/changedStore';
@@ -14,13 +14,13 @@
     let focus = false;
     let img_map = new Map();
     let username = get(usernameStore);
-    let language = get(Language_Store).language;
+    let language = get(languageStore).language;
 
     usernameStore.subscribe(value => {
         username = value;
     });
 
-    Language_Store.subscribe(value => {
+    languageStore.subscribe(value => {
         language = value.language;
     });
 
@@ -105,6 +105,7 @@
         all: unset;
         width: 3.5rem;
         cursor: pointer;
+        margin-inline: 0.2rem;
     }
 
     .flag_wrap img {

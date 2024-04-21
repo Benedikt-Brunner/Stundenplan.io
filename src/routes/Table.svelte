@@ -2,7 +2,7 @@
     //@ts-nocheck
     import {schedule, fullweektoogle, get_lessons_for_insertion_point, insert_merged_lesson} from "$lib/Stores/ScheduleStore.js"
     import { changed, couting_signal } from "$lib/Stores/changedStore";
-    import { mapping,  Language_Store, dictionary } from "$lib/Stores/LanguageStore";
+    import { mapping,  languageStore, dictionary } from "$lib/Stores/LanguageStore";
     import { get } from 'svelte/store';
     import SveltyPicker from 'svelty-picker';
     import { usernameStore, buddyStore } from "$lib/Stores/userStore";
@@ -13,9 +13,9 @@
 
     let username = get(usernameStore);
     let buddy = get(buddyStore);
-    let language = get(Language_Store).language;
+    let language = get(languageStore).language;
 
-    Language_Store.subscribe(value => {
+    languageStore.subscribe(value => {
         language = value.language;
     })
 
@@ -112,7 +112,7 @@
     </tr>
     {#each $schedule as hour, i}
         <tr>
-            <td style="text-align: center;" on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 0; selected = true}}}>{hour.Hours}</td>
+            <td style="text-align: center;" on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 0; selected = true}}}>{hour.Hours ?? "?"}</td>
             <td on:click={() => {if(!selected){selectobject.row = i; selectobject.column = 1; selected = true}}}>
                 <p>{dictionary.get(mapping.Room)[language]}: {hour.Day1.Room}</p>
                 <p>{dictionary.get(mapping.Subject)[language]}: {hour.Day1.Subject}</p>

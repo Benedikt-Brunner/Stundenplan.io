@@ -5,16 +5,16 @@
     import Options from "./Options.svelte";
     import Social from "./Social.svelte";
     import { usernameStore } from "$lib/Stores/userStore";
-    import { Language_Store, dictionary, mapping } from "$lib/Stores/LanguageStore";
+    import { languageStore, dictionary, mapping } from "$lib/Stores/LanguageStore";
     import { comparing } from "$lib/Stores/comparingStore";
     import { get } from "svelte/store";
 
     export let styles;
 
-    let language = get(Language_Store).language;
+    let language = get(languageStore).language;
     let username = get(usernameStore);
 
-    Language_Store.subscribe(value => {
+    languageStore.subscribe(value => {
         language = value.language;
     })
 
@@ -63,9 +63,5 @@ nav h3{
     position: absolute;
     left: 45%;
     margin-top: 1.5rem;
-}
-
-nav h3 span{
-    color: rgba(85, 83, 83, 0.61);
 }
 </style>
