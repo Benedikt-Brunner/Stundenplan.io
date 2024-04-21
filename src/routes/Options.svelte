@@ -292,8 +292,4 @@
 	.bottom label {
 		margin-right: 1rem;
 	}
-
-	input[type=checkbox] {
-		padding: 1rem;
-	}
 </style>
