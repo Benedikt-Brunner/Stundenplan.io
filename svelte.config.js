@@ -1,6 +1,6 @@
 import adapter from '@sveltejs/adapter-auto';
 
-import Adapter from '@sveltejs/adapter-vercel';
+import Adapter from '@sveltejs/adapter-static';
 
 export default {
 	kit: {
