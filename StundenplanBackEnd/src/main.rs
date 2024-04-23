@@ -1,19 +1,28 @@
-use std::sync::{Arc, Mutex};
-use axum::{routing::{get, post}, Router, response::{IntoResponse, Html}, http::{StatusCode, Response, Request, HeaderValue}, Extension, extract::Json, body::Body};
 use axum::extract::Path;
-use rand_core::SeedableRng;
-use sqlx::{Error, Executor, FromRow, Row};
-use serde::{Deserialize, Serialize};
-use pbkdf2::Pbkdf2;
-use http::{header, Method};
+use axum::{
+    body::Body,
+    extract::Json,
+    http::{HeaderValue, Request, Response, StatusCode},
+    response::{Html, IntoResponse},
+    routing::{get, post},
+    Extension, Router,
+};
+use http::header;
 use http_body_util::{Empty, Full};
+use include_dir::{include_dir, Dir};
+use password_hash::{
+    rand_core::{OsRng, RngCore},
+    PasswordHash, PasswordHasher, PasswordVerifier, SaltString,
+};
+use pbkdf2::Pbkdf2;
 use rand_chacha::ChaCha20Rng;
-use tower_http::cors::CorsLayer;
-use password_hash::{SaltString, rand_core::{OsRng, RngCore}, PasswordHasher, PasswordVerifier, PasswordHash};
+use rand_core::SeedableRng;
+use regex::Regex;
+use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgRow;
 use sqlx::types::JsonValue;
-use include_dir::{include_dir, Dir};
-use regex::Regex;
+use sqlx::{Error, Executor, FromRow, Row};
+use std::sync::{Arc, Mutex};
 
 type Database = sqlx::PgPool;
 type Random = Arc<Mutex<ChaCha20Rng>>;
@@ -111,19 +120,19 @@ async fn auth(
     database: Database,
 ) -> axum::response::Response {
     let session_token = req
-    .headers()
-    .get_all("Cookie")
-    .iter()
-    .filter_map(|cookie| {
-        cookie
-            .to_str()
-            .ok()
-            .and_then(|cookie| cookie.parse::<cookie::Cookie>().ok())
-    })
-    .find_map(|cookie| {
-        (cookie.name() == "session_token").then(move || cookie.value().to_owned())
-    })
-    .and_then(|cookie_value| cookie_value.parse::<u128>().ok());
+        .headers()
+        .get_all("Cookie")
+        .iter()
+        .filter_map(|cookie| {
+            cookie
+                .to_str()
+                .ok()
+                .and_then(|cookie| cookie.parse::<cookie::Cookie>().ok())
+        })
+        .find_map(|cookie| {
+            (cookie.name() == "session_token").then(move || cookie.value().to_owned())
+        })
+        .and_then(|cookie_value| cookie_value.parse::<u128>().ok());
 
     req.extensions_mut()
         .insert(AuthState(session_token.map(|v| (v, None, database))));
@@ -151,9 +160,7 @@ async fn resolve_auth_state(mut auth: AuthState) -> Result<(User, Database), Sta
     return Ok((user, db));
 }
 
-async fn get_user_data(
-    Extension(auth): Extension<AuthState>,
-) -> impl IntoResponse {
+async fn get_user_data(Extension(auth): Extension<AuthState>) -> impl IntoResponse {
     let (user, db) = match resolve_auth_state(auth).await {
         Ok(res) => res,
         Err(status_code) => return status_code.into_response(),
@@ -175,7 +182,7 @@ async fn get_user_data(
             println!("Err: {}", err.to_string());
 
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        },
+        }
     };
 
     let schedule_data = sqlx::query_as::<_, UserSchedule>(SCHEDULE_QUERY)
@@ -189,7 +196,7 @@ async fn get_user_data(
             println!("Err: {}", err.to_string());
 
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        },
+        }
     };
 
     let meta_data = sqlx::query_as::<_, UserMetadata>(META_QUERY)
@@ -203,7 +210,7 @@ async fn get_user_data(
             println!("Err: {}", err.to_string());
 
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        },
+        }
     };
 
     let friends_data = sqlx::query_as::<_, Friend>(FRIENDS_QUERY)
@@ -213,17 +220,19 @@ async fn get_user_data(
 
     let (friends, friend_requests): (Vec<String>, Vec<String>) = match friends_data {
         Ok(res) => {
-            let friends = res.iter()
+            let friends = res
+                .iter()
                 .filter_map(|friend| {
-                if !friend.pending {
-                    Some(friend.clone().username)
-                } else {
-                    None
-                }
-            })
+                    if !friend.pending {
+                        Some(friend.clone().username)
+                    } else {
+                        None
+                    }
+                })
                 .collect();
 
-            let friend_requests = res.iter()
+            let friend_requests = res
+                .iter()
                 .filter_map(|friend| {
                     if friend.pending {
                         Some(friend.clone().username)
@@ -234,12 +243,12 @@ async fn get_user_data(
                 .collect();
 
             (friends, friend_requests)
-        },
+        }
         Err(err) => {
             println!("Err: {}", err.to_string());
 
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        },
+        }
     };
 
     Json(UserData {
@@ -248,12 +257,11 @@ async fn get_user_data(
         meta,
         friends,
         friend_requests,
-    }).into_response()
+    })
+    .into_response()
 }
 
-async fn get_schedule(
-    Extension(auth): Extension<AuthState>,
-) -> impl IntoResponse {
+async fn get_schedule(Extension(auth): Extension<AuthState>) -> impl IntoResponse {
     let (user, db) = match resolve_auth_state(auth).await {
         Ok(res) => res,
         Err(status_code) => return status_code.into_response(),
@@ -272,7 +280,7 @@ async fn get_schedule(
             println!("Err: {}", err.to_string());
 
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        },
+        }
     };
 
     Json(schedule).into_response()
@@ -280,7 +288,7 @@ async fn get_schedule(
 
 async fn persist_schedule(
     Extension(auth): Extension<AuthState>,
-    body: String
+    body: String,
 ) -> impl IntoResponse {
     let (user, db) = match resolve_auth_state(auth).await {
         Ok(res) => res,
@@ -306,13 +314,11 @@ async fn persist_schedule(
             println!("Err: {}", err.to_string());
 
             StatusCode::INTERNAL_SERVER_ERROR.into_response()
-        },
-    }
+        }
+    };
 }
 
-async fn get_metadata(
-    Extension(auth): Extension<AuthState>,
-) -> impl IntoResponse {
+async fn get_metadata(Extension(auth): Extension<AuthState>) -> impl IntoResponse {
     let (user, db) = match resolve_auth_state(auth).await {
         Ok(res) => res,
         Err(status_code) => return status_code.into_response(),
@@ -331,7 +337,7 @@ async fn get_metadata(
             println!("Err: {}", err.to_string());
 
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        },
+        }
     };
 
     Json(meta).into_response()
@@ -365,13 +371,11 @@ async fn persist_metadata(
             println!("Err: {}", err.to_string());
 
             StatusCode::INTERNAL_SERVER_ERROR.into_response()
-        },
-    }
+        }
+    };
 }
 
-async fn get_friends(
-    Extension(auth): Extension<AuthState>,
-) -> impl IntoResponse {
+async fn get_friends(Extension(auth): Extension<AuthState>) -> impl IntoResponse {
     let (user, db) = match resolve_auth_state(auth).await {
         Ok(res) => res,
         Err(status_code) => return status_code.into_response(),
@@ -385,22 +389,21 @@ async fn get_friends(
         .await;
 
     let friends: Vec<Friend> = match friends_data {
-        Ok(res) => {
-            res.iter()
-                .filter_map(|friend| {
-                    if !friend.pending {
-                        Some(friend.clone())
-                    } else {
-                        None
-                    }
-                })
-                .collect()
-        },
+        Ok(res) => res
+            .iter()
+            .filter_map(|friend| {
+                if !friend.pending {
+                    Some(friend.clone())
+                } else {
+                    None
+                }
+            })
+            .collect(),
         Err(err) => {
             println!("Err: {}", err.to_string());
 
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        },
+        }
     };
 
     Json(friends).into_response()
@@ -417,7 +420,7 @@ async fn remove_friend(
 
     let added_friend = match get_user_by_name(payload.friend_name.as_str(), &db).await {
         Ok(user) => user,
-        Err(status_code) => return status_code.into_response()
+        Err(status_code) => return status_code.into_response(),
     };
 
     const REMOVE_FRIEND_QUERY: &str = "DELETE FROM friends where pending = false and userr = $1 and friend = $2 OR pending = false and userr = $2 and friend = $1;";
@@ -426,15 +429,14 @@ async fn remove_friend(
         .bind(user.id)
         .bind(added_friend.id)
         .execute(&db)
-        .await {
+        .await
+    {
         Ok(_) => StatusCode::OK.into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
 
-async fn get_friend_requests(
-    Extension(auth): Extension<AuthState>,
-) -> impl IntoResponse {
+async fn get_friend_requests(Extension(auth): Extension<AuthState>) -> impl IntoResponse {
     let (user, db) = match resolve_auth_state(auth).await {
         Ok(res) => res,
         Err(status_code) => return status_code.into_response(),
@@ -448,22 +450,21 @@ async fn get_friend_requests(
         .await;
 
     let friend_requests: Vec<String> = match friends_data {
-        Ok(res) => {
-            res.iter()
-                .filter_map(|friend| {
-                    if friend.pending {
-                        Some(friend.clone().username)
-                    } else {
-                        None
-                    }
-                })
-                .collect()
-        },
+        Ok(res) => res
+            .iter()
+            .filter_map(|friend| {
+                if friend.pending {
+                    Some(friend.clone().username)
+                } else {
+                    None
+                }
+            })
+            .collect(),
         Err(err) => {
             println!("Err: {}", err.to_string());
 
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        },
+        }
     };
 
     Json(friend_requests).into_response()
@@ -480,7 +481,7 @@ async fn accept_friend_request(
 
     let added_friend = match get_user_by_name(payload.friend_name.as_str(), &db).await {
         Ok(user) => user,
-        Err(status_code) => return status_code.into_response()
+        Err(status_code) => return status_code.into_response(),
     };
 
     const ACCEPT_FRIEND_REQUEST_QUERY: &str = "UPDATE friends SET pending = false where created_by = $2 and userr = $1 and friend = $2 OR created_by = $2 and userr = $2 and friend = $1;";
@@ -489,7 +490,8 @@ async fn accept_friend_request(
         .bind(user.id)
         .bind(added_friend.id)
         .execute(&db)
-        .await {
+        .await
+    {
         Ok(_) => StatusCode::OK.into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
@@ -506,7 +508,7 @@ async fn deny_friend_request(
 
     let added_friend = match get_user_by_name(payload.friend_name.as_str(), &db).await {
         Ok(user) => user,
-        Err(status_code) => return status_code.into_response()
+        Err(status_code) => return status_code.into_response(),
     };
 
     const REMOVE_FRIEND_REQUEST_QUERY: &str = "DELETE FROM friends where pending = true and userr = $1 and friend = $2 OR pending = true and userr = $2 and friend = $1;";
@@ -515,7 +517,8 @@ async fn deny_friend_request(
         .bind(user.id)
         .bind(added_friend.id)
         .execute(&db)
-        .await {
+        .await
+    {
         Ok(_) => StatusCode::OK.into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
@@ -525,19 +528,22 @@ async fn open_friend_request(
     Extension(auth): Extension<AuthState>,
     Json(payload): Json<GenericFriendActionPayload>,
 ) -> impl IntoResponse {
-        let (user, db) = match resolve_auth_state(auth).await {
+    let (user, db) = match resolve_auth_state(auth).await {
         Ok(res) => res,
         Err(status_code) => return status_code.into_response(),
     };
 
     let added_friend = match get_user_by_name(payload.friend_name.as_str(), &db).await {
         Ok(user) => user,
-        Err(status_code) => return status_code.into_response()
+        Err(status_code) => return status_code.into_response(),
     };
 
-    const COUNT_QUERY: &str = "SELECT COUNT(*) as Rows FROM Friends where userr = $1 and friend = $2;";
-    const ADD_FRIEND_REQUEST_QUERY: &str = "INSERT INTO friends (userr, friend, created_by) VALUES ($1, $2, $1);";
-    const ADD_FRIEND_REQUEST_QUERY_REVERSE: &str = "INSERT INTO friends (userr, friend, created_by) VALUES ($2, $1, $1);";
+    const COUNT_QUERY: &str =
+        "SELECT COUNT(*) as Rows FROM Friends where userr = $1 and friend = $2;";
+    const ADD_FRIEND_REQUEST_QUERY: &str =
+        "INSERT INTO friends (userr, friend, created_by) VALUES ($1, $2, $1);";
+    const ADD_FRIEND_REQUEST_QUERY_REVERSE: &str =
+        "INSERT INTO friends (userr, friend, created_by) VALUES ($2, $1, $1);";
 
     let count_res: Result<PgRow, Error> = sqlx::query(COUNT_QUERY)
         .bind(user.id)
@@ -563,7 +569,8 @@ async fn open_friend_request(
         .bind(user.clone().id)
         .bind(added_friend.clone().id)
         .execute(&db)
-        .await {
+        .await
+    {
         Ok(_) => {}
         Err(_) => return StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     };
@@ -572,7 +579,8 @@ async fn open_friend_request(
         .bind(user.id)
         .bind(added_friend.id)
         .execute(&db)
-        .await {
+        .await
+    {
         Ok(_) => {}
         Err(_) => return StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     };
@@ -584,14 +592,14 @@ async fn add_friend_group(
     Extension(auth): Extension<AuthState>,
     Json(group_request_payload): Json<AddGroupRequestPayload>,
 ) -> impl IntoResponse {
-        let (user, db) = match resolve_auth_state(auth).await {
+    let (user, db) = match resolve_auth_state(auth).await {
         Ok(res) => res,
         Err(status_code) => return status_code.into_response(),
     };
 
     let friend = match get_user_by_name(group_request_payload.friend.as_str(), &db).await {
         Ok(user) => user,
-        Err(status_code) => return status_code.into_response()
+        Err(status_code) => return status_code.into_response(),
     };
 
     const ADD_GROUP_QUERY: &str = "UPDATE friends SET personal_grouping = $3 WHERE userr = $1 and friend = $2 and pending = false;";
@@ -609,8 +617,8 @@ async fn add_friend_group(
             println!("Err: {}", err.to_string());
 
             StatusCode::INTERNAL_SERVER_ERROR.into_response()
-        },
-    }
+        }
+    };
 }
 
 async fn remove_friend_group(
@@ -624,7 +632,7 @@ async fn remove_friend_group(
 
     let friend = match get_user_by_name(payload.friend_name.as_str(), &db).await {
         Ok(user) => user,
-        Err(status_code) => return status_code.into_response()
+        Err(status_code) => return status_code.into_response(),
     };
 
     const ADD_GROUP_QUERY: &str = "UPDATE friends SET personal_grouping = NULL WHERE userr = $1 and friend = $2 and pending = false;";
@@ -641,21 +649,21 @@ async fn remove_friend_group(
             println!("Err: {}", err.to_string());
 
             StatusCode::INTERNAL_SERVER_ERROR.into_response()
-        },
-    }
+        }
+    };
 }
 
 async fn get_user_by_name(username: &str, database: &Database) -> Result<User, StatusCode> {
     const USER_QUERY: &str = "Select id, username from users where username = $1;";
 
-
     return match sqlx::query_as::<_, User>(USER_QUERY)
         .bind(username)
         .fetch_one(database)
-        .await {
+        .await
+    {
         Ok(user) => Ok(user),
-        Err(_) => Err(StatusCode::BAD_REQUEST)
-    }
+        Err(_) => Err(StatusCode::BAD_REQUEST),
+    };
 }
 
 async fn user_sign_up_view() -> impl IntoResponse {
@@ -666,38 +674,46 @@ async fn user_sign_in_view() -> impl IntoResponse {
     Html(include_str!("../templates/userSignIn.html"))
 }
 
-async fn sign_up_user(Extension(database): Extension<Database>, Extension(random): Extension<Random>, Json(user): Json<CreateUser>) -> impl IntoResponse {
-        if user.username.len() < 3 || user.password.len() < 5 {
-            return StatusCode::UNPROCESSABLE_ENTITY.into_response()
-        }
+async fn sign_up_user(
+    Extension(database): Extension<Database>,
+    Extension(random): Extension<Random>,
+    Json(user): Json<CreateUser>,
+) -> impl IntoResponse {
+    if user.username.len() < 3 || user.password.len() < 5 {
+        return StatusCode::UNPROCESSABLE_ENTITY.into_response();
+    }
 
-        let user_res = create_user(&user.username, &user.password, &database).await;
+    let user_res = create_user(&user.username, &user.password, &database).await;
 
-        let user_id: i32;
+    let user_id: i32;
 
-        match user_res {
-            Ok(id) => user_id = id,
-            Err(status_code) => return status_code.into_response(),
-        }
+    match user_res {
+        Ok(id) => user_id = id,
+        Err(status_code) => return status_code.into_response(),
+    }
 
-        let session_token: String;
+    let session_token: String;
 
-        let session_res = new_session(&database, random, user_id).await;
+    let session_res = new_session(&database, random, user_id).await;
 
-        match session_res {
-            Ok(token) => session_token = token,
-            Err(status_code) => return status_code.into_response(),
-        }
+    match session_res {
+        Ok(token) => session_token = token,
+        Err(status_code) => return status_code.into_response(),
+    }
 
-        let cookie_res = set_cookie(&session_token);
+    let cookie_res = set_cookie(&session_token);
 
     return match cookie_res {
         Ok(response) => response.into_response(),
         Err(status_code) => status_code.into_response(),
-    }
+    };
 }
 
-async fn sign_in_user(Extension(database): Extension<Database>, Extension(random): Extension<Random>, Json(user): Json<CreateUser>) -> impl IntoResponse {
+async fn sign_in_user(
+    Extension(database): Extension<Database>,
+    Extension(random): Extension<Random>,
+    Json(user): Json<CreateUser>,
+) -> impl IntoResponse {
     let user_res = validate_user_credentials(&user.username, &user.password, &database).await;
 
     let user_id: i32;
@@ -721,7 +737,7 @@ async fn sign_in_user(Extension(database): Extension<Database>, Extension(random
     return match cookie_res {
         Ok(response) => response.into_response(),
         Err(status_code) => status_code.into_response(),
-    }
+    };
 }
 
 async fn sign_out_user() -> impl IntoResponse {
@@ -739,19 +755,25 @@ async fn sign_out_user_view() -> impl IntoResponse {
 fn set_cookie(session_token: &str) -> Result<impl IntoResponse, StatusCode> {
     let res = Response::builder()
         .status(StatusCode::SEE_OTHER)
-        .header("Set-Cookie", format!("session_token={}; Max-Age=999999; SameSite=None; secure", session_token))
+        .header(
+            "Set-Cookie",
+            format!(
+                "session_token={}; Max-Age=999999; SameSite=None; secure",
+                session_token
+            ),
+        )
         .body(http_body_util::Empty::new());
 
     return match res {
         Ok(response) => Ok(response),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
-    }
+    };
 }
 
 async fn new_session(
     database: &Database,
     random: Random,
-    user_id: i32
+    user_id: i32,
 ) -> Result<String, StatusCode> {
     const QUERY: &str = "INSERT INTO sessions (session_token, user_id) VALUES ($1, $2);";
 
@@ -769,16 +791,23 @@ async fn new_session(
     return match result {
         Ok(_) => Ok(session_token.to_string()),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
-    }
+    };
 }
 
-async fn create_user(username: &str, password: &str, database: &Database)-> Result<i32, StatusCode> {
+async fn create_user(
+    username: &str,
+    password: &str,
+    database: &Database,
+) -> Result<i32, StatusCode> {
     let salt = SaltString::generate(&mut OsRng);
 
-    let hashed_password = Pbkdf2.hash_password(password.as_bytes(), &salt).unwrap().to_string();
+    let hashed_password = Pbkdf2
+        .hash_password(password.as_bytes(), &salt)
+        .unwrap()
+        .to_string();
 
     const INSERT_USER_QUERY: &str =
-    "INSERT INTO Users (username, password) VALUES ($1, $2) RETURNING id;";
+        "INSERT INTO Users (username, password) VALUES ($1, $2) RETURNING id;";
 
     let fetch_one = sqlx::query_as(INSERT_USER_QUERY)
         .bind(username)
@@ -786,27 +815,31 @@ async fn create_user(username: &str, password: &str, database: &Database)-> Resu
         .fetch_one(database)
         .await;
 
-        match fetch_one {
-            Ok((user_id,)) => {
-                let res = attach_metadata_to_user(&user_id, &database).await;
+    match fetch_one {
+        Ok((user_id,)) => {
+            let res = attach_metadata_to_user(&user_id, &database).await;
 
-                match res {
-                    Ok(_) => Ok(user_id),
-                    Err(status_code) => Err(status_code),
-                }
-            },
-            Err(sqlx::Error::Database(database))
-                if database.constraint() == Some("users_username_key") =>
-            {
-                return Err(StatusCode::UNPROCESSABLE_ENTITY);
-            }
-            Err(_) => {
-                return Err(StatusCode::UNPROCESSABLE_ENTITY);
+            match res {
+                Ok(_) => Ok(user_id),
+                Err(status_code) => Err(status_code),
             }
         }
+        Err(sqlx::Error::Database(database))
+            if database.constraint() == Some("users_username_key") =>
+        {
+            return Err(StatusCode::UNPROCESSABLE_ENTITY);
+        }
+        Err(_) => {
+            return Err(StatusCode::UNPROCESSABLE_ENTITY);
+        }
+    }
 }
 
-async fn validate_user_credentials(username: &str, password: &str, database: &Database) -> Result<i32, StatusCode> {
+async fn validate_user_credentials(
+    username: &str,
+    password: &str,
+    database: &Database,
+) -> Result<i32, StatusCode> {
     const LOGIN_QUERY: &str = "SELECT id, password FROM users WHERE users.username = $1;";
 
     let row: Option<(i32, String)> = sqlx::query_as(LOGIN_QUERY)
@@ -832,8 +865,7 @@ async fn validate_user_credentials(username: &str, password: &str, database: &Da
 }
 
 async fn attach_metadata_to_user(user_id: &i32, database: &Database) -> Result<i32, StatusCode> {
-    const INSERT_QUERY: &str =
-        "INSERT INTO meta (user_id) VALUES ($1);";
+    const INSERT_QUERY: &str = "INSERT INTO meta (user_id) VALUES ($1);";
 
     let res = sqlx::query(INSERT_QUERY)
         .bind(user_id)
@@ -846,7 +878,7 @@ async fn attach_metadata_to_user(user_id: &i32, database: &Database) -> Result<i
             println!("{}", err.to_string());
 
             Err(StatusCode::NOT_IMPLEMENTED)
-        },
+        }
     }
 }
 
@@ -856,13 +888,14 @@ async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
     let mime_type = mime_guess::from_path(path).first_or_text_plain();
 
     let file = match STATIC_DIR.get_file(path) {
-        None => return Response::builder()
-            .status(StatusCode::NOT_FOUND)
-            .body(Full::from("test"))
-            .unwrap(),
+        None => {
+            return Response::builder()
+                .status(StatusCode::NOT_FOUND)
+                .body(Full::from("test"))
+                .unwrap()
+        }
         Some(file) => file,
     };
-
 
     Response::builder()
         .status(StatusCode::OK)
@@ -875,10 +908,14 @@ async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
 }
 
 #[shuttle_runtime::main]
-async fn main(#[shuttle_shared_db::Postgres] pool: Database) -> shuttle_axum::ShuttleAxum {
+async fn main(
+    #[shuttle_shared_db::Postgres(
+    local_uri = "postgres://postgres:{secrets.PASSWORD}@localhost:3006/postgres"
+)] pool: Database,
+) -> shuttle_axum::ShuttleAxum {
     pool.execute(include_str!("../schema.sql"))
-    .await
-    .map_err(shuttle_service::error::CustomError::new)?;
+        .await
+        .map_err(shuttle_service::error::CustomError::new)?;
 
     let middleware_database = pool.clone();
 
@@ -908,7 +945,6 @@ async fn main(#[shuttle_shared_db::Postgres] pool: Database) -> shuttle_axum::Sh
         }))
         .layer(Extension(pool))
         .layer(Extension(Arc::new(Mutex::new(random))));
-
 
     Ok(router.into())
 }
