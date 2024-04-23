@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Karla:wght@500&display=swap"
+            rel="stylesheet"
+    />
+</head>
+<body onload="init()">
+<div id = "stars">
+
+</div>
+<div id = "content">
+    <div id="infoBox"></div>
+</div>
+</body>
+
+<script>
+    function init() {
+        animateStars();
+        remove_session();
+    }
+    function animateStars() {
+        addStars();
+        setInterval(addStars, 8500)
+    }
+    function addStars() {
+        const container = document.getElementById("stars");
+        container.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                const star = document.createElement("div")
+                if (!(Math.round(Math.random() * 100) % 2 === 0) &&!((i === 4 || i === 5) && (j === 4 || j === 5))) {
+                    star.className = "star";
+                    star.style = `margin-left: ${i * 10 *(Math.random() + 1)}px; Margin-top: ${j * 10 * (Math.random() + 1)}px`
+                }
+                fragment.append(star);
+            }
+        }
+        container.append(fragment);
+    }
+
+    async function remove_session() {
+        const requestOptions = {
+            method: 'POST',
+            xhrFields: {withCredentials: true},
+        };
+
+        try {
+            const response = await fetch('https://timetablebackend.shuttleapp.rs/userSignOut', requestOptions);
+
+            if (response.status === 303) {
+                showSuccess();
+            } else {
+                showFailure('There was an error');
+            }
+        } catch (e) {
+            showFailure(e.message);
+        }
+    }
+
+    function redirect() {
+        window.location = "https://timetablebackend.shuttleapp.rs/";
+    }
+
+    function showSuccess() {
+        const infoBox = document.getElementById('infoBox');
+
+        infoBox.innerHTML = 'Success'
+        infoBox.className = 'success'
+        setTimeout(redirect, 1000);
+    }
+
+    function showFailure(err) {
+        const infoBox = document.getElementById('infoBox');
+
+        infoBox.innerHTML = `Error: ${err}`
+        infoBox.className = 'failure'
+    }
+</script>
+
+<style>
+    body {
+        background: #070113;
+    }
+
+    #stars {
+        z-index: auto;
+        position: absolute;
+        width: 85vw;
+        height: 60vh;
+        margin-left: 5vw;
+        padding-left: 5%;
+        margin-top: 10vh;
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        grid-template-rows: repeat(10, 1fr);
+    }
+
+    @keyframes scale {
+        0% {scale: 0% ; rotate: 0deg;}
+        50% {scale: 90%; rotate: 180deg;}
+        100% {scale: 0%;  rotate: 360deg;}
+    }
+
+    .star {
+        width: 5px;
+        aspect-ratio: 1;
+        background: white;
+        border-radius: 50px;
+        filter: blur(1px);
+        animation: scale 8s forwards;
+    }
+
+    #content {
+        position: absolute;
+        z-index: 1;
+        width: 90vw;
+        height: 90vh;
+        margin-left: 4vw;
+        margin-top: 5vh;
+        font-size: xx-large;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .success {
+        padding: 5px;
+        font-size: 2rem;
+        color: green;
+        border: solid green 1px;
+    }
+
+    .failure {
+        padding: 5px;
+        font-size: 1.3rem;
+        color: red;
+        border: solid red 1px;
+    }
+</style>
+</html>

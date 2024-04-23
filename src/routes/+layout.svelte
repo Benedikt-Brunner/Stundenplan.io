@@ -1,2 +1,2 @@
 <!-- src/routes/+layout.svelte -->
-  <slot />
+<slot />

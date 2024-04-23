@@ -9,17 +9,17 @@
 		language = value.language;
 	});
 	export let group;
-    export let friends_with_no_group;
+	export let friends_with_no_group;
 	export let styles;
-	
+
 	let search_string = '';
 
 	$: filtered_friends = friends_with_no_group.filter((friend) => {
 		return friend.username.toLowerCase().includes(search_string.toLowerCase());
 	});
 
-	function remove(friend){
-		if(confirm(dictionary.get(mapping.Are_you_sure)[language])){
+	function remove(friend) {
+		if (confirm(dictionary.get(mapping.Are_you_sure)[language])) {
 			group.friends = group.friends.filter((f) => {
 				return f.username !== friend.username;
 			});
@@ -27,14 +27,12 @@
 		}
 	}
 
-	function add(friend){
+	function add(friend) {
 		group.friends = [...group.friends, friend];
 		friends_with_no_group = friends_with_no_group.filter((f) => {
 			return f.username !== friend.username;
 		});
 	}
-
-
 </script>
 
 <table style="border: 1px solid {group.color};">
@@ -59,24 +57,23 @@
 		</tr>
 	{/each}
 	{#if friends_with_no_group.length != 0}
-	<tr>
-		<td>
-			<input type="text"
-			id="searcher"
-			placeholder={dictionary.get(mapping.Search)[language]}
-			bind:value={search_string}
-			>
-			{#each filtered_friends as friend}
-				<div>
-					<button
-						on:click={add(friend)}
-					>
-					{friend.username}
-					</button>
-				</div>
-			{/each}
-		</td>
-	</tr>
+		<tr>
+			<td>
+				<input
+					type="text"
+					id="searcher"
+					placeholder={dictionary.get(mapping.Search)[language]}
+					bind:value={search_string}
+				/>
+				{#each filtered_friends as friend}
+					<div>
+						<button on:click={add(friend)}>
+							{friend.username}
+						</button>
+					</div>
+				{/each}
+			</td>
+		</tr>
 	{/if}
 </table>
 
@@ -93,7 +90,6 @@
 		text-align: center;
 		padding: 8px;
 	}
-
 
 	#group_name {
 		width: fit-content;
@@ -135,5 +131,4 @@
 	button:hover {
 		cursor: pointer;
 	}
-
 </style>

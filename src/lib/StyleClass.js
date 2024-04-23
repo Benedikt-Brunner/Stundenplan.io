@@ -1,20 +1,20 @@
 //@ts-nocheck
 export default class StyleClass {
-    constructor(
-        header_color_monday,
-        header_color_tuesday,
-        header_color_wednesday,
-        header_color_thursday,
-        header_color_friday,
-        header_color_saturday,
-        header_color_sunday,
-    ) {
-        this.header_color_monday = header_color_monday;
-        this.header_color_tuesday = header_color_tuesday;
-        this.header_color_wednesday = header_color_wednesday;
-        this.header_color_thursday = header_color_thursday;
-        this.header_color_friday = header_color_friday;
-        this.header_color_saturday = header_color_saturday;
-        this.header_color_sunday = header_color_sunday;
-    }
+	constructor({
+		table_header_monday,
+		table_header_tuesday,
+		table_header_wednesday,
+		table_header_thursday,
+		table_header_friday,
+		table_header_saturday,
+		table_header_sunday
+	}) {
+		this.table_header_monday = table_header_monday;
+		this.table_header_tuesday = table_header_tuesday;
+		this.table_header_wednesday = table_header_wednesday;
+		this.table_header_thursday = table_header_thursday;
+		this.table_header_friday = table_header_friday;
+		this.table_header_saturday = table_header_saturday;
+		this.table_header_sunday = table_header_sunday;
+	}
 }

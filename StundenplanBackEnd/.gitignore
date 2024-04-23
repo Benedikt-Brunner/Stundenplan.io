@@ -1,0 +1,5 @@
+/target
+/.idea
+.shuttle-storage
+Secrets*.toml
+/.sqlx/query-8419132ca36365211a2c842d094c31e78cd3c75ac957c9a2b45cc55c4ae0f187.json

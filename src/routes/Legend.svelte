@@ -1,75 +1,78 @@
 <script>
-    export let styles;
+	export let styles;
 </script>
 
-<div class = "container">
-    <ul>
-        <li>
-            <div class = "block" id = "green"></div> Frei
-        </li>
+<div class="container">
+	<ul>
+		<li>
+			<div class="block" id="green" />
+			Frei
+		</li>
 
-        <li>
-            <div class = "block" id="blue"></div> Selber Kurs
-        </li>
+		<li>
+			<div class="block" id="blue" />
+			Selber Kurs
+		</li>
 
-        <li>
-            <div class = "block" id = "yellow"></div> Teilweise blockiert
-        </li>
+		<li>
+			<div class="block" id="yellow" />
+			Teilweise blockiert
+		</li>
 
-        <li>
-            <div class = "block" id = "red"></div> Komplett blockiert           
-        </li>
-    </ul>
+		<li>
+			<div class="block" id="red" />
+			Komplett blockiert
+		</li>
+	</ul>
 </div>
 
-
 <style>
-    .container{
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        margin: 1rem;
-        padding: 1rem;
-        border-radius: 1rem;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        font-size: 1.2rem;
-        font-weight: bold;
-        z-index: 10;
-    }
+	.container {
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		margin: 1rem;
+		padding: 1rem;
+		border-radius: 1rem;
+		background-color: rgba(0, 0, 0, 0.5);
+		color: white;
+		font-size: 1.2rem;
+		font-weight: bold;
+		z-index: 10;
+	}
 
-    ul{
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
 
-    li{
-        display: flex;
-        align-items: center;
-        margin: 0.5rem 0;
-    }
+	li {
+		display: flex;
+		align-items: center;
+		margin: 0.5rem 0;
+	}
 
-    .block{
-        width: 1.5rem;
-        height: 1.5rem;
-        margin-right: 1rem;
-        border-radius: 0.5rem;
-    }
+	.block {
+		width: 1.5rem;
+		height: 1.5rem;
+		margin-right: 1rem;
+		border-radius: 0.5rem;
+	}
 
-    #green{
-        background-color: green;
-    }
+	#green {
+		background-color: green;
+	}
 
-    #blue{
-        background-color: blue;
-    }
+	#blue {
+		background-color: blue;
+	}
 
-    #red{
-        background-color: red;
-    }
+	#red {
+		background-color: red;
+	}
 
-    #yellow{
-        background-color: yellow;
-    }
+	#yellow {
+		background-color: yellow;
+	}
 </style>

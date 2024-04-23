@@ -1,0 +1,29 @@
+[package]
+name = "timetablebackend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.7.3"
+cookie = "0.18.0"
+http = "1.0.0"
+http-body = "1.0.0"
+http-body-util = "0.1.0"
+password-hash = { version = "0.5.0", features = ["rand_core", "getrandom"]}
+pbkdf2 = { version = "0.12", features = ["simple"] }
+rand = "0.8.5"
+rand_chacha = "0.3.1"
+rand_core = { version = "0.6.4", features = ["getrandom"]}
+serde = "1.0.195"
+shuttle-axum = "0.36.0"
+shuttle-runtime = "0.36.0"
+shuttle-service = "0.36.0"
+shuttle-shared-db = { version = "0.36.0", features = ["postgres"] }
+sqlx = { version = "0.7.3", features = ["postgres", "runtime-tokio-native-tls"] }
+tokio = "1.28.2"
+tower-http = { version = "0.5.0", features = ["cors"]}
+tracing = "0.1.40"
+serde_json = "1.0.111"
+mime_guess = "2.0.4"
+include_dir = "0.7.3"
+regex = "1.10.3"

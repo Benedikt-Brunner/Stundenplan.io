@@ -84,9 +84,11 @@
 	async function updateDays(e) {
 		fullweektoogle.set(dynDays);
 		if (username) {
-			const { res, error} = await TimetableBackendApiService.updateMetadata({fullweektoogle: dynDays});
+			const { res, error } = await TimetableBackendApiService.updateMetadata({
+				fullweektoogle: dynDays
+			});
 			if (res) {
-            	couting_signal.update((old) => old + 1);
+				couting_signal.update((old) => old + 1);
 			} else {
 				show_error(error.message);
 			}
@@ -102,9 +104,12 @@
 		const updateRows = template == 'Custom' ? dynamicRows : null;
 
 		if (username) {
-			const { res, error} = await TimetableBackendApiService.updateMetadata({template, rows: updateRows});
+			const { res, error } = await TimetableBackendApiService.updateMetadata({
+				template,
+				rows: updateRows
+			});
 			if (res) {
-            	couting_signal.update((old) => old + 1);
+				couting_signal.update((old) => old + 1);
 			} else {
 				show_error(error.message);
 			}
@@ -116,9 +121,9 @@
 		dynamicRows = dynamicRows > 30 ? 30 : dynamicRows;
 		rows.set(dynamicRows);
 		if (username) {
-			const { res, error} = await TimetableBackendApiService.updateMetadata({rows: dynamicRows});
+			const { res, error } = await TimetableBackendApiService.updateMetadata({ rows: dynamicRows });
 			if (res) {
-            	couting_signal.update((old) => old + 1);
+				couting_signal.update((old) => old + 1);
 			} else {
 				show_error(error.message);
 			}
@@ -184,13 +189,16 @@
 							on:click={async () => {
 								theme.set(t);
 								if (username) {
-									const { res, error} = await TimetableBackendApiService.updateMetadata({theme: t});
+									const { res, error } = await TimetableBackendApiService.updateMetadata({
+										theme: t
+									});
 									if (res) {
 										couting_signal.update((old) => old + 1);
 									} else {
 										show_error(error.message);
 									}
-							}}}>{dictionary.get(theme_to_mapping.get(t))[language]}</button
+								}
+							}}>{dictionary.get(theme_to_mapping.get(t))[language]}</button
 						>
 					{/if}
 				{/each}
