@@ -887,6 +887,8 @@ async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
     let path = path.trim_start_matches(|c: char| regex.is_match(c.to_string().as_str()));
     let mime_type = mime_guess::from_path(path).first_or_text_plain();
 
+    println!("{}", path);
+
     let file = match STATIC_DIR.get_file(path) {
         None => {
             return Response::builder()
@@ -923,23 +925,23 @@ async fn main(
 
     let router = Router::new()
         .route("/", get(frontend_base))
-        .route("/userSignUp", get(user_sign_up_view).post(sign_up_user))
-        .route("/userSignIn", get(user_sign_in_view).post(sign_in_user))
-        .route("/userSignOut", get(sign_out_user_view).post(sign_out_user))
-        .route("/userInfo", get(get_user_data))
-        .route("/userSchedule", get(get_schedule))
-        .route("/userMetadata", get(get_metadata))
-        .route("/userFriends", get(get_friends))
-        .route("/userFriendRequests", get(get_friend_requests))
-        .route("/setUserMetadata", post(persist_metadata))
-        .route("/setUserSchedule", post(persist_schedule))
-        .route("/openFriendRequest", post(open_friend_request))
-        .route("/denyFriendRequest", post(deny_friend_request))
-        .route("/acceptFriendRequest", post(accept_friend_request))
-        .route("/removeFriend", post(remove_friend))
-        .route("/addGroup", post(add_friend_group))
-        .route("/removeGroup", post(remove_friend_group))
-        .route("/frontend/*path", get(static_path))
+        .route("/api/userSignUp", get(user_sign_up_view).post(sign_up_user))
+        .route("/api/userSignIn", get(user_sign_in_view).post(sign_in_user))
+        .route("/api/userSignOut", get(sign_out_user_view).post(sign_out_user))
+        .route("/api/userInfo", get(get_user_data))
+        .route("/api/userSchedule", get(get_schedule))
+        .route("/api/userMetadata", get(get_metadata))
+        .route("/api/userFriends", get(get_friends))
+        .route("/api/userFriendRequests", get(get_friend_requests))
+        .route("/api/setUserMetadata", post(persist_metadata))
+        .route("/api/setUserSchedule", post(persist_schedule))
+        .route("/api/openFriendRequest", post(open_friend_request))
+        .route("/api/denyFriendRequest", post(deny_friend_request))
+        .route("/api/acceptFriendRequest", post(accept_friend_request))
+        .route("/api/removeFriend", post(remove_friend))
+        .route("/api/addGroup", post(add_friend_group))
+        .route("/api/removeGroup", post(remove_friend_group))
+        .route("/*path", get(static_path))
         .layer(axum::middleware::from_fn(move |req, next| {
             auth(req, next, middleware_database.clone())
         }))

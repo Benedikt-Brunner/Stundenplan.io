@@ -10,7 +10,7 @@ import { theme as themeStore } from './Stores/ThemeStore';
 import { languageStore } from './Stores/LanguageStore';
 import { show_error } from './Stores/PopUpStore';
 
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/' : window.location.hostname + '/';
+const API_URL = '/api/';
 
 export const Routes = {
 	SignUp: 'userSignUp',
