@@ -1,3 +1,4 @@
+use std::fmt::{Display, Formatter};
 use axum::extract::Path;
 use axum::{
     body::Body,
@@ -18,7 +19,7 @@ use pbkdf2::Pbkdf2;
 use rand_chacha::ChaCha20Rng;
 use rand_core::SeedableRng;
 use regex::Regex;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use sqlx::postgres::PgRow;
 use sqlx::types::JsonValue;
 use sqlx::{Error, Executor, FromRow, Row};
@@ -27,7 +28,8 @@ use std::sync::{Arc, Mutex};
 type Database = sqlx::PgPool;
 type Random = Arc<Mutex<ChaCha20Rng>>;
 
-static STATIC_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/templates/frontend");
+static STATIC_TEMPLATE_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/templates/frontend");
+static STATIC_STYLES_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/Styles");
 
 #[derive(Deserialize, Clone)]
 struct CreateUser {
@@ -89,6 +91,29 @@ struct GenericFriendActionPayload {
     friend_name: String,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
+struct StylesPayload {
+    style: Styles,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+enum Styles {
+    Light,
+    Dark,
+    Pink,
+    Custom(String),
+}
+
+impl Display for Styles {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Styles::Light => write!(f, "Light"),
+            Styles::Dark => write!(f, "Dark"),
+            Styles::Pink => write!(f, "Pink"),
+            Styles::Custom(custom) => write!(f, "{}", custom),
+        }
+    }
+}
 #[derive(Clone)]
 pub(crate) struct AuthState(Option<(u128, Option<User>, Database)>);
 
@@ -887,7 +912,7 @@ async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
     let path = path.trim_start_matches(|c: char| regex.is_match(c.to_string().as_str()));
     let mime_type = mime_guess::from_path(path).first_or_text_plain();
 
-    let file = match STATIC_DIR.get_file(path) {
+    let file = match STATIC_TEMPLATE_DIR.get_file(path) {
         None => {
             return Response::builder()
                 .status(StatusCode::NOT_FOUND)
@@ -902,6 +927,32 @@ async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
         .header(
             header::CONTENT_TYPE,
             HeaderValue::from_str(mime_type.as_ref()).unwrap(),
+        )
+        .body(Full::from(file.contents()))
+        .unwrap()
+}
+
+async fn styles(Json(payload): Json<StylesPayload>) -> impl IntoResponse {
+
+    // if custom styles are supported in the future match if style is custom here and implement any custom logic e.g. database calls, remote file fetching etc.
+    // for now it will just try to access the inner value as a file which will probably fail
+    let path = payload.style.to_string() + ".json";
+
+    let file = match STATIC_STYLES_DIR.get_file(path) {
+        None => {
+            return Response::builder()
+                .status(StatusCode::NOT_FOUND)
+                .body(Full::from("test"))
+                .unwrap()
+        }
+        Some(file) => file,
+    };
+
+    Response::builder()
+        .status(StatusCode::OK)
+        .header(
+            header::CONTENT_TYPE,
+            HeaderValue::from_str("application/json").unwrap(),
         )
         .body(Full::from(file.contents()))
         .unwrap()
@@ -939,6 +990,7 @@ async fn main(
         .route("/api/removeFriend", post(remove_friend))
         .route("/api/addGroup", post(add_friend_group))
         .route("/api/removeGroup", post(remove_friend_group))
+        .route("/api/styles", post(styles))
         .route("/*path", get(static_path))
         .layer(axum::middleware::from_fn(move |req, next| {
             auth(req, next, middleware_database.clone())
