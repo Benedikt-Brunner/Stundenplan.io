@@ -59,7 +59,7 @@
 		align-items: center;
 		justify-content: center;
 		position: fixed;
-		top: 25;
+		top: 25%;
 		left: 5%;
 		border: black solid 1px;
 		border-radius: 10px;
