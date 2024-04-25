@@ -54,7 +54,7 @@
         };
 
         try {
-            const response = await fetch('https://timetablebackend.shuttleapp.rs/userSignOut', requestOptions);
+            const response = await fetch('/api/userSignOut', requestOptions);
 
             if (response.status === 303) {
                 showSuccess();
@@ -67,7 +67,7 @@
     }
 
     function redirect() {
-        window.location = "https://timetablebackend.shuttleapp.rs/";
+        window.pa = "/";
     }
 
     function showSuccess() {

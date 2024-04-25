@@ -27,7 +27,7 @@ export const Routes = {
 	RemoveFriend: 'removeFriend',
 	AddGroup: 'addGroup',
 	RemoveGroup: 'removeGroup',
-	GetStyle: 'getStyle'
+	Styles: 'styles'
 };
 
 export const TimetableBackendApiService = {
@@ -47,7 +47,6 @@ export const TimetableBackendApiService = {
 	},
 
 	async post(page, data) {
-		console.log(data);
 		let res;
 		let error;
 		try {
@@ -90,7 +89,7 @@ export const TimetableBackendApiService = {
 	},
 
 	async updateMetadata({ buddy, rows, fullweektoogle, theme, template, language }) {
-		return this.post(Routes.UpdateMetadata, {
+		return await this.post(Routes.UpdateMetadata, {
 			buddy: buddy ?? getStore(buddyStore),
 			rows: rows ?? getStore(rowsStore),
 			days: fullweektoogle ?? getStore(fullweektoogleStore),
@@ -110,6 +109,7 @@ export const TimetableBackendApiService = {
 			friendsResponse?.status !== 200 ||
 			pendingResponse?.status !== 200
 		) {
+			// TODO: Add error translation
 			show_error(
 				`Failed to retrieve friends data. ${friendsError?.message || pendingError?.message}`
 			);
@@ -121,5 +121,16 @@ export const TimetableBackendApiService = {
 		const pending = await pendingResponse.json();
 
 		return { friends, pending };
+	},
+
+	async getStyle(style) {
+		let query = {
+			style,
+		}
+
+		return this.post(
+			Routes.Styles,
+			query,
+		)
 	}
 };

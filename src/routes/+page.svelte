@@ -7,22 +7,38 @@
 	import SavedStatus from './saved_status.svelte';
 	import PopUp from './PopUp.svelte';
 	import LanguagePicker from './LanguagePicker.svelte';
+	import {show_error} from '$lib/Stores/PopUpStore.js';
 	import { load } from './loadPageData';
 	import { theme } from '$lib/Stores/ThemeStore';
 	import { comparing } from '$lib/Stores/comparingStore';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
-	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
+	import { TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 
 	let loading = true;
 	let styles = {};
 
 	onMount(async () => {
 		await load();
-		styles = await TimetableBackendApiService.post(Routes.GetStyle, get(theme));
+
+		let {res, err} = await TimetableBackendApiService.getStyle(get(theme));
+
+		// TODO: Add error translation
+		if (err) {
+			show_error(`There was an error fetching your theme: ${err.msg}`)
+		}
+
+		styles = res ?? {};
 
 		theme.subscribe(async (value) => {
-			styles = await TimetableBackendApiService.post(Routes.GetStyle, value);
+			let {res, err} = await TimetableBackendApiService.getStyle(value);
+
+			// TODO: Add error translation
+			if (err) {
+				show_error(`There was an error fetching your theme: ${err.msg}`)
+			}
+
+			styles = res ?? {};
 		});
 
 		loading = false;
