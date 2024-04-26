@@ -25,7 +25,7 @@
 	let wait = false;
 	let theme_to_mapping = new Map();
 	theme_to_mapping.set('Light', mapping.Bright);
-	theme_to_mapping.set('Night', mapping.Dark);
+	theme_to_mapping.set('Dark', mapping.Dark);
 	theme_to_mapping.set('Pink', mapping.Pink);
 
 	let setting_to_mapping = new Map();
@@ -51,7 +51,7 @@
 
 	let settings = ['Theme', 'Template', 'Days'];
 
-	let themes = ['Light', 'Night', 'Pink'];
+	let themes = ['Light', 'Dark', 'Pink'];
 
 	let templates = ['University', 'School', 'Custom'];
 
@@ -63,7 +63,7 @@
 	let colormap = new Map();
 
 	colormap.set('Light', '255, 255, 255');
-	colormap.set('Night', '12, 16, 70');
+	colormap.set('Dark', '12, 16, 70');
 	colormap.set('Pink', '255, 0, 255');
 
 	theme.subscribe((value) => {
@@ -72,7 +72,7 @@
 	});
 
 	$: {
-		disabled = template != 'Custom';
+		disabled = template !== 'Custom';
 	}
 
 	$: updateRows(dynamicRows);
@@ -172,10 +172,10 @@
 				style="--color: 0,0,0; border-radius: 50rem;">❌</button
 			>
 		</div>
-		{#if setting == 'Theme'}
+		{#if setting === 'Theme'}
 			<div class="top">
 				{#each themes as t}
-					{#if t == color}
+					{#if t === color}
 						<div
 							style="background-color: rgb({colorRGB});color: {DarkText.includes(t)
 								? 'black'

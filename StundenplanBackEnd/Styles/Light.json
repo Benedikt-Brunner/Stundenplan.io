@@ -1,0 +1,18 @@
+{
+	"primaryColor": "#FFFFFF",
+	"secondaryColor": "#000000",
+	"tableHeaderMondayFontColor": "#000000",
+	"tableHeaderTuesdayFontColor": "#000000",
+	"tableHeaderWednesdayFontColor": "#000000",
+	"tableHeaderThursdayFontColor": "#000000",
+	"tableHeaderFridayFontColor": "#000000",
+	"tableHeaderSaturdayFontColor": "#000000",
+	"tableHeaderSundayFontColor": "#000000",
+	"tableHeaderMondayBackgroundColor": "#99CCFF",
+	"tableHeaderTuesdayBackgroundColor": "#99CC00",
+	"tableHeaderWednesdayBackgroundColor": "#FFCC00",
+	"tableHeaderThursdayBackgroundColor": "#d4710f",
+	"tableHeaderFridayBackgroundColor": "#FF8080",
+	"tableHeaderSaturdayBackgroundColor": "#CC99FF",
+	"tableHeaderSundayBackgroundColor": "#db27b1"
+}

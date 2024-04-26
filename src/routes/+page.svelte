@@ -7,26 +7,56 @@
 	import SavedStatus from './SavedStatus.svelte';
 	import PopUp from './PopUp.svelte';
 	import LanguagePicker from './LanguagePicker.svelte';
+	import { show_error } from '$lib/Stores/PopUpStore.js';
 	import { load } from './loadPageData';
 	import { theme } from '$lib/Stores/ThemeStore';
 	import { comparing } from '$lib/Stores/comparingStore';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
-	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
+	import { TimetableBackendApiService } from '$lib/TimetableBackendApiService';
+	import StyleClass from '$lib/StyleClass';
 
 	let loading = true;
 	let styles = {};
 
 	onMount(async () => {
 		await load();
-		styles = await TimetableBackendApiService.post(Routes.GetStyle, get(theme));
+
+		let { res, err } = await TimetableBackendApiService.getStyle(get(theme));
+
+		// TODO: Add error translation
+		if (err) {
+			show_error(`There was an error fetching your theme: ${err.msg}`);
+		}
+
+		const data = await res.json();
+
+		styles = new StyleClass(data) ?? {};
 
 		theme.subscribe(async (value) => {
-			styles = await TimetableBackendApiService.post(Routes.GetStyle, value);
+			let { res, err } = await TimetableBackendApiService.getStyle(value);
+
+			// TODO: Add error translation
+			if (err) {
+				show_error(`There was an error fetching your theme: ${err.msg}`);
+			}
+
+			const data = await res.json();
+
+			styles = new StyleClass(data) ?? {};
+
+			applyMetaStyles(styles);
 		});
 
 		loading = false;
 	});
+
+	function applyMetaStyles(styles) {
+		const body = document.querySelector('body');
+
+		body.style.setProperty('background-color', styles.primaryColor);
+		body.style.setProperty('color', styles.secondaryColor);
+	}
 </script>
 
 {#if loading}

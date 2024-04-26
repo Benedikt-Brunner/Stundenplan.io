@@ -1,4 +1,3 @@
-// src/routes/profile/+page.ts
 //@ts-nocheck
 import { friends } from '$lib/Stores/FriendsStore.js';
 import { schedule, rows, template, fullweektoogle } from '$lib/Stores/ScheduleStore.js';

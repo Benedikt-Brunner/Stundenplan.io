@@ -41,26 +41,30 @@
 	<table>
 		<tr>
 			<th>{buddy}</th>
-			<th style="background-color: {styles.header_color_monday}; width: {ratio}%;"
-				>{dictionary.get(mapping.Day_1)[language]}</th
-			>
-			<th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;"
+			<th>{dictionary.get(mapping.Day_1)[language]}</th>
+			<th
+				style="color: {styles.tableHeaderTuesdayFontColor}; background-color: {styles.tableHeaderTuesdayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_2)[language]}</th
 			>
-			<th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;"
+			<th
+				style="color: {styles.tableHeaderWednesdayFontColor}; background-color: {styles.tableHeaderWednesdayBackgroundColor} width: {ratio}%;"
 				>{dictionary.get(mapping.Day_3)[language]}</th
 			>
-			<th style="background-color: {styles.header_color_thursday}; width: {ratio}%;"
+			<th
+				style="color: {styles.tableHeaderThursdayFontColor}; background-color: {styles.tableHeaderThursdayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_4)[language]}</th
 			>
-			<th style="background-color: {styles.header_color_friday}; width: {ratio}%;"
+			<th
+				style="color: {styles.tableHeaderFridayFontColor}; background-color: {styles.tableHeaderFridayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_5)[language]}</th
 			>
 			{#if $fullweektoogle}
-				<th style="background-color: {styles.header_color_saturday}; width: {ratio}%;"
+				<th
+					style="color: {styles.tableHeaderSaturdayFontColor}; background-color: {styles.tableHeaderSaturdayBackgroundColor}; width: {ratio}%;"
 					>{dictionary.get(mapping.Day_6)[language]}</th
 				>
-				<th style="background-color: {styles.header_color_sunday}; width: {ratio}%;"
+				<th
+					style="color: {styles.tableHeaderSundayFontColor}; background-color: {styles.tableHeaderSundayBackgroundColor}; width: {ratio}%;"
 					>{dictionary.get(mapping.Day_7)[language]}</th
 				>
 			{/if}
