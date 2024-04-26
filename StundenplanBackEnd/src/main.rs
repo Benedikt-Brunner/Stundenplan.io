@@ -912,7 +912,7 @@ async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
 #[shuttle_runtime::main]
 async fn main(
     #[shuttle_shared_db::Postgres(
-    local_uri = "postgres://postgres:{secrets.PASSWORD}@localhost:3006/postgres"
+    local_uri = "postgres://postgres:{secrets.PASSWORD}@localhost:{secrets.PORT}/postgres"
 )] pool: Database,
 ) -> shuttle_axum::ShuttleAxum {
     pool.execute(include_str!("../schema.sql"))
