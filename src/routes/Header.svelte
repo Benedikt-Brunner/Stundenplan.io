@@ -26,7 +26,7 @@
 <nav>
 	<h2>Stundenplan.me</h2>
 	<h3>
-		{dictionary.get(mapping.Greeting)[language]}, {#if username}{username}{:else} Guest {/if}
+		{dictionary.get(mapping.Greeting)[language]}, {username ?? 'Guest'}
 	</h3>
 	{#if !$comparing.is_comparing}
 		<Options {styles} />
