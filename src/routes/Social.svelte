@@ -1,6 +1,6 @@
 <script>
 	// @ts-nocheck
-	import Group from './group.svelte';
+	import Group from './Group.svelte';
 	import Social from '$lib/social.svg';
 	import Add_Friend from '$lib/add-friend.svg';
 	import Delete_Friend from '$lib/delete-friend.svg';
@@ -8,15 +8,10 @@
 	import Comparison from '$lib/comparison.svg';
 	import Manager from '$lib/manager.svg';
 	import Plus from '$lib/Plus.svg';
-	import {
-		friends,
-		filterList,
-		get_groups,
-		get_friends_with_no_group
-	} from '$lib/Stores/FriendsStore';
+	import { filterList, friends, get_friends_with_no_group, get_groups } from '$lib/Stores/FriendsStore';
 	import { comparing } from '$lib/Stores/comparingStore';
 	import { show_error, show_success } from '$lib/Stores/PopUpStore';
-	import { languageStore, dictionary, mapping } from '$lib/Stores/LanguageStore';
+	import { dictionary, languageStore, mapping } from '$lib/Stores/LanguageStore';
 	import { get } from 'svelte/store';
 	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 	import { usernameStore } from '$lib/Stores/userStore';
@@ -40,7 +35,7 @@
 	let groups = get_groups();
 	let friends_with_no_group = get_friends_with_no_group();
 	let language = get(languageStore).language;
-	let group_collapse_arr = groups.map((_) => false);
+	let group_collapse_arr = groups.map(() => false);
 
 	languageStore.subscribe((value) => {
 		language = value.language;
@@ -64,7 +59,7 @@
 	});
 
 	function persist() {
-		groups = groups.filter((group) => group.friends.length != 0);
+		groups = groups.filter((group) => group.friends.length !== 0);
 		let counter = 1;
 		for (let group in groups) {
 			if (group.name === '') {
@@ -83,6 +78,7 @@
 	function persist_group(group) {
 		group.friends.forEach(async (friend) => {
 			if (group.name !== get_from_friends(friend).group) {
+				// eslint-disable-next-line no-unused-vars
 				const { _, error } = await TimetableBackendApiService.post(Routes.AddGroup, {
 					friend: friend.username,
 					personal_grouping: group.name
@@ -97,6 +93,7 @@
 
 	async function persist_non_group_members(friend) {
 		if (get_from_friends(friend).group !== null) {
+			// eslint-disable-next-line no-unused-vars
 			const { _, error } = await TimetableBackendApiService.post(Routes.RemoveGroup, {
 				friend_name: friend.username
 			});
@@ -127,7 +124,7 @@
 	};
 
 	const handleAddFriend = async (friend_name) => {
-		if (friend_name == username) {
+		if (friend_name === username) {
 			show_error(dictionary.get(mapping.You_cant_add_yourself)[language]);
 			friend_manager_state = friend_manager_states.not_decided;
 			friend_manager_selected = false;
@@ -173,12 +170,13 @@
 	};
 
 	const handleRemoveFriend = async (friend_name) => {
-		if (friend_name == username) {
+		if (friend_name === username) {
 			show_error(dictionary.get(mapping.You_cant_delete_yourself)[language]);
 			return;
 		}
 
-		const { res, error } = await TimetableBackendApiService.post(Routes.RemoveFriend, {
+		// eslint-disable-next-line no-unused-vars
+		const { _, error } = await TimetableBackendApiService.post(Routes.RemoveFriend, {
 			friend_name
 		});
 
@@ -191,7 +189,8 @@
 	};
 
 	const handleFriendRequestDeny = async (friend_name) => {
-		const { res, error } = await TimetableBackendApiService.post(Routes.DenyFriendRequest, {
+		// eslint-disable-next-line no-unused-vars
+		const { _, error } = await TimetableBackendApiService.post(Routes.DenyFriendRequest, {
 			friend_name
 		});
 
@@ -203,7 +202,8 @@
 	};
 
 	const handleFriendRequestAccept = async (friend_name) => {
-		const { res, error } = await TimetableBackendApiService.post(Routes.AcceptFriendRequest, {
+		// eslint-disable-next-line no-unused-vars
+		const { _, error } = await TimetableBackendApiService.post(Routes.AcceptFriendRequest, {
 			friend_name
 		});
 
@@ -224,8 +224,7 @@
 	function toogle_friend(friend) {
 		if (get(filterList).includes(friend.username)) {
 			filterList.update((value) => {
-				let newvalue = value.filter((item) => item != friend.username);
-				return newvalue;
+				return value.filter((item) => item !== friend.username);
 			});
 		} else {
 			filterList.update((value) => {
@@ -313,7 +312,7 @@
 <div
 	class={focus ? 'social' : 'socialcollapse'}
 	on:click={() => {
-		if (focus == false && !wait) {
+		if (!focus && !wait) {
 			focus = true;
 		}
 	}}
@@ -421,7 +420,7 @@
 							{/if}
 						{/each}
 					{/if}
-					{#if friends_with_no_group.length != 0 && groups.length != 0}
+					{#if friends_with_no_group.length !== 0 && groups.length !== 0}
 						<h4 id="request_title">{dictionary.get(mapping.Friends_without_group)[language]}:</h4>
 					{/if}
 					{#each friends_with_no_group as friend}
@@ -446,7 +445,7 @@
 							/>
 						</div>
 					{/each}
-					{#if requestdyn.length != 0}
+					{#if requestdyn.length !== 0}
 						<h4 id="request_title">{dictionary.get(mapping.Requests)[language]}:</h4>
 					{/if}
 					{#each requestdyn as request}
@@ -465,7 +464,7 @@
 </div>
 
 {#if friend_manager_selected}
-	{#if friend_manager_state == friend_manager_states.not_decided}
+	{#if friend_manager_state === friend_manager_states.not_decided}
 		<div class="add_or_remove">
 			<button
 				class="tooltip"
@@ -486,7 +485,7 @@
 				<span class="tooltiptext">{dictionary.get(mapping.Delete_friend)[language]}</span>
 			</button>
 		</div>
-	{:else if friend_manager_state == friend_manager_states.add_friend}
+	{:else if friend_manager_state === friend_manager_states.add_friend}
 		<div class="editor">
 			<input
 				type="text"
@@ -497,7 +496,7 @@
 				>{dictionary.get(mapping.Add)[language]}</button
 			>
 		</div>
-	{:else if friend_manager_state == friend_manager_states.delete_friend}
+	{:else if friend_manager_state === friend_manager_states.delete_friend}
 		<div class="editor">
 			<div class="manager">
 				<div class="manager_header">
@@ -545,7 +544,7 @@
 				>
 			</div>
 			<div class="group_display">
-				{#each groups as group, i}
+				{#each groups as group}
 					<Group bind:group bind:friends_with_no_group {styles} />
 				{/each}
 				<button id="new_group" on:click={add_group}>

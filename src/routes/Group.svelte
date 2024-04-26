@@ -56,7 +56,7 @@
 			</td>
 		</tr>
 	{/each}
-	{#if friends_with_no_group.length != 0}
+	{#if friends_with_no_group.length !== 0}
 		<tr>
 			<td>
 				<input
@@ -92,7 +92,6 @@
 	}
 
 	#group_name {
-		width: fit-content;
 		border: none;
 		background-color: transparent;
 		font-size: 1rem;

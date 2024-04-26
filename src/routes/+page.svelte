@@ -1,10 +1,10 @@
 <script>
 	//@ts-nocheck
 	import LoadingSpinner from '$lib/loader.gif';
-	import Header from './header.svelte';
+	import Header from './Header.svelte';
 	import Table from './Table.svelte';
-	import ComparisonTable from './comparison_Table.svelte';
-	import SavedStatus from './saved_status.svelte';
+	import ComparisonTable from './ComparisonTable.svelte';
+	import SavedStatus from './SavedStatus.svelte';
 	import PopUp from './PopUp.svelte';
 	import LanguagePicker from './LanguagePicker.svelte';
 	import { load } from './loadPageData';

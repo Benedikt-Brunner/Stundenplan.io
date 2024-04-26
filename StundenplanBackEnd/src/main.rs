@@ -762,7 +762,7 @@ fn set_cookie(session_token: &str) -> Result<impl IntoResponse, StatusCode> {
                 session_token
             ),
         )
-        .body(http_body_util::Empty::new());
+        .body(Empty::new());
 
     return match res {
         Ok(response) => Ok(response),
@@ -824,7 +824,7 @@ async fn create_user(
                 Err(status_code) => Err(status_code),
             }
         }
-        Err(sqlx::Error::Database(database))
+        Err(Error::Database(database))
             if database.constraint() == Some("users_username_key") =>
         {
             return Err(StatusCode::UNPROCESSABLE_ENTITY);
