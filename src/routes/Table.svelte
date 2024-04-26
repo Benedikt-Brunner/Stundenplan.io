@@ -380,6 +380,7 @@
 		padding: 0.5rem;
 		border-radius: 0.5rem;
 		background-color: aliceblue;
+		color: black;
 		cursor: pointer;
 		overflow-wrap: break-word;
 	}
