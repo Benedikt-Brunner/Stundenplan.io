@@ -10,6 +10,8 @@
 
 	export let styles;
 
+	$: updateCssVars(styles);
+
 	let buddy = get(buddyStore);
 	let language = get(languageStore).language;
 
@@ -34,6 +36,12 @@
 		if (!value.is_comparing) return;
 		coloring = get_table_pattern();
 	});
+
+	function updateCssVars(styles) {
+		const root = document.documentElement;
+		root.style.setProperty('--primary-color', styles.primaryColor);
+		root.style.setProperty('--secondary-color', styles.secondaryColor);
+	}
 </script>
 
 <div class="center">
@@ -41,13 +49,15 @@
 	<table>
 		<tr>
 			<th>{buddy}</th>
-			<th>{dictionary.get(mapping.Day_1)[language]}</th>
+			<th
+				style="color: {styles.tableHeaderMondayFontColor}; background-color: {styles.tableHeaderMondayBackgroundColor}; width: {ratio}%;"
+			>{dictionary.get(mapping.Day_1)[language]}</th>
 			<th
 				style="color: {styles.tableHeaderTuesdayFontColor}; background-color: {styles.tableHeaderTuesdayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_2)[language]}</th
 			>
 			<th
-				style="color: {styles.tableHeaderWednesdayFontColor}; background-color: {styles.tableHeaderWednesdayBackgroundColor} width: {ratio}%;"
+				style="color: {styles.tableHeaderWednesdayFontColor}; background-color: {styles.tableHeaderWednesdayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_3)[language]}</th
 			>
 			<th
@@ -133,7 +143,7 @@
 
 	th,
 	td {
-		border: 1px solid black;
+      border: 1px solid var(--secondary-color);
 	}
 	th {
 		font-size: 2rem;

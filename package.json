@@ -3,9 +3,8 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
 		"build": "vite build && cd StundenplanBackEnd && cargo shuttle run",
-		"preview": "vite preview",
+		"deploy": "vite build && git commit -m 'deploy' && cd StundenplanBackEnd && cargo shuttle deploy",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
