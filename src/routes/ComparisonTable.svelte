@@ -150,7 +150,7 @@
 		text-align: center;
 	}
 	td {
-		font-size: 0.8rem;
+		font-size: 0.9rem;
 		text-align: start;
 	}
 </style>
