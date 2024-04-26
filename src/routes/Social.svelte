@@ -8,7 +8,12 @@
 	import Comparison from '$lib/comparison.svg';
 	import Manager from '$lib/manager.svg';
 	import Plus from '$lib/Plus.svg';
-	import { filterList, friends, get_friends_with_no_group, get_groups } from '$lib/Stores/FriendsStore';
+	import {
+		filterList,
+		friends,
+		get_friends_with_no_group,
+		get_groups
+	} from '$lib/Stores/FriendsStore';
 	import { comparing } from '$lib/Stores/comparingStore';
 	import { show_error, show_success } from '$lib/Stores/PopUpStore';
 	import { dictionary, languageStore, mapping } from '$lib/Stores/LanguageStore';

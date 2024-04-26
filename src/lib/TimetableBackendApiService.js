@@ -125,12 +125,9 @@ export const TimetableBackendApiService = {
 
 	async getStyle(style) {
 		let query = {
-			style,
-		}
+			style
+		};
 
-		return this.post(
-			Routes.Styles,
-			query,
-		)
+		return this.post(Routes.Styles, query);
 	}
 };

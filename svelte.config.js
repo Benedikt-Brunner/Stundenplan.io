@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default {
 	kit: {
 		adapter: Adapter({
-			pages: path.join(__dirname, "StundenplanBackEnd", "templates", "frontend")
+			pages: path.join(__dirname, 'StundenplanBackEnd', 'templates', 'frontend')
 		})
 	}
 };

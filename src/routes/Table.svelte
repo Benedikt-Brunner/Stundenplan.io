@@ -14,7 +14,12 @@
 	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 	import { show_error } from '$lib/Stores/PopUpStore';
 
+	/**
+	 * @type {Styles}
+	 */
 	export let styles;
+
+	$: updateCssVars(styles);
 
 	let username = get(usernameStore);
 	let buddy = get(buddyStore);
@@ -44,7 +49,7 @@
 	});
 
 	async function persist_on_exit(e) {
-		if (!user) return;
+		if (!username) return;
 		// Cancel the event as stated by the standard.
 		e.preventDefault();
 		// Chrome requires returnValue to be set.
@@ -86,6 +91,12 @@
 		TimetableBackendApiService.updateMetadata({ buddy: value });
 	}
 
+	function updateCssVars(styles) {
+		const root = document.documentElement;
+		root.style.setProperty('--primary-color', styles.primaryColor);
+		root.style.setProperty('--secondary-color', styles.secondaryColor);
+	}
+
 	couting_signal.subscribe((value) => {
 		if (value > 2) {
 			changed_loc = true;
@@ -104,26 +115,33 @@
 	<table>
 		<tr>
 			<th><input id="buddyInput" type="text" value={buddy} on:input={updateBuddy} /></th>
-			<th style="background-color: {styles.header_color_monday}; width: {ratio}%;"
+			<th
+				style="color: {styles.tableHeaderMondayFontColor}; background-color: {styles.tableHeaderMondayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_1)[language]}</th
 			>
-			<th style="background-color: {styles.header_color_tuesday}; width: {ratio}%;"
+			<th
+				style="color: {styles.tableHeaderTuesdayFontColor}; background-color: {styles.tableHeaderTuesdayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_2)[language]}</th
 			>
-			<th style="background-color: {styles.header_color_wednesday}; width: {ratio}%;"
+			<th
+				style="color: {styles.tableHeaderWednesdayFontColor}; background-color: {styles.tableHeaderWednesdayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_3)[language]}</th
 			>
-			<th style="background-color: {styles.header_color_thursday}; width: {ratio}%;"
+			<th
+				style="color: {styles.tableHeaderThursdayFontColor}; background-color: {styles.tableHeaderThursdayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_4)[language]}</th
 			>
-			<th style="background-color: {styles.header_color_friday}; width: {ratio}%;"
+			<th
+				style="color: {styles.tableHeaderFridayFontColor}; background-color: {styles.tableHeaderFridayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_5)[language]}</th
 			>
 			{#if $fullweektoogle}
-				<th style="background-color: {styles.header_color_saturday}; width: {ratio}%;"
+				<th
+					style="color: {styles.tableHeaderSaturdayFontColor}; background-color: {styles.tableHeaderSaturdayBackgroundColor}; width: {ratio}%;"
 					>{dictionary.get(mapping.Day_6)[language]}</th
 				>
-				<th style="background-color: {styles.header_color_sunday}; width: {ratio}%;"
+				<th
+					style="color: {styles.tableHeaderSundayFontColor}; background-color: {styles.tableHeaderSundayBackgroundColor}; width: {ratio}%;"
 					>{dictionary.get(mapping.Day_7)[language]}</th
 				>
 			{/if}
@@ -238,7 +256,7 @@
 	</table>
 	{#if selected}
 		<div class="editor">
-			{#if get_lessons_for_insertion_point('Day' + selectobject.column, selectobject.row).length != 0}
+			{#if get_lessons_for_insertion_point('Day' + selectobject.column, selectobject.row).length !== 0}
 				<div class="lessons">
 					{#each get_lessons_for_insertion_point('Day' + selectobject.column, selectobject.row) as lesson}
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -269,7 +287,7 @@
 					{/each}
 				</div>
 			{/if}
-			{#if selectobject.column == 0}
+			{#if selectobject.column === 0}
 				<SveltyPicker
 					mode={'time'}
 					placeholder="Zeit"
@@ -420,7 +438,7 @@
 
 	th,
 	td {
-		border: 1px solid black;
+		border: 1px solid var(--secondary-color);
 	}
 	th {
 		font-size: 2rem;
@@ -435,7 +453,7 @@
 		text-align: center;
 	}
 	td {
-		font-size: 0.8rem;
+		font-size: 0.9rem;
 		text-align: start;
 		cursor: pointer;
 	}

@@ -1,4 +1,23 @@
 //@ts-nocheck
+/**
+ * @typedef Styles
+ * @property {String} primaryColor - The primary color of the schedule
+ * @property {String} secondaryColor - The secondary color of the schedule
+ * @property {String} tableHeaderMondayFontColor - The font color of the Monday table header
+ * @property {String} tableHeaderTuesdayFontColor - The font color of the Tuesday table header
+ * @property {String} tableHeaderWednesdayFontColor - The font color of the Wednesday table header
+ * @property {String} tableHeaderThursdayFontColor - The font color of the Thursday table header
+ * @property {String} tableHeaderFridayFontColor - The font color of the Friday table header
+ * @property {String} tableHeaderSaturdayFontColor - The font color of the Saturday table header
+ * @property {String} tableHeaderSundayFontColor - The font color of the Sunday table header
+ * @property {String} tableHeaderMondayBackgroundColor - The background color of the Monday table header
+ * @property {String} tableHeaderTuesdayBackgroundColor - The background color of the Tuesday table header
+ * @property {String} tableHeaderWednesdayBackgroundColor - The background color of the Wednesday table header
+ * @property {String} tableHeaderThursdayBackgroundColor - The background color of the Thursday table header
+ * @property {String} tableHeaderFridayBackgroundColor - The background color of the Friday table header
+ * @property {String} tableHeaderSaturdayBackgroundColor - The background color of the Saturday table header
+ * @property {String} tableHeaderSundayBackgroundColor - The background color of the Sunday table header
+ */
 export default class StyleClass {
 	/**
 	 * @param {Object} StyleDTO - An object containing the style properties
@@ -18,7 +37,6 @@ export default class StyleClass {
 	 * @param {String} StyleDTO.tableHeaderFridayBackgroundColor - The background color of the Friday table header
 	 * @param {String} StyleDTO.tableHeaderSaturdayBackgroundColor - The background color of the Saturday table header
 	 * @param {String} StyleDTO.tableHeaderSundayBackgroundColor - The background color of the Sunday table header
-	 * @param {Array<String>} StyleDTO.groupsColorPalette - The color palette for the groups
 	 */
 	constructor({
 		primaryColor,
@@ -37,7 +55,6 @@ export default class StyleClass {
 		tableHeaderFridayBackgroundColor,
 		tableHeaderSaturdayBackgroundColor,
 		tableHeaderSundayBackgroundColor,
-		groupsColorPalette,
 	}) {
 		this.primaryColor = primaryColor;
 		this.secondaryColor = secondaryColor;
@@ -55,6 +72,5 @@ export default class StyleClass {
 		this.tableHeaderFridayBackgroundColor = tableHeaderFridayBackgroundColor;
 		this.tableHeaderSaturdayBackgroundColor = tableHeaderSaturdayBackgroundColor;
 		this.tableHeaderSundayBackgroundColor = tableHeaderSundayBackgroundColor;
-		this.groupsColorPalette = groupsColorPalette;
 	}
 }

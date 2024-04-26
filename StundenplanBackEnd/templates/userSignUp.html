@@ -1,214 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-            href="https://fonts.googleapis.com/css2?family=Karla:wght@500&display=swap"
-            rel="stylesheet"
-    />
-</head>
-<body onload="animateStars()">
-<div id = "stars">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Sign Up</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Karla:wght@500&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body onload="animateStars()">
+		<div id="stars"></div>
+		<div id="content">
+			<div id="infoBox"></div>
+			<input placeholder="Username" type="text" id="username" />
+			<input placeholder="Password" type="password" id="password" />
+			<button onclick="get_session()" id="submit">Sign Up</button>
+		</div>
+	</body>
 
-</div>
-<div id = "content">
-    <div id="infoBox"></div>
-    <input placeholder="Username" type="text" id="username">
-    <input placeholder="Password" type="password" id="password">
-    <button onclick="get_session()" id="submit">Sign Up</button>
-</div>
-</body>
+	<script>
+		function animateStars() {
+			addStars();
+			setInterval(addStars, 8500);
+		}
+		function addStars() {
+			const container = document.getElementById('stars');
+			container.innerHTML = '';
+			const fragment = document.createDocumentFragment();
+			for (let i = 0; i < 10; i++) {
+				for (let j = 0; j < 10; j++) {
+					const star = document.createElement('div');
+					if (
+						!(Math.round(Math.random() * 100) % 2 === 0) &&
+						!((i === 4 || i === 5) && (j === 4 || j === 5))
+					) {
+						star.className = 'star';
+						star.style = `margin-left: ${i * 10 * (Math.random() + 1)}px; Margin-top: ${
+							j * 10 * (Math.random() + 1)
+						}px`;
+					}
+					fragment.append(star);
+				}
+			}
+			container.append(fragment);
+		}
 
-<script>
-    function animateStars() {
-        addStars();
-        setInterval(addStars, 8500)
-    }
-    function addStars() {
-        const container = document.getElementById("stars");
-        container.innerHTML = "";
-        const fragment = document.createDocumentFragment();
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                const star = document.createElement("div")
-                if (!(Math.round(Math.random() * 100) % 2 === 0) &&!((i === 4 || i === 5) && (j === 4 || j === 5))) {
-                    star.className = "star";
-                    star.style = `margin-left: ${i * 10 *(Math.random() + 1)}px; Margin-top: ${j * 10 * (Math.random() + 1)}px`
-                }
-                fragment.append(star);
-            }
-        }
-        container.append(fragment);
-    }
+		async function get_session() {
+			const username = document.getElementById('username').value;
+			const password = document.getElementById('password').value;
+			const submitButton = document.getElementById('submit');
 
-    async function get_session() {
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const submitButton = document.getElementById("submit");
+			if (username.length < 3) {
+				showFailure('Username should be at least three symbols long');
 
-        if (username.length < 3) {
-            showFailure('Username should be at least three symbols long')
+				return;
+			} else if (password.length < 5) {
+				showFailure('Password should be at least five symbols long');
 
-            return;
-        } else if (password.length < 5) {
-            showFailure('Password should be at least five symbols long')
+				return;
+			}
 
-            return;
-        }
+			submitButton.disabled = true;
 
-        submitButton.disabled = true;
+			const requestOptions = {
+				method: 'POST',
+				xhrFields: { withCredentials: true },
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					username,
+					password
+				})
+			};
 
-        const requestOptions = {
-            method: 'POST',
-            xhrFields: {withCredentials: true},
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                username,
-                password,
-            }),
-        };
+			try {
+				const response = await fetch('/api/userSignUp', requestOptions);
 
-        try {
-            const response = await fetch('/api/userSignUp', requestOptions);
+				if (response.status === 303) {
+					showSuccess();
+				} else {
+					showFailure('Username is already taken');
+				}
+			} catch (e) {
+				showFailure(e.message);
 
-            if (response.status === 303) {
-                showSuccess();
-            } else {
-                showFailure('Username is already taken');
-            }
-        } catch (e) {
-            showFailure(e.message);
+				return;
+			}
+		}
 
-            return;
-        }
-    }
+		function redirect() {
+			window.location = '/';
+		}
 
-    function redirect() {
-        window.location = "/";
-    }
+		function showSuccess() {
+			const formElements = [
+				document.getElementById('username'),
+				document.getElementById('password'),
+				document.getElementById('submit')
+			];
 
-    function showSuccess() {
-        const formElements = [
-            document.getElementById("username"),
-            document.getElementById("password"),
-            document.getElementById("submit"),
-            ];
+			formElements.forEach((element) => element.remove());
 
-        formElements.forEach((element) => element.remove());
+			const infoBox = document.getElementById('infoBox');
 
-        const infoBox = document.getElementById('infoBox');
+			infoBox.innerHTML = 'Success';
+			infoBox.className = 'success';
+			setTimeout(redirect, 1000);
+		}
 
-        infoBox.innerHTML = 'Success'
-        infoBox.className = 'success'
-        setTimeout(redirect, 1000);
-    }
+		function showFailure(err) {
+			const infoBox = document.getElementById('infoBox');
 
-    function showFailure(err) {
-        const infoBox = document.getElementById('infoBox');
+			infoBox.innerHTML = `Error: ${err}`;
+			infoBox.className = 'failure';
+		}
+	</script>
 
-        infoBox.innerHTML = `Error: ${err}`
-        infoBox.className = 'failure'
-    }
-</script>
+	<style>
+		body {
+			background: #070113;
+		}
 
-<style>
-    body {
-        background: #070113;
-    }
+		#stars {
+			z-index: auto;
+			position: absolute;
+			width: 85vw;
+			height: 60vh;
+			margin-left: 5vw;
+			padding-left: 5%;
+			margin-top: 10vh;
+			display: grid;
+			grid-template-columns: repeat(10, 1fr);
+			grid-template-rows: repeat(10, 1fr);
+		}
 
-    #stars {
-        z-index: auto;
-        position: absolute;
-        width: 85vw;
-        height: 60vh;
-        margin-left: 5vw;
-        padding-left: 5%;
-        margin-top: 10vh;
-        display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        grid-template-rows: repeat(10, 1fr);
-    }
+		@keyframes scale {
+			0% {
+				scale: 0%;
+				rotate: 0deg;
+			}
+			50% {
+				scale: 90%;
+				rotate: 180deg;
+			}
+			100% {
+				scale: 0%;
+				rotate: 360deg;
+			}
+		}
 
-    @keyframes scale {
-        0% {scale: 0% ; rotate: 0deg;}
-        50% {scale: 90%; rotate: 180deg;}
-        100% {scale: 0%;  rotate: 360deg;}
-    }
+		.star {
+			width: 5px;
+			aspect-ratio: 1;
+			background: white;
+			border-radius: 50px;
+			filter: blur(1px);
+			animation: scale 8s forwards;
+		}
 
-    .star {
-        width: 5px;
-        aspect-ratio: 1;
-        background: white;
-        border-radius: 50px;
-        filter: blur(1px);
-        animation: scale 8s forwards;
-    }
+		#content {
+			position: absolute;
+			z-index: 1;
+			width: 90vw;
+			height: 90vh;
+			margin-left: 4vw;
+			margin-top: 5vh;
+			font-size: xx-large;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
 
-    #content {
-        position: absolute;
-        z-index: 1;
-        width: 90vw;
-        height: 90vh;
-        margin-left: 4vw;
-        margin-top: 5vh;
-        font-size: xx-large;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
+		button {
+			border-radius: 50px;
+			border: none;
+			padding: 7px;
+			color: black;
+		}
 
-    button {
-        border-radius: 50px;
-        border: none;
-        padding: 7px;
-        color: black;
-    }
+		button:active {
+			transform: translateY(3px);
+			scale: 95%;
+		}
 
-    button:active{
-        transform: translateY(3px);
-        scale: 95%;
-    }
+		button:focus {
+			outline: none;
+		}
 
-    button:focus {
-        outline: none;
-    }
+		input {
+			margin-block: 2rem;
+			border-radius: 50px;
+			border: none;
+			padding: 5px;
+			text-align: center;
+		}
 
-    input {
-        margin-block: 2rem;
-        border-radius: 50px;
-        border: none;
-        padding: 5px;
-        text-align: center;
-    }
+		input:focus {
+			box-shadow: 0px 0px 11px 7px #d24807;
+			outline: none;
+		}
 
-    input:focus {
-        box-shadow: 0px 0px 11px 7px #d24807;
-        outline: none;
-    }
+		input::placeholder {
+			text-align: center;
+			color: black;
+		}
 
-    input::placeholder {
-        text-align: center;
-        color: black;
-    }
+		.success {
+			padding: 5px;
+			font-size: 2rem;
+			color: green;
+			border: solid green 1px;
+		}
 
-    .success {
-        padding: 5px;
-        font-size: 2rem;
-        color: green;
-        border: solid green 1px;
-    }
-
-    .failure {
-        padding: 5px;
-        font-size: 1.3rem;
-        color: red;
-        border: solid red 1px;
-    }
-</style>
+		.failure {
+			padding: 5px;
+			font-size: 1.3rem;
+			color: red;
+			border: solid red 1px;
+		}
+	</style>
 </html>

@@ -19,7 +19,7 @@ use pbkdf2::Pbkdf2;
 use rand_chacha::ChaCha20Rng;
 use rand_core::SeedableRng;
 use regex::Regex;
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgRow;
 use sqlx::types::JsonValue;
 use sqlx::{Error, Executor, FromRow, Row};
