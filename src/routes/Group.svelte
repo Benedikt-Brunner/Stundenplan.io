@@ -10,7 +10,6 @@
 	});
 	export let group;
 	export let friends_with_no_group;
-	export let styles;
 
 	let search_string = '';
 

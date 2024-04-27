@@ -21,8 +21,6 @@
 	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 	import { usernameStore } from '$lib/Stores/UserStore.js';
 
-	export let styles;
-
 	let friend_manager_states = {
 		not_decided: 0,
 		add_friend: 1,
@@ -550,7 +548,7 @@
 			</div>
 			<div class="group_display">
 				{#each groups as group}
-					<Group bind:group bind:friends_with_no_group {styles} />
+					<Group bind:group bind:friends_with_no_group />
 				{/each}
 				<button id="new_group" on:click={add_group}>
 					<img src={Plus} alt="Add a new group" />

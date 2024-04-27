@@ -45,7 +45,7 @@
 </script>
 
 <div class="center">
-	<Legend {styles} />
+	<Legend />
 	<table>
 		<tr>
 			<th>{buddy}</th>

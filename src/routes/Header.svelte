@@ -29,9 +29,9 @@
 		{dictionary.get(mapping.Greeting)[language]}, {username ?? 'Guest'}
 	</h3>
 	{#if !$comparing.is_comparing}
-		<Options {styles} />
+		<Options />
 	{/if}
-	<Social {styles} />
+	<Social />
 	<a href="https://github.com/Benedikt-Brunner/Timetable"
 		><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;" /></a
 	>
