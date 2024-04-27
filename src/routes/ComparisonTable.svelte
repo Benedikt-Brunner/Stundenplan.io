@@ -1,10 +1,10 @@
 <script>
 	//@ts-nocheck
 	import { schedule, fullweektoogle } from '$lib/Stores/ScheduleStore.js';
-	import { get_table_pattern } from '$lib/Stores/comparingStore';
-	import { comparing } from '$lib/Stores/comparingStore';
+	import { get_table_pattern } from '$lib/Stores/ComparingStore.js';
+	import { comparing } from '$lib/Stores/ComparingStore.js';
 	import { mapping, languageStore, dictionary } from '$lib/Stores/LanguageStore';
-	import { buddyStore } from '$lib/Stores/userStore';
+	import { buddyStore } from '$lib/Stores/UserStore.js';
 	import { get } from 'svelte/store';
 	import Legend from './Legend.svelte';
 

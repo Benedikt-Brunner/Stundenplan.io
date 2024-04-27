@@ -13,12 +13,13 @@ use password_hash::{
 use rand_chacha::ChaCha20Rng;
 use rand_core::SeedableRng;
 use std::sync::{Arc, Mutex};
-use crate::api_routes::api_routes::*;
-use crate::auth::auth::*;
-use crate::static_routes::static_routes::*;
-use crate::migrations::migrations::*;
+use crate::api_routes::*;
+use crate::auth::*;
+use crate::static_routes::*;
+use crate::migrations::*;
 
 type Database = sqlx::PgPool;
+
 type Random = Arc<Mutex<ChaCha20Rng>>;
 
 #[shuttle_runtime::main]

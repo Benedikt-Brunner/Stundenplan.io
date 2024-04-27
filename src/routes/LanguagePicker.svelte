@@ -4,9 +4,9 @@
 	import Flag_en from '$lib/Flags/flag_en.svg';
 	import Flag_es from '$lib/Flags/flag_es.svg';
 	import { languageStore, setLanguage, languages } from '$lib/Stores/LanguageStore';
-	import { usernameStore } from '$lib/Stores/userStore';
+	import { usernameStore } from '$lib/Stores/UserStore.js';
 	import { TimetableBackendApiService } from '$lib/TimetableBackendApiService';
-	import { couting_signal } from '$lib/Stores/changedStore';
+	import { couting_signal } from '$lib/Stores/ChangedStore.js';
 	import { show_error } from '$lib/Stores/PopUpStore';
 	import { fly } from 'svelte/transition';
 	import { get } from 'svelte/store';

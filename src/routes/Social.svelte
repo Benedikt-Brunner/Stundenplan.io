@@ -14,12 +14,12 @@
 		get_friends_with_no_group,
 		get_groups
 	} from '$lib/Stores/FriendsStore';
-	import { comparing } from '$lib/Stores/comparingStore';
+	import { comparing } from '$lib/Stores/ComparingStore.js';
 	import { show_error, show_success } from '$lib/Stores/PopUpStore';
 	import { dictionary, languageStore, mapping } from '$lib/Stores/LanguageStore';
 	import { get } from 'svelte/store';
 	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
-	import { usernameStore } from '$lib/Stores/userStore';
+	import { usernameStore } from '$lib/Stores/UserStore.js';
 
 	export let styles;
 

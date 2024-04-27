@@ -1,8 +1,8 @@
 <script>
 	// @ts-nocheck
-	import { changed } from '$lib/Stores/changedStore';
+	import { changed } from '$lib/Stores/ChangedStore.js';
 	import { get } from 'svelte/store';
-	import { usernameStore } from '$lib/Stores/userStore';
+	import { usernameStore } from '$lib/Stores/UserStore.js';
 
 	let state_lib = {
 		not_changed: 'not_changed',

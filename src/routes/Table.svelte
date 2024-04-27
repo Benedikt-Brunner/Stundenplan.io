@@ -6,13 +6,14 @@
 		get_lessons_for_insertion_point,
 		insert_merged_lesson
 	} from '$lib/Stores/ScheduleStore.js';
-	import { changed, couting_signal } from '$lib/Stores/changedStore';
+	import { changed, couting_signal } from '$lib/Stores/ChangedStore.js';
 	import { mapping, languageStore, dictionary } from '$lib/Stores/LanguageStore';
 	import { get } from 'svelte/store';
 	import SveltyPicker from 'svelty-picker';
-	import { usernameStore, buddyStore } from '$lib/Stores/userStore';
+	import { usernameStore, buddyStore } from '$lib/Stores/UserStore.js';
 	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 	import { show_error } from '$lib/Stores/PopUpStore';
+	import {lessonAttributeToggleStore} from "$lib/Stores/LessonAttributeToggleStore.js";
 
 	/**
 	 * @type {Styles}
@@ -167,9 +168,15 @@
 						}
 					}}
 				>
-					<p>{dictionary.get(mapping.Room)[language]}: {hour.Day1.Room}</p>
-					<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day1.Subject}</p>
-					<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day1.Teacher}</p>
+					{#if $lessonAttributeToggleStore.show_room}
+						<p>{dictionary.get(mapping.Room)[language]}: {hour.Day1.Room}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_subject}
+						<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day1.Subject}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_teacher}
+						<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day1.Teacher}</p>
+					{/if}
 				</td>
 				<td
 					on:click={() => {
@@ -180,9 +187,15 @@
 						}
 					}}
 				>
-					<p>{dictionary.get(mapping.Room)[language]}: {hour.Day2.Room}</p>
-					<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day2.Subject}</p>
-					<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day2.Teacher}</p>
+					{#if $lessonAttributeToggleStore.show_room}
+						<p>{dictionary.get(mapping.Room)[language]}: {hour.Day2.Room}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_subject}
+						<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day2.Subject}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_teacher}
+						<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day2.Teacher}</p>
+					{/if}
 				</td>
 				<td
 					on:click={() => {
@@ -193,9 +206,15 @@
 						}
 					}}
 				>
-					<p>{dictionary.get(mapping.Room)[language]}: {hour.Day3.Room}</p>
-					<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day3.Subject}</p>
-					<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day3.Teacher}</p>
+					{#if $lessonAttributeToggleStore.show_room}
+						<p>{dictionary.get(mapping.Room)[language]}: {hour.Day3.Room}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_subject}
+						<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day3.Subject}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_teacher}
+						<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day3.Teacher}</p>
+					{/if}
 				</td>
 				<td
 					on:click={() => {
@@ -206,9 +225,15 @@
 						}
 					}}
 				>
-					<p>{dictionary.get(mapping.Room)[language]}: {hour.Day4.Room}</p>
-					<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day4.Subject}</p>
-					<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day4.Teacher}</p>
+					{#if $lessonAttributeToggleStore.show_room}
+						<p>{dictionary.get(mapping.Room)[language]}: {hour.Day4.Room}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_subject}
+						<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day4.Subject}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_teacher}
+						<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day4.Teacher}</p>
+					{/if}
 				</td>
 				<td
 					on:click={() => {
@@ -219,9 +244,15 @@
 						}
 					}}
 				>
-					<p>{dictionary.get(mapping.Room)[language]}: {hour.Day5.Room}</p>
-					<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day5.Subject}</p>
-					<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day5.Teacher}</p>
+					{#if $lessonAttributeToggleStore.show_room}
+						<p>{dictionary.get(mapping.Room)[language]}: {hour.Day5.Room}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_subject}
+						<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day5.Subject}</p>
+					{/if}
+					{#if $lessonAttributeToggleStore.show_teacher}
+						<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day5.Teacher}</p>
+					{/if}
 				</td>
 				{#if $fullweektoogle}
 					<td
@@ -233,9 +264,15 @@
 							}
 						}}
 					>
-						<p>{dictionary.get(mapping.Room)[language]}: {hour.Day6.Room}</p>
-						<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day6.Subject}</p>
-						<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day6.Teacher}</p>
+						{#if $lessonAttributeToggleStore.show_room}
+							<p>{dictionary.get(mapping.Room)[language]}: {hour.Day6.Room}</p>
+						{/if}
+						{#if $lessonAttributeToggleStore.show_subject}
+							<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day6.Subject}</p>
+						{/if}
+						{#if $lessonAttributeToggleStore.show_teacher}
+							<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day6.Teacher}</p>
+						{/if}
 					</td>
 					<td
 						on:click={() => {
@@ -246,9 +283,15 @@
 							}
 						}}
 					>
-						<p>{dictionary.get(mapping.Room)[language]}: {hour.Day7.Room}</p>
-						<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day7.Subject}</p>
-						<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day7.Teacher}</p>
+						{#if $lessonAttributeToggleStore.show_room}
+							<p>{dictionary.get(mapping.Room)[language]}: {hour.Day7.Room}</p>
+						{/if}
+						{#if $lessonAttributeToggleStore.show_subject}
+							<p>{dictionary.get(mapping.Subject)[language]}: {hour.Day7.Subject}</p>
+						{/if}
+						{#if $lessonAttributeToggleStore.show_teacher}
+							<p>{dictionary.get(mapping.Teacher)[language]}: {hour.Day7.Teacher}</p>
+						{/if}
 					</td>
 				{/if}
 			</tr>
@@ -296,21 +339,27 @@
 					isRange={true}
 				/>
 			{:else}
-				<input
-					type="text"
-					placeholder={dictionary.get(mapping.Room)[language]}
-					bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Room}
-				/>
-				<input
-					type="text"
-					placeholder={dictionary.get(mapping.Subject)[language]}
-					bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Subject}
-				/>
-				<input
-					type="text"
-					placeholder={dictionary.get(mapping.Teacher)[language]}
-					bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Teacher}
-				/>
+				{#if $lessonAttributeToggleStore.show_room}
+					<input
+						type="text"
+						placeholder={dictionary.get(mapping.Room)[language]}
+						bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Room}
+					/>
+				{/if}
+				{#if $lessonAttributeToggleStore.show_subject}
+					<input
+						type="text"
+						placeholder={dictionary.get(mapping.Subject)[language]}
+						bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Subject}
+					/>
+				{/if}
+				{#if $lessonAttributeToggleStore.show_teacher}
+					<input
+						type="text"
+						placeholder={dictionary.get(mapping.Teacher)[language]}
+						bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Teacher}
+					/>
+				{/if}
 			{/if}
 			<button
 				on:click={() => {
