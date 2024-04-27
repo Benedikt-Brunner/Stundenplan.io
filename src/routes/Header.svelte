@@ -23,7 +23,7 @@
 	});
 </script>
 
-<nav style="color: {styles.secondaryColor}; background-color: {styles.primaryColor}; box-shadow: 0 0 15px 0 {styles.secondaryColor}20;">
+<nav style="color: {styles.secondaryColor}; background-color: {styles.primaryColor}; box-shadow: 0 0 15px 0 {styles.secondaryColor}70;">
 	<h2>Stundenplan.me</h2>
 	<h3>
 		{dictionary.get(mapping.Greeting)[language]}, {username ?? 'Guest'}
