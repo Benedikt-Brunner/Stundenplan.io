@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { get as getStore } from 'svelte/store';
-import { buddyStore } from './Stores/userStore';
+import { buddyStore } from './Stores/UserStore.js';
 import {
 	rows as rowsStore,
 	fullweektoogle as fullweektoogleStore,
@@ -9,6 +9,7 @@ import {
 import { theme as themeStore } from './Stores/ThemeStore';
 import { languageStore } from './Stores/LanguageStore';
 import { show_error } from './Stores/PopUpStore';
+import {lessonAttributeToggleStore} from "$lib/Stores/LessonAttributeToggleStore.js";
 
 const API_URL = '/api/';
 
@@ -88,14 +89,19 @@ export const TimetableBackendApiService = {
 		window.location.href = API_URL + page;
 	},
 
-	async updateMetadata({ buddy, rows, fullweektoogle, theme, template, language }) {
+	async updateMetadata({ buddy, rows, fullweektoogle, theme, template, language, show_teacher, show_room, show_subject}) {
+		const lessonAttributeToggles = getStore(lessonAttributeToggleStore);
+
 		return await this.post(Routes.UpdateMetadata, {
 			buddy: buddy ?? getStore(buddyStore),
 			rows: rows ?? getStore(rowsStore),
 			days: fullweektoogle ?? getStore(fullweektoogleStore),
 			theme: theme ?? getStore(themeStore),
 			template: template ?? getStore(templateStore),
-			language: language ?? getStore(languageStore)?.language ?? 'de'
+			language: language ?? getStore(languageStore)?.language ?? 'de',
+			show_teacher: show_teacher ?? lessonAttributeToggles?.show_teacher ?? true,
+			show_room: show_room ?? lessonAttributeToggles?.show_room ?? true,
+			show_subject: show_subject ?? lessonAttributeToggles?.show_subject ?? true
 		});
 	},
 

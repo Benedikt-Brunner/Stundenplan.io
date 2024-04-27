@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { get, writable } from 'svelte/store';
 import { get_friends_lessons } from './FriendsStore';
-import { changed } from './changedStore';
+import { changed } from './ChangedStore.js';
 export const fullweektoogle = writable(false);
 export const template = writable('University');
 export const rows = writable(7);

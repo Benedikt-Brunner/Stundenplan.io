@@ -14,14 +14,12 @@
 		get_friends_with_no_group,
 		get_groups
 	} from '$lib/Stores/FriendsStore';
-	import { comparing } from '$lib/Stores/comparingStore';
+	import { comparing } from '$lib/Stores/ComparingStore.js';
 	import { show_error, show_success } from '$lib/Stores/PopUpStore';
 	import { dictionary, languageStore, mapping } from '$lib/Stores/LanguageStore';
 	import { get } from 'svelte/store';
 	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
-	import { usernameStore } from '$lib/Stores/userStore';
-
-	export let styles;
+	import { usernameStore } from '$lib/Stores/UserStore.js';
 
 	let friend_manager_states = {
 		not_decided: 0,
@@ -550,7 +548,7 @@
 			</div>
 			<div class="group_display">
 				{#each groups as group}
-					<Group bind:group bind:friends_with_no_group {styles} />
+					<Group bind:group bind:friends_with_no_group />
 				{/each}
 				<button id="new_group" on:click={add_group}>
 					<img src={Plus} alt="Add a new group" />

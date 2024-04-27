@@ -7,18 +7,18 @@
 	import { languageStore, dictionary, mapping } from '$lib/Stores/LanguageStore';
 	import { fullweektoogle } from '$lib/Stores/ScheduleStore.js';
 	import { get } from 'svelte/store';
-	import { couting_signal } from '$lib/Stores/changedStore';
-	import { usernameStore } from '$lib/Stores/userStore';
+	import { couting_signal } from '$lib/Stores/ChangedStore.js';
+	import { usernameStore } from '$lib/Stores/UserStore.js';
 	import { TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 	import { show_error } from '$lib/Stores/PopUpStore';
-
-	export let styles;
+	import {lessonAttributeToggleStore} from "$lib/Stores/LessonAttributeToggleStore.js";
 
 	let focus = false;
 	let colorRGB = '';
 	let color = '';
 	let dynamicRows = get(rows);
 	let dynDays = get(fullweektoogle);
+	let dynLessonAttributeToggles = get(lessonAttributeToggleStore);
 	let template = 'University';
 	let setting = 'Theme';
 	let disabled = true;
@@ -38,6 +38,11 @@
 	template_to_mapping.set('School', mapping.School);
 	template_to_mapping.set('Custom', mapping.Custom);
 
+	let lessonAttribute_to_mapping = new Map();
+	lessonAttribute_to_mapping.set('show_subject', mapping.Subject);
+	lessonAttribute_to_mapping.set('show_teacher', mapping.Teacher);
+	lessonAttribute_to_mapping.set('show_room', mapping.Room);
+
 	let language = get(languageStore).language;
 	let username = get(usernameStore);
 
@@ -54,6 +59,8 @@
 	let themes = ['Light', 'Dark', 'Pink'];
 
 	let templates = ['University', 'School', 'Custom'];
+
+	let lessonAttributes = ['show_subject', 'show_teacher', 'show_room'];
 
 	let DarkText = ['Light'];
 
@@ -81,6 +88,9 @@
 
 	$: updateDays(dynDays);
 
+	$: updateLessonAttributes(dynLessonAttributeToggles);
+
+	// eslint-disable-next-line no-unused-vars
 	async function updateDays(e) {
 		fullweektoogle.set(dynDays);
 		if (username) {
@@ -95,13 +105,14 @@
 		}
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	async function updateTemplate(e) {
 		templateStore.set(template);
-		if (template == 'Custom') {
+		if (template === 'Custom') {
 			updateRows(dynamicRows);
 		}
 
-		const updateRows = template == 'Custom' ? dynamicRows : null;
+		const updateRows = template === 'Custom' ? dynamicRows : null;
 
 		if (username) {
 			const { res, error } = await TimetableBackendApiService.updateMetadata({
@@ -116,12 +127,30 @@
 		}
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	async function updateRows(e) {
 		dynamicRows = dynamicRows < 1 ? 1 : dynamicRows;
 		dynamicRows = dynamicRows > 30 ? 30 : dynamicRows;
 		rows.set(dynamicRows);
 		if (username) {
 			const { res, error } = await TimetableBackendApiService.updateMetadata({ rows: dynamicRows });
+			if (res) {
+				couting_signal.update((old) => old + 1);
+			} else {
+				show_error(error.message);
+			}
+		}
+	}
+
+	// eslint-disable-next-line no-unused-vars
+	async function updateLessonAttributes(e) {
+		lessonAttributeToggleStore.set(dynLessonAttributeToggles);
+		if (username) {
+			const { res, error } = await TimetableBackendApiService.updateMetadata({
+				show_room: dynLessonAttributeToggles.show_room,
+				show_subject: dynLessonAttributeToggles.show_subject,
+				show_teacher: dynLessonAttributeToggles.show_teacher
+			});
 			if (res) {
 				couting_signal.update((old) => old + 1);
 			} else {
@@ -143,7 +172,7 @@
 <div
 	class={focus ? 'options' : 'optionscollapse'}
 	on:click={() => {
-		if (focus == false && !wait) {
+		if (focus === false && !wait) {
 			focus = true;
 		}
 	}}
@@ -151,7 +180,7 @@
 	{#if focus}
 		<div class="top">
 			{#each settings as s}
-				{#if s == setting}
+				{#if s === setting}
 					<div style="background-color: black;color: white">
 						{dictionary.get(setting_to_mapping.get(s))[language]}
 					</div>
@@ -203,7 +232,15 @@
 					{/if}
 				{/each}
 			</div>
-		{:else if setting == 'Template'}
+		{:else if setting === 'Template'}
+			<div class="inbetween">
+				{#each lessonAttributes as l}
+					<label>
+						<input type="checkbox" bind:checked={dynLessonAttributeToggles[l]} />
+						{dictionary.get(lessonAttribute_to_mapping.get(l))[language]}
+					</label>
+				{/each}
+			</div>
 			<div class="middle">
 				{#each templates as t}
 					<label>
@@ -222,7 +259,7 @@
 					style={disabled ? 'cursor: not-allowed' : ''}
 				/>
 			</div>
-		{:else if setting == 'Days'}
+		{:else if setting === 'Days'}
 			<div class="middle">
 				<label for="rows">7-{dictionary.get(mapping.Days)[language]}:</label>
 				<input type="checkbox" bind:checked={dynDays} />
@@ -252,7 +289,7 @@
 
 	.options {
 		width: 20rem;
-		height: 12rem;
+		height: 15rem;
 		background-color: rgba(151, 147, 147);
 		border-radius: 1rem;
 	}
@@ -281,6 +318,13 @@
 
 	.top button:hover {
 		transform: scale(1.1);
+	}
+
+	.inbetween {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 1rem;
 	}
 
 	.middle {

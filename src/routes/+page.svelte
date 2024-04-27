@@ -10,7 +10,7 @@
 	import { show_error } from '$lib/Stores/PopUpStore.js';
 	import { load } from './loadPageData';
 	import { theme } from '$lib/Stores/ThemeStore';
-	import { comparing } from '$lib/Stores/comparingStore';
+	import { comparing } from '$lib/Stores/ComparingStore.js';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { TimetableBackendApiService } from '$lib/TimetableBackendApiService';

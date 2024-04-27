@@ -4,9 +4,9 @@
 	import Git from '$lib/github.svg';
 	import Options from './Options.svelte';
 	import Social from './Social.svelte';
-	import { usernameStore } from '$lib/Stores/userStore';
+	import { usernameStore } from '$lib/Stores/UserStore.js';
 	import { languageStore, dictionary, mapping } from '$lib/Stores/LanguageStore';
-	import { comparing } from '$lib/Stores/comparingStore';
+	import { comparing } from '$lib/Stores/ComparingStore.js';
 	import { get } from 'svelte/store';
 
 	export let styles;
@@ -29,9 +29,9 @@
 		{dictionary.get(mapping.Greeting)[language]}, {username ?? 'Guest'}
 	</h3>
 	{#if !$comparing.is_comparing}
-		<Options {styles} />
+		<Options />
 	{/if}
-	<Social {styles} />
+	<Social />
 	<a href="https://github.com/Benedikt-Brunner/Timetable"
 		><img src={Git} alt="Github Logo" width="40vw" style="margin: 4%;" /></a
 	>

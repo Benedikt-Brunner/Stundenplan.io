@@ -1,7 +1,3 @@
-<script>
-	export let styles;
-</script>
-
 <div class="container">
 	<ul>
 		<li>
