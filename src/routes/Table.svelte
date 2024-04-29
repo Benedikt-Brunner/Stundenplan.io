@@ -104,6 +104,26 @@
 		}
 	});
 
+	function openAttributeInputManager() {
+		selected = true;
+		waiter(
+				() => document.getElementById('editor').focus()
+		);
+	}
+
+	function handleAttributeInputManagerEvents(event) {
+		if (event.key === 'Escape' || event.key === 'Enter') {
+			selected = false;
+			changed_loc = true;
+		}
+	}
+
+	function waiter(callback = () => {}) {
+		setTimeout(() => {
+			callback();
+		}, 100);
+	}
+
 	setInterval(() => {
 		if (!changed_loc && !get(changed)) return;
 		persist();
@@ -155,7 +175,7 @@
 						if (!selected) {
 							selectobject.row = i;
 							selectobject.column = 0;
-							selected = true;
+							openAttributeInputManager();
 						}
 					}}>{hour.Hours ?? '?'}</td
 				>
@@ -164,7 +184,7 @@
 						if (!selected) {
 							selectobject.row = i;
 							selectobject.column = 1;
-							selected = true;
+							openAttributeInputManager();
 						}
 					}}
 				>
@@ -183,7 +203,7 @@
 						if (!selected) {
 							selectobject.row = i;
 							selectobject.column = 2;
-							selected = true;
+							openAttributeInputManager();
 						}
 					}}
 				>
@@ -202,7 +222,7 @@
 						if (!selected) {
 							selectobject.row = i;
 							selectobject.column = 3;
-							selected = true;
+							openAttributeInputManager();
 						}
 					}}
 				>
@@ -221,7 +241,7 @@
 						if (!selected) {
 							selectobject.row = i;
 							selectobject.column = 4;
-							selected = true;
+							openAttributeInputManager();
 						}
 					}}
 				>
@@ -240,7 +260,7 @@
 						if (!selected) {
 							selectobject.row = i;
 							selectobject.column = 5;
-							selected = true;
+							openAttributeInputManager();
 						}
 					}}
 				>
@@ -260,7 +280,7 @@
 							if (!selected) {
 								selectobject.row = i;
 								selectobject.column = 6;
-								selected = true;
+								openAttributeInputManager();
 							}
 						}}
 					>
@@ -279,7 +299,7 @@
 							if (!selected) {
 								selectobject.row = i;
 								selectobject.column = 7;
-								selected = true;
+								openAttributeInputManager();
 							}
 						}}
 					>
@@ -298,7 +318,7 @@
 		{/each}
 	</table>
 	{#if selected}
-		<div class="editor">
+		<div id="editor" role="button" on:keydown={handleAttributeInputManagerEvents} tabindex="-1" >
 			{#if get_lessons_for_insertion_point('Day' + selectobject.column, selectobject.row).length !== 0}
 				<div class="lessons">
 					{#each get_lessons_for_insertion_point('Day' + selectobject.column, selectobject.row) as lesson}
@@ -337,6 +357,7 @@
 					bind:value={$schedule[selectobject.row].Hours}
 					format={'hh:ii'}
 					isRange={true}
+					on:keydown={handleAttributeInputManagerEvents}
 				/>
 			{:else}
 				{#if $lessonAttributeToggleStore.show_room}
@@ -344,6 +365,7 @@
 						type="text"
 						placeholder={dictionary.get(mapping.Room)[language]}
 						bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Room}
+						on:keydown={handleAttributeInputManagerEvents}
 					/>
 				{/if}
 				{#if $lessonAttributeToggleStore.show_subject}
@@ -351,6 +373,7 @@
 						type="text"
 						placeholder={dictionary.get(mapping.Subject)[language]}
 						bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Subject}
+						on:keydown={handleAttributeInputManagerEvents}
 					/>
 				{/if}
 				{#if $lessonAttributeToggleStore.show_teacher}
@@ -358,6 +381,7 @@
 						type="text"
 						placeholder={dictionary.get(mapping.Teacher)[language]}
 						bind:value={$schedule[selectobject.row]['Day' + selectobject.column].Teacher}
+						on:keydown={handleAttributeInputManagerEvents}
 					/>
 				{/if}
 			{/if}
@@ -439,7 +463,7 @@
 		margin-block-end: 0.5em;
 	}
 
-	.editor {
+	#editor {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -453,7 +477,7 @@
 		z-index: 1;
 	}
 
-	.editor input {
+	#editor input {
 		margin: 1rem;
 		padding: 0.5rem;
 		border-radius: 0.5rem;
@@ -461,7 +485,7 @@
 		outline: none;
 	}
 
-	.editor button {
+	#editor button {
 		margin: 1rem;
 		padding: 0.5rem;
 		border-radius: 0.5rem;

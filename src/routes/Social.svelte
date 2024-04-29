@@ -217,9 +217,10 @@
 		}
 	};
 
-	function waiter() {
+	function waiter(callback = () => {}) {
 		wait = true;
 		setTimeout(() => {
+			callback();
 			wait = false;
 		}, 100);
 	}
@@ -306,6 +307,44 @@
 			group_collapse_arr[i] = !group_collapse_arr[i];
 		};
 	}
+
+	function openGroupManager() {
+		group_manager_selected = true;
+		focus = false;
+		waiter(
+				() => document.getElementById('group_manager').focus()
+		);
+	}
+
+	function closeGroupManager(event) {
+		if (event.key === 'Escape') {
+			group_manager_selected = false;
+			focus = true;
+		}
+	}
+
+	function openFriendManager() {
+		friend_manager_selected = true;
+		focus = false;
+		waiter(
+				() => document.getElementById('friend_manager_no_state').focus()
+		);
+	}
+
+	function refocusFriendManager(new_friend_manager_state, element_id) {
+		friend_manager_state = new_friend_manager_state;
+		waiter(
+				() => document.getElementById(element_id).focus()
+		);
+	}
+
+	function closeFriendManager(event) {
+		if (event.key === 'Escape') {
+			friend_manager_state = friend_manager_states.not_decided;
+			friend_manager_selected = false;
+			focus = true;
+		}
+	}
 </script>
 
 <svelte:window on:beforeunload={persist} />
@@ -352,9 +391,7 @@
 					<button
 						on:click={() => {
 							if (!friend_manager_selected) {
-								group_manager_selected = true;
-								focus = false;
-								waiter();
+								openGroupManager();
 							}
 						}}
 					>
@@ -364,8 +401,7 @@
 					<button
 						on:click={() => {
 							if (!group_manager_selected) {
-								(friend_manager_selected = true), (focus = false);
-								waiter();
+								openFriendManager();
 							}
 						}}><img src={Manage_Friends} alt="Add a friend" /></button
 					>
@@ -373,7 +409,6 @@
 				<div class="list">
 					{#if groups}
 						{#each groups as group, i}
-							<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 							<div class="group_button_wrapper">
 								{#if !group_collapse_arr[i]}
 									<div
@@ -468,11 +503,11 @@
 
 {#if friend_manager_selected}
 	{#if friend_manager_state === friend_manager_states.not_decided}
-		<div class="add_or_remove">
+		<div class="add_or_remove" id="friend_manager_no_state" role="button" on:keydown={closeFriendManager} tabindex="-1">
 			<button
 				class="tooltip"
 				on:click={() => {
-					friend_manager_state = friend_manager_states.add_friend;
+					refocusFriendManager(friend_manager_states.add_friend, 'friend_manager_add_friend');
 				}}
 			>
 				<img src={Add_Friend} alt="Add Friend" />
@@ -481,7 +516,7 @@
 			<button
 				class="tooltip"
 				on:click={() => {
-					friend_manager_state = friend_manager_states.delete_friend;
+					refocusFriendManager(friend_manager_states.delete_friend, 'friend_manager_delete_friend');
 				}}
 			>
 				<img src={Delete_Friend} alt="Delete Friend" />
@@ -489,18 +524,23 @@
 			</button>
 		</div>
 	{:else if friend_manager_state === friend_manager_states.add_friend}
-		<div class="editor">
+		<div class="editor" id="friend_manager_add_friend" role="button" on:keydown={closeFriendManager} tabindex="-1">
 			<input
 				type="text"
 				placeholder={dictionary.get(mapping.Name)[language]}
 				bind:value={friend_name}
+				on:keydown={(event) => {
+				if (event.key === 'Enter') {
+					handleAddFriend(friend_name);
+				}
+			}}
 			/>
-			<button on:click={handleAddFriend(friend_name)}
-				>{dictionary.get(mapping.Add)[language]}</button
+			<button on:click={handleAddFriend(friend_name)}>
+				{dictionary.get(mapping.Add)[language]}</button
 			>
 		</div>
 	{:else if friend_manager_state === friend_manager_states.delete_friend}
-		<div class="editor">
+		<div class="editor" id="friend_manager_delete_friend" role="button" on:keydown={closeFriendManager} tabindex="-1" >
 			<div class="manager">
 				<div class="manager_header">
 					<div />
@@ -532,7 +572,7 @@
 {/if}
 
 {#if group_manager_selected}
-	<div class="editor">
+	<div class="editor" id="group_manager" role="button" on:keydown={closeGroupManager} tabindex="-1" >
 		<div class="manager">
 			<div class="manager_header">
 				<div />
@@ -780,7 +820,6 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: start;
-		align-items: space-between;
 	}
 
 	#exit {
