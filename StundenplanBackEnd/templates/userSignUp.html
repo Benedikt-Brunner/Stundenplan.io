@@ -24,9 +24,25 @@
 
 	<script>
 		function animateStars() {
+			initListeners();
 			addStars();
 			setInterval(addStars, 8500);
 		}
+
+		function initListeners() {
+			document.getElementById('username').addEventListener('keydown', (e) => {
+				if (e.code === 'Enter') {
+					get_session();
+				}
+			});
+
+			document.getElementById('password').addEventListener('keydown', (e) => {
+				if (e.code === 'Enter') {
+					get_session();
+				}
+			});
+		}
+
 		function addStars() {
 			const container = document.getElementById('stars');
 			container.innerHTML = '';
@@ -116,6 +132,8 @@
 
 			infoBox.innerHTML = `Error: ${err}`;
 			infoBox.className = 'failure';
+			const submitButton = document.getElementById('submit');
+			submitButton.disabled = false;
 		}
 	</script>
 
