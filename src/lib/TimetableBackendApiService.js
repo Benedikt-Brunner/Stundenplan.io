@@ -7,7 +7,7 @@ import {
 	template as templateStore
 } from './Stores/ScheduleStore';
 import { theme as themeStore } from './Stores/ThemeStore';
-import { languageStore } from './Stores/LanguageStore';
+import { dictionary, languageStore, mapping } from './Stores/LanguageStore';
 import { show_error } from './Stores/PopUpStore';
 
 const API_URL = '/api/';
@@ -109,9 +109,8 @@ export const TimetableBackendApiService = {
 			friendsResponse?.status !== 200 ||
 			pendingResponse?.status !== 200
 		) {
-			// TODO: Add error translation
 			show_error(
-				`Failed to retrieve friends data. ${friendsError?.message || pendingError?.message}`
+				`${dictionary.get(mapping.Retrieve_Friends_Data_Failed)}${friendsError?.message || pendingError?.message}`
 			);
 
 			return { friends: [], pending: [] };

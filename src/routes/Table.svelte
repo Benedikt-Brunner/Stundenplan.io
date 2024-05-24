@@ -277,9 +277,9 @@
 								changed_loc = true;
 							}}
 						>
-							<span class="tooltiptext">{dictionary.get(mapping.tooltip)[language]}</span>
+							<span class="tooltiptext">{dictionary.get(mapping.Tooltip)[language]}</span>
 							<h3>
-								{dictionary.get(mapping.Course_of)[language] + lesson.friends[0].split('#')[0]}
+								{dictionary.get(mapping.Course_Of)[language] + lesson.friends[0].split('#')[0]}
 							</h3>
 							<p>{dictionary.get(mapping.Subject)[language] + ': ' + lesson.subject}</p>
 							<p>{dictionary.get(mapping.Room)[language] + ': ' + lesson.room}</p>
