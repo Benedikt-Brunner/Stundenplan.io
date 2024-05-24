@@ -311,9 +311,7 @@
 	function openGroupManager() {
 		group_manager_selected = true;
 		focus = false;
-		waiter(
-				() => document.getElementById('group_manager').focus()
-		);
+		waiter(() => document.getElementById('group_manager').focus());
 	}
 
 	function closeGroupManager(event) {
@@ -326,16 +324,12 @@
 	function openFriendManager() {
 		friend_manager_selected = true;
 		focus = false;
-		waiter(
-				() => document.getElementById('friend_manager_no_state').focus()
-		);
+		waiter(() => document.getElementById('friend_manager_no_state').focus());
 	}
 
 	function refocusFriendManager(new_friend_manager_state, element_id) {
 		friend_manager_state = new_friend_manager_state;
-		waiter(
-				() => document.getElementById(element_id).focus()
-		);
+		waiter(() => document.getElementById(element_id).focus());
 	}
 
 	function closeFriendManager(event) {
@@ -503,7 +497,13 @@
 
 {#if friend_manager_selected}
 	{#if friend_manager_state === friend_manager_states.not_decided}
-		<div class="add_or_remove" id="friend_manager_no_state" role="button" on:keydown={closeFriendManager} tabindex="-1">
+		<div
+			class="add_or_remove"
+			id="friend_manager_no_state"
+			role="button"
+			on:keydown={closeFriendManager}
+			tabindex="-1"
+		>
 			<button
 				class="tooltip"
 				on:click={() => {
@@ -524,23 +524,35 @@
 			</button>
 		</div>
 	{:else if friend_manager_state === friend_manager_states.add_friend}
-		<div class="editor" id="friend_manager_add_friend" role="button" on:keydown={closeFriendManager} tabindex="-1">
+		<div
+			class="editor"
+			id="friend_manager_add_friend"
+			role="button"
+			on:keydown={closeFriendManager}
+			tabindex="-1"
+		>
 			<input
 				type="text"
 				placeholder={dictionary.get(mapping.Name)[language]}
 				bind:value={friend_name}
 				on:keydown={(event) => {
-				if (event.key === 'Enter') {
-					handleAddFriend(friend_name);
-				}
-			}}
+					if (event.key === 'Enter') {
+						handleAddFriend(friend_name);
+					}
+				}}
 			/>
 			<button on:click={handleAddFriend(friend_name)}>
 				{dictionary.get(mapping.Add)[language]}</button
 			>
 		</div>
 	{:else if friend_manager_state === friend_manager_states.delete_friend}
-		<div class="editor" id="friend_manager_delete_friend" role="button" on:keydown={closeFriendManager} tabindex="-1" >
+		<div
+			class="editor"
+			id="friend_manager_delete_friend"
+			role="button"
+			on:keydown={closeFriendManager}
+			tabindex="-1"
+		>
 			<div class="manager">
 				<div class="manager_header">
 					<div />
@@ -572,7 +584,7 @@
 {/if}
 
 {#if group_manager_selected}
-	<div class="editor" id="group_manager" role="button" on:keydown={closeGroupManager} tabindex="-1" >
+	<div class="editor" id="group_manager" role="button" on:keydown={closeGroupManager} tabindex="-1">
 		<div class="manager">
 			<div class="manager_header">
 				<div />

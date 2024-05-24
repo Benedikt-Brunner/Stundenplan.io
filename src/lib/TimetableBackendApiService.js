@@ -9,7 +9,7 @@ import {
 import { theme as themeStore } from './Stores/ThemeStore';
 import { dictionary, languageStore, mapping } from './Stores/LanguageStore';
 import { show_error } from './Stores/PopUpStore';
-import {lessonAttributeToggleStore} from "$lib/Stores/LessonAttributeToggleStore.js";
+import { lessonAttributeToggleStore } from '$lib/Stores/LessonAttributeToggleStore.js';
 
 const API_URL = '/api/';
 
@@ -89,7 +89,17 @@ export const TimetableBackendApiService = {
 		window.location.href = API_URL + page;
 	},
 
-	async updateMetadata({ buddy, rows, fullweektoogle, theme, template, language, show_teacher, show_room, show_subject}) {
+	async updateMetadata({
+		buddy,
+		rows,
+		fullweektoogle,
+		theme,
+		template,
+		language,
+		show_teacher,
+		show_room,
+		show_subject
+	}) {
 		const lessonAttributeToggles = getStore(lessonAttributeToggleStore);
 
 		return await this.post(Routes.UpdateMetadata, {
@@ -116,7 +126,9 @@ export const TimetableBackendApiService = {
 			pendingResponse?.status !== 200
 		) {
 			show_error(
-				`${dictionary.get(mapping.Retrieve_Friends_Data_Failed)}${friendsError?.message || pendingError?.message}`
+				`${dictionary.get(mapping.Retrieve_Friends_Data_Failed)}${
+					friendsError?.message || pendingError?.message
+				}`
 			);
 
 			return { friends: [], pending: [] };

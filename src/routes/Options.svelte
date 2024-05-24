@@ -11,7 +11,7 @@
 	import { usernameStore } from '$lib/Stores/UserStore.js';
 	import { TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 	import { show_error } from '$lib/Stores/PopUpStore';
-	import {lessonAttributeToggleStore} from "$lib/Stores/LessonAttributeToggleStore.js";
+	import { lessonAttributeToggleStore } from '$lib/Stores/LessonAttributeToggleStore.js';
 
 	let focus = false;
 	let colorRGB = '';

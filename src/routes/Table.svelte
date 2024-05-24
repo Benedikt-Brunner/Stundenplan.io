@@ -13,7 +13,7 @@
 	import { usernameStore, buddyStore } from '$lib/Stores/UserStore.js';
 	import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 	import { show_error } from '$lib/Stores/PopUpStore';
-	import {lessonAttributeToggleStore} from "$lib/Stores/LessonAttributeToggleStore.js";
+	import { lessonAttributeToggleStore } from '$lib/Stores/LessonAttributeToggleStore.js';
 
 	/**
 	 * @type {Styles}
@@ -106,9 +106,7 @@
 
 	function openAttributeInputManager() {
 		selected = true;
-		waiter(
-				() => document.getElementById('editor').focus()
-		);
+		waiter(() => document.getElementById('editor').focus());
 	}
 
 	function handleAttributeInputManagerEvents(event) {
@@ -318,7 +316,7 @@
 		{/each}
 	</table>
 	{#if selected}
-		<div id="editor" role="button" on:keydown={handleAttributeInputManagerEvents} tabindex="-1" >
+		<div id="editor" role="button" on:keydown={handleAttributeInputManagerEvents} tabindex="-1">
 			{#if get_lessons_for_insertion_point('Day' + selectobject.column, selectobject.row).length !== 0}
 				<div class="lessons">
 					{#each get_lessons_for_insertion_point('Day' + selectobject.column, selectobject.row) as lesson}

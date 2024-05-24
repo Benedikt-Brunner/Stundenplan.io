@@ -51,7 +51,8 @@
 			<th>{buddy}</th>
 			<th
 				style="color: {styles.tableHeaderMondayFontColor}; background-color: {styles.tableHeaderMondayBackgroundColor}; width: {ratio}%;"
-			>{dictionary.get(mapping.Day_1)[language]}</th>
+				>{dictionary.get(mapping.Day_1)[language]}</th
+			>
 			<th
 				style="color: {styles.tableHeaderTuesdayFontColor}; background-color: {styles.tableHeaderTuesdayBackgroundColor}; width: {ratio}%;"
 				>{dictionary.get(mapping.Day_2)[language]}</th
@@ -143,7 +144,7 @@
 
 	th,
 	td {
-      border: 1px solid var(--secondary-color);
+		border: 1px solid var(--secondary-color);
 	}
 	th {
 		font-size: 2rem;

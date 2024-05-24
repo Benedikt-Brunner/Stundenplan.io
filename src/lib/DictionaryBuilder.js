@@ -101,8 +101,8 @@ export function build_dictionary() {
 		new RosettaStone(
 			'Design konnte nicht abgerufen werden! Weil: ',
 			'Fetching theme failed! Because: ',
-			'¡No se pudo recuperar el diseño! Porque: ',
-		),
+			'¡No se pudo recuperar el diseño! Porque: '
+		)
 	];
 	rosetta_stones.forEach((rosetta_stone, index) => {
 		dictionary.set(index, rosetta_stone);
@@ -165,5 +165,5 @@ export const mapping = {
 	Delete_Friend: 51,
 	Delete: 52,
 	Retrieve_Friends_Data_Failed: 53,
-	Fetching_Theme_Failed: 54,
+	Fetching_Theme_Failed: 54
 };

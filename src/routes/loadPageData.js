@@ -6,7 +6,7 @@ import { couting_signal } from '$lib/Stores/ChangedStore.js';
 import { theme } from '$lib/Stores/ThemeStore.js';
 import { Routes, TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 import { buddyStore, usernameStore } from '$lib/Stores/UserStore.js';
-import {lessonAttributeToggleStore} from "$lib/Stores/LessonAttributeToggleStore.js";
+import { lessonAttributeToggleStore } from '$lib/Stores/LessonAttributeToggleStore.js';
 
 export const load = async () => {
 	const { res, error } = await TimetableBackendApiService.get(Routes.UserData);

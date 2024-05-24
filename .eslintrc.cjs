@@ -7,7 +7,7 @@ module.exports = {
 		extraFileExtensions: ['.svelte']
 	},
 	rules: {
-		"svelte/valid-compile": ["error", { "ignoreWarnings": true }]
+		'svelte/valid-compile': ['error', { ignoreWarnings: true }]
 	},
 	env: {
 		browser: true,

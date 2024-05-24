@@ -54,7 +54,7 @@ export default class StyleClass {
 		tableHeaderThursdayBackgroundColor,
 		tableHeaderFridayBackgroundColor,
 		tableHeaderSaturdayBackgroundColor,
-		tableHeaderSundayBackgroundColor,
+		tableHeaderSundayBackgroundColor
 	}) {
 		this.primaryColor = primaryColor;
 		this.secondaryColor = secondaryColor;

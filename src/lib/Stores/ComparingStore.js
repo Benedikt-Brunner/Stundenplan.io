@@ -65,7 +65,10 @@ export function get_table_pattern() {
 				let own_day = get(schedule)[index][`Day${index2 + 1}`];
 				overlaps_arr.forEach((element, index3) => {
 					if (element === overlaps.no_overlap) {
-					} else if (
+						return;
+					}
+
+					if (
 						(element === overlaps.full_overlap || element === overlaps.partial_overlap) &&
 						is_lesson(own_day) &&
 						is_lesson_from_arr(
@@ -138,7 +141,10 @@ export function get_table_pattern() {
 			let own_day = get(schedule)[index][`Day${index2 + 1}`];
 			overlaps_arr.forEach((element, index3) => {
 				if (element === overlaps.no_overlap) {
-				} else if (
+					return;
+				}
+
+				if (
 					(element === overlaps.full_overlap || element === overlaps.partial_overlap) &&
 					is_lesson(own_day) &&
 					is_lesson(get(comparing).friend.schedule[index3][`Day${index2 + 1}`]) &&
@@ -203,7 +209,7 @@ function build_map(hours_own, hours_friend) {
 	let map = new Map();
 	hours_own.forEach((element, index) => {
 		map.set(index, []);
-		hours_friend.forEach((element2, _) => {
+		hours_friend.forEach((element2) => {
 			map.get(index).push(determine_overlap(element, element2));
 		});
 	});
@@ -216,7 +222,7 @@ function build_map_from_arr(hours_own, hours_friend) {
 		map.set(index, []);
 		hours_friend.forEach((arr, index2) => {
 			map.get(index).push([]);
-			arr.forEach((element2, _) => {
+			arr.forEach((element2) => {
 				map.get(index)[index2].push(determine_overlap(element, element2));
 			});
 		});

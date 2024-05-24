@@ -236,7 +236,6 @@ function get_insertion_points_for_merged_lesson(lesson) {
 }
 
 export function get_lessons_for_insertion_point(day, hour) {
-	let res_ray = [];
 	let lessons = get_friends_lessons().lessons;
 	lessons = lessons.filter((element) => element.day.includes(day));
 	lessons = lessons.filter((element) => getInsertionPoints(element).includes(hour));
@@ -248,7 +247,7 @@ export function insert_merged_lesson(lesson) {
 		element.equals(lesson)
 	)[0];
 	let insertion_points = get_insertion_points_for_merged_lesson(merged_lesson);
-	insertion_points.forEach((element, index) => {
+	insertion_points.forEach((element) => {
 		schedule.update((old) => {
 			let newarr = old;
 			newarr[element.hour][element.day].Subject = merged_lesson.subject;
