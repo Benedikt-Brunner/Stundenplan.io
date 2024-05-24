@@ -3,12 +3,13 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"build": "vite build && cd StundenplanBackEnd && cargo shuttle run",
-		"deploy": "vite build && git add -A && git commit -m \"deploy\" && cd StundenplanBackEnd && cargo shuttle deploy",
+		"build": "npm run cleanup && vite build && cd StundenplanBackEnd && cargo shuttle run",
+		"deploy": "npm run cleanup && vite build && git add -A && git commit -m \"deploy\" && cd StundenplanBackEnd && cargo shuttle deploy",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"format": "prettier --plugin-search-dir . --write .",
+		"cleanup": "npm run format && npm run lint"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",

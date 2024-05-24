@@ -15,6 +15,7 @@
 	import { onMount } from 'svelte';
 	import { TimetableBackendApiService } from '$lib/TimetableBackendApiService';
 	import StyleClass from '$lib/StyleClass';
+	import { dictionary, mapping } from '$lib/Stores/LanguageStore.js';
 
 	let loading = true;
 	let styles = {};
@@ -24,9 +25,8 @@
 
 		let { res, err } = await TimetableBackendApiService.getStyle(get(theme));
 
-		// TODO: Add error translation
 		if (err) {
-			show_error(`There was an error fetching your theme: ${err.msg}`);
+			show_error(`${dictionary.get(mapping.Fetching_Theme_Failed)}${err.msg}`);
 		}
 
 		const data = await res.json();
@@ -36,9 +36,8 @@
 		theme.subscribe(async (value) => {
 			let { res, err } = await TimetableBackendApiService.getStyle(value);
 
-			// TODO: Add error translation
 			if (err) {
-				show_error(`There was an error fetching your theme: ${err.msg}`);
+				show_error(`${dictionary.get(mapping.Fetching_Theme_Failed)}${err.msg}`);
 			}
 
 			const data = await res.json();

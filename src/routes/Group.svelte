@@ -18,7 +18,7 @@
 	});
 
 	function remove(friend) {
-		if (confirm(dictionary.get(mapping.Are_you_sure)[language])) {
+		if (confirm(dictionary.get(mapping.Are_You_Sure)[language])) {
 			group.friends = group.friends.filter((f) => {
 				return f.username !== friend.username;
 			});
@@ -40,7 +40,7 @@
 			<input
 				type="text"
 				bind:value={group.name}
-				placeholder={dictionary.get(mapping.New_group)[language]}
+				placeholder={dictionary.get(mapping.New_Group)[language]}
 				style="color: {group.color};"
 				id="group_name"
 			/>

@@ -128,7 +128,7 @@
 
 	const handleAddFriend = async (friend_name) => {
 		if (friend_name === username) {
-			show_error(dictionary.get(mapping.You_cant_add_yourself)[language]);
+			show_error(dictionary.get(mapping.You_Cant_Add_Yourself)[language]);
 			friend_manager_state = friend_manager_states.not_decided;
 			friend_manager_selected = false;
 			focus = true;
@@ -140,7 +140,7 @@
 				.friends.map((friend) => friend.username)
 				.includes(friend_name)
 		) {
-			show_error(`${friend_name} ${dictionary.get(mapping.is_already_your_friend)[language]}`);
+			show_error(`${friend_name} ${dictionary.get(mapping.Is_Already_Your_Friend)[language]}`);
 			friend_manager_state = friend_manager_states.not_decided;
 			friend_manager_selected = false;
 			focus = true;
@@ -160,13 +160,13 @@
 			if (res.status !== 200) {
 				show_error(
 					`${friend_name === '' ? dictionary.get(mapping.Nobody)[language] : friend_name} ${
-						dictionary.get(mapping.doesnt_exist)[language]
+						dictionary.get(mapping.Doesnt_Exist)[language]
 					}`
 				);
 			} else {
 				friends.set(await TimetableBackendApiService.retrieveFriendsData());
 				show_success(
-					`${friend_name} ${dictionary.get(mapping.has_received_your_request)[language]}`
+					`${friend_name} ${dictionary.get(mapping.Has_Received_Your_Request)[language]}`
 				);
 			}
 		}
@@ -174,7 +174,7 @@
 
 	const handleRemoveFriend = async (friend_name) => {
 		if (friend_name === username) {
-			show_error(dictionary.get(mapping.You_cant_delete_yourself)[language]);
+			show_error(dictionary.get(mapping.You_Cant_Delete_Yourself)[language]);
 			return;
 		}
 
@@ -187,7 +187,7 @@
 			show_error(error.message);
 		} else {
 			friends.set(await TimetableBackendApiService.retrieveFriendsData());
-			show_success(`${friend_name} ${dictionary.get(mapping.was_deleted)[language]}`);
+			show_success(`${friend_name} ${dictionary.get(mapping.Was_Deleted)[language]}`);
 		}
 	};
 
@@ -363,7 +363,7 @@
 		<div class="top-row">
 			{#if username}
 				<button id="sOut" on:click={handleSignOut}
-					>{dictionary.get(mapping.Sign_out)[language]}</button
+					>{dictionary.get(mapping.Sign_Out)[language]}</button
 				>
 			{:else}
 				<div />
@@ -380,8 +380,8 @@
 		<div class="center">
 			{#if !username}
 				<div class="deciders">
-					<button on:click={handleSignIn}>{dictionary.get(mapping.Sign_in)[language]}</button>
-					<button on:click={handleSignUp}>{dictionary.get(mapping.Sign_up)[language]}</button>
+					<button on:click={handleSignIn}>{dictionary.get(mapping.Sign_In)[language]}</button>
+					<button on:click={handleSignUp}>{dictionary.get(mapping.Sign_Up)[language]}</button>
 				</div>
 			{/if}
 		</div>
@@ -459,7 +459,7 @@
 						{/each}
 					{/if}
 					{#if friends_with_no_group.length !== 0 && groups.length !== 0}
-						<h4 id="request_title">{dictionary.get(mapping.Friends_without_group)[language]}:</h4>
+						<h4 id="request_title">{dictionary.get(mapping.Friends_Without_Group)[language]}:</h4>
 					{/if}
 					{#each friends_with_no_group as friend}
 						<div class="item">
@@ -511,7 +511,7 @@
 				}}
 			>
 				<img src={Add_Friend} alt="Add Friend" />
-				<span class="tooltiptext">{dictionary.get(mapping.Add_friend)[language]}</span>
+				<span class="tooltiptext">{dictionary.get(mapping.Add_Friend)[language]}</span>
 			</button>
 			<button
 				class="tooltip"
@@ -520,7 +520,7 @@
 				}}
 			>
 				<img src={Delete_Friend} alt="Delete Friend" />
-				<span class="tooltiptext">{dictionary.get(mapping.Delete_friend)[language]}</span>
+				<span class="tooltiptext">{dictionary.get(mapping.Delete_Friend)[language]}</span>
 			</button>
 		</div>
 	{:else if friend_manager_state === friend_manager_states.add_friend}
@@ -561,7 +561,7 @@
 						<div class="item" id="friend_to_be_removed">
 							<p>{friend.username}</p>
 							<button on:click={handleRemoveFriend(friend.username)}
-								>{dictionary.get(mapping.delete)[language]}</button
+								>{dictionary.get(mapping.Delete)[language]}</button
 							>
 						</div>
 					{/each}
@@ -594,7 +594,7 @@
 					<img src={Plus} alt="Add a new group" />
 				</button>
 			</div>
-			<span>{dictionary.get(mapping.Empty_groups_will_be_removed)[language]}</span>
+			<span>{dictionary.get(mapping.Empty_Groups_Will_Be_Removed)[language]}</span>
 		</div>
 	</div>
 {/if}
