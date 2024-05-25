@@ -47,15 +47,6 @@ rows.subscribe((value) => {
 	schedule.update((old) => {
 		let newarr = new Array(value);
 		let temptemplate = get(template);
-		if (temptemplate != 'Custom') {
-			newarr = newarr.fill('').map(() => {
-				return makeStdhr();
-			});
-			newarr.forEach((element, index) => {
-				element.Hours = MapMap.get(temptemplate).get(index);
-			});
-			return newarr;
-		}
 
 		let len = old.length > value ? value : old.length;
 		let temp = old.slice(0, len);
@@ -64,10 +55,25 @@ rows.subscribe((value) => {
 		});
 		newarr.fill('', len);
 		newarr.map((element, index) => {
-			if (element == '') {
+			if (element === '') {
 				newarr[index] = makeStdhr();
 			}
 		});
+
+		if (temptemplate !== 'Custom') {
+			let HoursMap = MapMap.get(temptemplate);
+
+			newarr.forEach((element, index) => {
+				element.Hours = HoursMap.get(index);
+			});
+		} else {
+			newarr.forEach((element) => {
+				if (element.Hours === '') {
+					element.Hours = '??-??';
+				}
+			});
+		}
+
 		return newarr;
 	});
 });
@@ -77,10 +83,10 @@ TempToRows.set('University', 7);
 TempToRows.set('School', 15);
 
 template.subscribe((value) => {
-	if (value == 'Custom') {
+	if (value === 'Custom') {
 		return;
 	}
-	if (get(rows) == TempToRows.get(value)) {
+	if (get(rows) === TempToRows.get(value)) {
 		schedule.update((old) => {
 			let newarr = old;
 			newarr.forEach((element, index) => {
@@ -172,7 +178,7 @@ schedule.subscribe((value) => {
 	});
 });
 
-function getHoursasInts() {
+function getHoursAsInts() {
 	let hours = [];
 	get(schedule).forEach((element) => {
 		if (element.Hours?.includes('-')) {
@@ -198,7 +204,7 @@ function getInsertionPoints(lesson) {
 	let lesson_end =
 		parseInt(lesson.hours[0].split('-')[1].split(':')[0]) * 100 +
 		parseInt(lesson.hours[0].split('-')[1].split(':')[1]);
-	let hours = getHoursasInts();
+	let hours = getHoursAsInts();
 	let insertion_points = [];
 	hours.forEach((element, index) => {
 		if (
